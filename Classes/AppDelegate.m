@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import "SearchVC.h"
+#import "TabbarVC.h"
 
 @implementation AppDelegate
 
@@ -12,7 +13,14 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    self.window.rootViewController = [[SearchVC alloc] init];
+    NSArray *vcs = [NSArray arrayWithObjects:
+        [[UIViewController alloc] init],
+        [[SearchVC alloc] init],
+        [[UIViewController alloc] init],
+        [[UIViewController alloc] init],
+        nil];
+
+    self.window.rootViewController = [[TabbarVC alloc] initWithViewControllers:vcs];
 
     [self.window makeKeyAndVisible];
 

@@ -54,6 +54,7 @@
     [self.view addSubview:searchBar_];
 
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
+    tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     tableView_.dataSource = self;
     tableView_.delegate = self;
     tableView_.rowHeight = [ShowCell height];
