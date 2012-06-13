@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import "SearchVC.h"
+#import "ScheduleVC.h"
 #import "TabbarVC.h"
 
 @implementation AppDelegate
@@ -14,7 +15,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
 
     NSArray *vcs = [NSArray arrayWithObjects:
-        [[UIViewController alloc] init],
+        [[ScheduleVC alloc] init],
         [[SearchVC alloc] init],
         [[UIViewController alloc] init],
         [[UIViewController alloc] init],

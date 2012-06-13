@@ -18,6 +18,10 @@
 		E18F9FAA15243578005AC451 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E18F9FA615243578005AC451 /* main.m */; };
 		E1907A72157C944D00969E37 /* tabbar_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E1907A71157C944D00969E37 /* tabbar_settings@2x.png */; };
 		E1907A75157C9CC800969E37 /* tabbar_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E1907A74157C9CC800969E37 /* tabbar_background@2x.png */; };
+		E1907A7A157DEC8200969E37 /* ScheduleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E1907A77157DEC8200969E37 /* ScheduleVC.m */; };
+		E1907A7B157DEC8200969E37 /* ShowVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E1907A79157DEC8200969E37 /* ShowVC.m */; };
+		E1907A7E157DF29500969E37 /* ScheduleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E1907A7D157DF29500969E37 /* ScheduleCell.m */; };
+		E1907A81157DF68D00969E37 /* Episode.m in Sources */ = {isa = PBXBuildFile; fileRef = E1907A80157DF68D00969E37 /* Episode.m */; };
 		E1D5146D1556723900FA5A83 /* ShowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D5146A1556723900FA5A83 /* ShowCell.m */; };
 		E1D5146E1556723900FA5A83 /* TVShow.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D5146C1556723900FA5A83 /* TVShow.m */; };
 		E1D514721556BB2E00FA5A83 /* XMLDeserialization.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D514711556BB2E00FA5A83 /* XMLDeserialization.m */; };
@@ -64,6 +68,14 @@
 		E18F9FA615243578005AC451 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E1907A71157C944D00969E37 /* tabbar_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar_settings@2x.png"; sourceTree = "<group>"; };
 		E1907A74157C9CC800969E37 /* tabbar_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar_background@2x.png"; sourceTree = "<group>"; };
+		E1907A76157DEC8200969E37 /* ScheduleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleVC.h; sourceTree = "<group>"; };
+		E1907A77157DEC8200969E37 /* ScheduleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleVC.m; sourceTree = "<group>"; };
+		E1907A78157DEC8200969E37 /* ShowVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowVC.h; sourceTree = "<group>"; };
+		E1907A79157DEC8200969E37 /* ShowVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowVC.m; sourceTree = "<group>"; };
+		E1907A7C157DF29500969E37 /* ScheduleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleCell.h; sourceTree = "<group>"; };
+		E1907A7D157DF29500969E37 /* ScheduleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleCell.m; sourceTree = "<group>"; };
+		E1907A7F157DF68D00969E37 /* Episode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Episode.h; sourceTree = "<group>"; };
+		E1907A80157DF68D00969E37 /* Episode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Episode.m; sourceTree = "<group>"; };
 		E1D514691556723900FA5A83 /* ShowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowCell.h; sourceTree = "<group>"; };
 		E1D5146A1556723900FA5A83 /* ShowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowCell.m; sourceTree = "<group>"; };
 		E1D5146B1556723900FA5A83 /* TVShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVShow.h; sourceTree = "<group>"; };
@@ -165,6 +177,14 @@
 		E18F9F9B15243578005AC451 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E1907A7F157DF68D00969E37 /* Episode.h */,
+				E1907A80157DF68D00969E37 /* Episode.m */,
+				E1907A7C157DF29500969E37 /* ScheduleCell.h */,
+				E1907A7D157DF29500969E37 /* ScheduleCell.m */,
+				E1907A76157DEC8200969E37 /* ScheduleVC.h */,
+				E1907A77157DEC8200969E37 /* ScheduleVC.m */,
+				E1907A78157DEC8200969E37 /* ShowVC.h */,
+				E1907A79157DEC8200969E37 /* ShowVC.m */,
 				E1D514A6155A77E500FA5A83 /* Tabbar.h */,
 				E1D514A7155A77E500FA5A83 /* Tabbar.m */,
 				E1D514A8155A77E500FA5A83 /* TabbarVC.h */,
@@ -391,6 +411,10 @@
 				E1D514A51556BCE000FA5A83 /* UIView+position.m in Sources */,
 				E1D514AA155A77E500FA5A83 /* Tabbar.m in Sources */,
 				E1D514AB155A77E500FA5A83 /* TabbarVC.m in Sources */,
+				E1907A7A157DEC8200969E37 /* ScheduleVC.m in Sources */,
+				E1907A7B157DEC8200969E37 /* ShowVC.m in Sources */,
+				E1907A7E157DF29500969E37 /* ScheduleCell.m in Sources */,
+				E1907A81157DF68D00969E37 /* Episode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
