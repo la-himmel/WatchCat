@@ -5,11 +5,12 @@
 @synthesize name = name_;
 @synthesize id = id_;
 @synthesize episodes = episodes_;
+@synthesize description = description_;
 
-- (NSString *)description
+/*- (NSString *)description
 {
     return [NSString stringWithFormat:@"<TVShow #%d: %@, %d eps>",
         id_, name_, [episodes_ count]];
-}
+}*/
 
 @end

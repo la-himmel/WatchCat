@@ -1,5 +1,5 @@
 #import "SearchVC.h"
-
+#import "ShowVC.h"
 #import "SearchCell.h"
 #import "ShowCell.h"
 #import "utils.h"
@@ -24,40 +24,91 @@
     if (!(self = [super init])) {
         return nil;
     }
-
+    
+    [[self navigationController] setNavigationBarHidden:YES];
+    
+    NSString *longtext = @"Ok. So you need to set the navigation bar to be hidden right after you create the navigation controller for that tab. You cannot adjust this after you push the view controller (as far as I know). If you want the first view to not have a navigation bar at the top, then use this in your appDelegate where you initially declare your navigation controllers: The UINavigationBarDelegate protocol defines optional methods that a UINavigationBar delegate should implement to update its views when items are pushed and popped from the stack. The navigation bar represents only the bar at the top of the screen, not the view below. It’s the application’s responsibility to implement the behavior when the top item changes. You can control whether an item should be pushed or popped by implementing the navigationBar:shouldPushItem: and navigationBar:shouldPopItem: methods. These methods should return YES if the action is allowed; otherwise, NO. The screen should always reflect the top item on the navigation bar. You implement the navigationBar:didPushItem: method to update the view below the navigation bar to reflect the new item. Similarly, you implement the navigationBar:didPopItem: method to replace the view below the navigation bar.";
+    
     TVShow *show1 = [[TVShow alloc] init];
     show1.id = 1;
     show1.name = @"Castle";
     show1.episodes = [NSArray array];
+    show1.description = [longtext copy];
 
     TVShow *show2 = [[TVShow alloc] init];
     show2.id = 2;
     show2.name = @"Dollhouse";
     show2.episodes = [NSArray array];
+    show2.description = [longtext copy];
 
     TVShow *show3 = [[TVShow alloc] init];
     show3.id = 3;
     show3.name = @"Firefly";
     show3.episodes = [NSArray array];
+    show3.description = [longtext copy];
+    
+    TVShow *show4 = [[TVShow alloc] init];
+    show4.id = 4;
+    show4.name = @"Vampire diaries";
+    show4.episodes = [NSArray array];
+    show4.description = [longtext copy];
+    
+    TVShow *show5 = [[TVShow alloc] init];
+    show5.id = 5;
+    show5.name = @"Two and a half men";
+    show5.episodes = [NSArray array];
+    show5.description = [longtext copy];
+    
+    TVShow *show6 = [[TVShow alloc] init];
+    show6.id = 6;
+    show6.name = @"How i met your mother";
+    show6.episodes = [NSArray array];
+    show6.description = [longtext copy];
+    
+    TVShow *show7 = [[TVShow alloc] init];
+    show7.id = 7;
+    show7.name = @"Daria";
+    show7.episodes = [NSArray array];
 
-    filteredShows_ = [NSArray arrayWithObjects:show1, show2, show3, nil];
-
+    filteredShows_ = [NSArray arrayWithObjects:show1, show2, show3, show4, show5, show6, show7, nil];
+    
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    searchBar_ = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    
+    searchBar_ = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 170, 44)];
     searchBar_.delegate = self;
-    [self.view addSubview:searchBar_];
+    [searchBar_ setBackgroundColor:[UIColor clearColor]];
+    [searchBar_ setBackgroundImage:[UIImage imageNamed:@"searchNB.png"]];
+    
+    [searchBar_ setSearchFieldBackgroundImage:[UIImage imageNamed:@"brackets2.png"] 
+                                     forState:UIControlStateNormal];
+    [searchBar_ setPlaceholder:@"type to search"];
+    [searchBar_ setImage:[UIImage imageNamed:@"delete3.png"] forSearchBarIcon:UISearchBarIconClear 
+                   state:UIControlStateNormal];
+    [searchBar_ setImage:[UIImage imageNamed:@"delete3.png"] forSearchBarIcon:UISearchBarIconClear 
+                   state:UIControlStateSelected];
+    [searchBar_ setImage:[UIImage imageNamed:@"delete3.png"] forSearchBarIcon:UISearchBarIconClear 
+                   state:UIControlStateHighlighted];
 
+    UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    view.image = [UIImage imageNamed:@"search.png"];
+    [self.view addSubview:view];
+    
+    [self.view addSubview:searchBar_];
+    
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    
     tableView_.dataSource = self;
     tableView_.delegate = self;
     tableView_.rowHeight = [ShowCell height];
+    tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView_.bounces = NO;
+    
     [self.view addSubview:tableView_];
 }
 
@@ -65,9 +116,29 @@
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DLOG("indexPath = %@", indexPath);
-
-    ShowCell *cell = [[ShowCell alloc] init];
+    
+    static NSString *MyIdentifier = @"someIdentifier";    
+    ShowCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    
+    if (cell == nil) {
+        cell = [[ShowCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
+                                      reuseIdentifier:MyIdentifier];
+    }    
     [cell setShow:[filteredShows_ objectAtIndex:indexPath.row]];
+   
+    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1@2x.png", @"main2@2x.png",
+                      @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];
+
+    NSString *name = [backs objectAtIndex:(indexPath.row %6)];
+        
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name] 
+                                                              stretchableImageWithLeftCapWidth:0.0 
+                                                              topCapHeight:5.0]];  
+    cell.selectedBackgroundView = [[UIImageView alloc] 
+                                   initWithImage:[[UIImage imageNamed:name] 
+                                                  stretchableImageWithLeftCapWidth:0.0 
+                                                  topCapHeight:5.0]];
+    
     return cell;
 }
 
@@ -100,6 +171,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [searchBar_ resignFirstResponder];
+    DLOG("didselect...");
+    
+    ShowVC *vc = [[ShowVC alloc] init];
+    [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
+
+    [[self navigationController] setNavigationBarHidden:NO];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

@@ -46,7 +46,7 @@ typedef enum {
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor orangeColor];
+    self.view.backgroundColor = [UIColor whiteColor];
 
     tabbar_ = [[Tabbar alloc] initWithFrame:(CGRect){0, 0, 320, TABBAR_HEIGHT}];
     tabbar_.bottom = self.view.height;
