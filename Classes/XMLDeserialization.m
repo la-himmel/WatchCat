@@ -6,6 +6,25 @@
 
 static TVShow *parseShow(CXMLNode *showNode);
 
+NSString *parseImageUrl(NSData *xmlData)
+{    
+    NSError *e = nil;
+    
+    CXMLDocument *document = [[CXMLDocument alloc] initWithData:xmlData options:0 error:&e];
+ 
+    NSString *image = [[NSString alloc] init];
+    if (e) {
+        DLOG("error = %@", [e localizedDescription]);
+        return image;
+    }
+    
+    CXMLNode *node = [document nodeForXPath:@"Show" error:nil];    
+        
+    image = [[node nodeForXPath:@"image" error:nil] stringValue];
+    
+    return image;
+}
+
 NSArray *parseSearchResults(NSData *xmlData)
 {
     NSMutableArray *results = [[NSMutableArray alloc] init];
@@ -32,10 +51,12 @@ static TVShow *parseShow(CXMLNode *showNode)
 
     NSString *name = [[showNode nodeForXPath:@"name" error:nil] stringValue];
     int showId = [[[showNode nodeForXPath:@"showid" error:nil] stringValue] intValue];
+    NSString *link = [[showNode nodeForXPath:@"link" error:nil] stringValue];
 
     result.name = name;
     result.id = showId;
     result.episodes = [NSArray array];
+    result.link = link;
 
     return result;
 }

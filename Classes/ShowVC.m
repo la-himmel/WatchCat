@@ -1,6 +1,9 @@
 #import "ShowVC.h"
 #import "utils.h"
 #import "TVShow.h"
+#import "CustomBarButtonItem.h"
+#import "XMLDeserialization.h"
+#import "UIImageView+WebCache.h"
 
 @interface ShowVC() 
 {
@@ -12,15 +15,27 @@
 
 - (void)viewDidLoad
 {
-    UIImageView *back = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
-    back.image = [UIImage imageNamed:@"details@2x.png"];
-
-    [self.view addSubview:back];
+    NSURL *url = [NSURL URLWithString:[NSString
+                                       stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
+                                       show_.id]];
+    DLOG("%@", [NSString
+                stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
+                show_.id]);
+    
+    NSData *xmlData = [NSData dataWithContentsOfURL:url];
+    
+    show_.image = [NSURL URLWithString:parseImageUrl(xmlData)];
+    
+    UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
+    background.image = [UIImage imageNamed:@"details@2x.png"];
+    
+    [self.view addSubview:background];
     
     UIImageView *pic = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
-    pic.image = [UIImage imageNamed:@"series.png"];
+    pic.contentMode = UIViewContentModeScaleAspectFill;
+    [pic setClipsToBounds:YES];
+    [pic setImageWithURL:show_.image placeholderImage:[UIImage imageNamed:@"placeholder"]];
     [self.view addSubview:pic];
-
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [show_.name copy];
@@ -50,16 +65,40 @@
 //    description.textColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
     description.backgroundColor = [UIColor clearColor];
     
-    textView.contentSize = description.frame.size;
+    CGSize textSize = description.frame.size;
+    textSize.height += 130;
+    
+    textView.contentSize = textSize;    
     textView.contentMode = UIViewContentModeTop;
     
     [self.view addSubview:textView];
     [textView addSubview:description];
+    
+    UIButton *subscribe = [[UIButton alloc] initWithFrame:CGRectMake(0, 
+                                                    10 + description.frame.size.height, 300, 50)];
+    [subscribe setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [subscribe setTitle:@"Subscribe" forState:UIControlStateNormal];
+    [subscribe setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [textView addSubview:subscribe];
+    
+    UIButton *remember = [[UIButton alloc] initWithFrame:CGRectMake(0, 
+                                70 + description.frame.size.height, 300, 50)];
+    [remember setTitle:@"Remember" forState:UIControlStateNormal];
+    [remember setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [remember setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [textView addSubview:remember];
+
 }
 
 - (void)setShow:(TVShow *)show
 {
     show_ = show;
 }
+
+- (void)goback
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 @end

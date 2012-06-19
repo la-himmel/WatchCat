@@ -6,6 +6,7 @@
 #import "UIView+position.h"
 #import "TVShow.h"
 #import "XMLDeserialization.h"
+#import "CustomBarButtonItem.h"
 
 @interface SearchVC () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 {
@@ -27,7 +28,7 @@
     
     [[self navigationController] setNavigationBarHidden:YES];
     
-    NSString *longtext = @"Ok. So you need to set the navigation bar to be hidden right after you create the navigation controller for that tab. You cannot adjust this after you push the view controller (as far as I know). If you want the first view to not have a navigation bar at the top, then use this in your appDelegate where you initially declare your navigation controllers: The UINavigationBarDelegate protocol defines optional methods that a UINavigationBar delegate should implement to update its views when items are pushed and popped from the stack. The navigation bar represents only the bar at the top of the screen, not the view below. It’s the application’s responsibility to implement the behavior when the top item changes. You can control whether an item should be pushed or popped by implementing the navigationBar:shouldPushItem: and navigationBar:shouldPopItem: methods. These methods should return YES if the action is allowed; otherwise, NO. The screen should always reflect the top item on the navigation bar. You implement the navigationBar:didPushItem: method to update the view below the navigation bar to reflect the new item. Similarly, you implement the navigationBar:didPopItem: method to replace the view below the navigation bar.";
+    NSString *longtext = @"Set in Manhattan, How I Met Your Mother follows the social and romantic lives of Ted Mosby and his friends Marshall Eriksen, Robin Scherbatsky, Lily Aldrin and Barney Stinson. As a framing device, the main character, Ted, using voiceover narration by Bob Saget, in the year 2030 recounts to his son and his daughter the events that led to his meeting their mother.";
     
     TVShow *show1 = [[TVShow alloc] init];
     show1.id = 1;
@@ -107,9 +108,23 @@
     tableView_.delegate = self;
     tableView_.rowHeight = [ShowCell height];
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
-    tableView_.bounces = NO;
+    
+    UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];  
+    UIImage *backImage = [UIImage imageNamed:@"backButton@2x.png"];  
+    [back setImage:backImage forState:UIControlStateNormal];  
+    
+    [back addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
+    back.frame = CGRectMake(0, 0, backImage.size.width, backImage.size.height);  
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:back];
+    [self.navigationItem setLeftBarButtonItem:backButton];
     
     [self.view addSubview:tableView_];
+}
+
+- (void)goback
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -175,7 +190,7 @@
     
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
-
+    
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];
 }

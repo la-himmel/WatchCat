@@ -9,16 +9,16 @@ static const int TABBAR_HEIGHT = 50;
 typedef enum {
     FavoriteIdx = 0,
     BrowseIdx = 1,
-    TodoIdx = 2,
-    SettingsIdx = 3
+    SettingsIdx = 2,
+    TodoIdx = 3
 } TabIndex;
 
 @interface TabbarVC ()
 {
     UIViewController *favoriteVC_;
     UIViewController *browseVC_;
-    UIViewController *todoVC_;
     UIViewController *settingsVC_;
+    UIViewController *todoVC_;
 
     Tabbar *tabbar_;
 }
@@ -36,9 +36,9 @@ typedef enum {
 
     favoriteVC_ = [vcs objectAtIndex:0];
     browseVC_ = [vcs objectAtIndex:1];
-    todoVC_ = [vcs objectAtIndex:2];
-    settingsVC_ = [vcs objectAtIndex:3];
-
+    settingsVC_ = [vcs objectAtIndex:2];
+    todoVC_ = [vcs objectAtIndex:3];
+    
     return self;
 }
 

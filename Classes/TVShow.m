@@ -6,6 +6,9 @@
 @synthesize id = id_;
 @synthesize episodes = episodes_;
 @synthesize description = description_;
+@synthesize link = link_;
+@synthesize image = image_;
+
 
 /*- (NSString *)description
 {
