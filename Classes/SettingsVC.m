@@ -13,6 +13,7 @@
     back.image = [UIImage imageNamed:@"settingsBg.png"];
     
     [self.view addSubview:back];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     UIButton *timeZone = [[UIButton alloc] initWithFrame:CGRectMake(10, 100, 300, 50)];
     [timeZone setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];

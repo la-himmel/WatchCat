@@ -6,6 +6,7 @@
 #import "UIImageView+WebCache.h"
 #import "ScheduleVC.h"
 
+
 @interface ShowVC() 
 {
     TVShow *show_;
@@ -13,6 +14,7 @@
 @end
 
 @implementation ShowVC
+@synthesize myseries = myseries_;
 
 - (void)viewDidLoad
 {
@@ -110,7 +112,10 @@
 
 - (void)addToFavourites
 {
+    [myseries_ addToFavorites:show_];
+    
     ScheduleVC *vc = [[ScheduleVC alloc] init];
+    vc.myseries = myseries_;
     [self.navigationController pushViewController:vc animated:YES];
 }
 

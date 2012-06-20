@@ -50,6 +50,16 @@
 
 - (void)addToFavorites:(TVShow *)show 
 {
+    BOOL found = NO;
+    for (TVShow* show_ in favourites_) {
+        if ([show isEqual:show_]) {
+            found = YES;
+        }
+    }
+    
+    if (!found) {
+        [favourites_ addObject:show];
+    }
 }
 
 - (void)removeFromFavorites:(TVShow *)show

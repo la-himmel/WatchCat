@@ -1,5 +1,5 @@
 #import "TabbarVC.h"
-
+#import "utils.h"
 #import "Tabbar.h"
 #import "UIView+position.h"
 
@@ -32,6 +32,7 @@ typedef enum {
         return nil;
     }
 
+    DLOG("init with vc");
     NSAssert([vcs count] == 4, @"There must be 4 tabs");
 
     favoriteVC_ = [vcs objectAtIndex:0];
@@ -56,7 +57,7 @@ typedef enum {
     [tabbar_ addObserver:self
               forKeyPath:@"selectedIndex"
                  options:NSKeyValueObservingOptionNew
-                 context:nil];
+                 context:NULL];
 
     tabbar_.selectedIndex = 1;
 }
@@ -94,7 +95,10 @@ typedef enum {
 
         vc.view.frame = CONTENT_FRAME;
         [self.view addSubview:vc.view];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+
 }
 
 @end

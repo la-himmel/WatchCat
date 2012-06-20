@@ -10,6 +10,9 @@
 @interface AppDelegate()
 {
     UINavigationController *nc_;
+    ScheduleVC *svc_;
+    SearchVC *searchVC_;
+    
 }
 @end
 
@@ -26,25 +29,35 @@
     MySeries *series = [[MySeries alloc] init];
     [series load];
     
-    ScheduleVC *svc = [[ScheduleVC alloc] init];        
-    [svc setMyseries:series];
+    svc_ = [[ScheduleVC alloc] init];        
+    [svc_ setMyseries:series];
     
-    nc_ = [[UINavigationController alloc] initWithRootViewController:svc];
-
-//    nc_ = [[UINavigationController alloc] 
-//           initWithRootViewController:[[/*SearchVC*/ ScheduleVC alloc] init]];
+    searchVC_ = [[SearchVC alloc] init];
+    searchVC_.myseries = series;
+    
+    nc_ = [[UINavigationController alloc] initWithRootViewController:searchVC_];
     
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.image = [UIImage imageNamed:@"navbar@2x.png"];    
+    view.image = [UIImage imageNamed:@"navbar@2x.png"];  
+    
     [nc_.navigationBar addSubview:view];
     
-//    [nc_ setNavigationBarHidden:YES];
+    [nc_ setNavigationBarHidden:YES];
     nc_.delegate = self;
+
+    UIImageView *scheduleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];
+    UINavigationController *fnc = [[UINavigationController alloc] initWithRootViewController:svc_];
+    [fnc.navigationBar addSubview:scheduleView];
+
+    UIImageView *settingsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];
+    SettingsVC *settingsVC = [[SettingsVC alloc] init];    
+    UINavigationController *snc = [[UINavigationController alloc] initWithRootViewController:settingsVC];
+    [snc.navigationBar addSubview:settingsView];
     
     NSArray *vcs = [NSArray arrayWithObjects:
-        svc,
+        fnc,
         nc_,
-        [[SettingsVC alloc] init],
+        snc,
         [[UIViewController alloc] init],
         nil];
 
@@ -58,15 +71,14 @@
 - (void)navigationController:(UINavigationController *)navigationController 
       willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-//    if([navigationController.viewControllers objectAtIndex:0] == viewController) {
-//        [navigationController setNavigationBarHidden:YES animated:NO];
-//    }
+    if(searchVC_ == viewController) {
+        DLOG("--- searchvc ---");
+        [navigationController setNavigationBarHidden:YES animated:NO];
+    } else {
+        DLOG("--- other vc ---");
+        [navigationController setNavigationBarHidden:NO animated:NO];
+    }
 }
-
-//- (void)goback
-//{
-//    [nc_ popViewControllerAnimated:YES];
-//}
 
 @end
 

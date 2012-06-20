@@ -36,6 +36,8 @@
     tableView_.delegate = self;
     tableView_.rowHeight = [ScheduleCell height];
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+   [self.navigationController setNavigationBarHidden:NO animated:NO];
 
     [self.view addSubview:tableView_];       
 }
@@ -43,9 +45,7 @@
 
 - (int)tableView:(UITableView *)tableView numberOfRowsInSection:(int)section
 {
-    DLOG("count again12: %d", [favourites_ count]);
     return [favourites_ count];
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -79,6 +79,7 @@
 {
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[favourites_ objectAtIndex:indexPath.row]];
+    [vc setMyseries:myseries_];
     
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];

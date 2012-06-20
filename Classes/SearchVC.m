@@ -19,6 +19,7 @@
 @end
 
 @implementation SearchVC
+@synthesize myseries = myseries_;
 
 - (id)init
 {
@@ -130,8 +131,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DLOG("indexPath = %@", indexPath);
-    
     static NSString *MyIdentifier = @"someIdentifier";    
     ShowCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     
@@ -164,7 +163,7 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    DLOG("searchBar.text = %@", searchBar.text);
+//    DLOG("searchBar.text = %@", searchBar.text);
 
     NSURL *url = [NSURL URLWithString:[NSString
                      stringWithFormat:@"http://services.tvrage.com/feeds/search.php?show=%@",
@@ -180,16 +179,15 @@
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar
 {
-    DLOG("");
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [searchBar_ resignFirstResponder];
-    DLOG("didselect...");
     
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
+    [vc setMyseries:myseries_];
     
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];
