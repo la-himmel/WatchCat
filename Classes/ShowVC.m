@@ -4,6 +4,7 @@
 #import "CustomBarButtonItem.h"
 #import "XMLDeserialization.h"
 #import "UIImageView+WebCache.h"
+#import "ScheduleVC.h"
 
 @interface ShowVC() 
 {
@@ -79,12 +80,14 @@
     [subscribe setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
     [subscribe setTitle:@"Subscribe" forState:UIControlStateNormal];
     [subscribe setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [subscribe addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [textView addSubview:subscribe];
     
     UIButton *remember = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                 70 + description.frame.size.height, 300, 50)];
     [remember setTitle:@"Remember" forState:UIControlStateNormal];
     [remember setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [remember addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];
     [remember setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
     [textView addSubview:remember];
 
@@ -98,6 +101,17 @@
 - (void)goback
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)rememberShow
+{
+    
+}
+
+- (void)addToFavourites
+{
+    ScheduleVC *vc = [[ScheduleVC alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 

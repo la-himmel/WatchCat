@@ -5,6 +5,7 @@
 #import "TabbarVC.h"
 #import "CustomNavigationBar.h"
 #import "SettingsVC.h"
+#import "MySeries.h"
 
 @interface AppDelegate()
 {
@@ -22,28 +23,26 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    nc_ = [[UINavigationController alloc] 
-                                  initWithRootViewController:[[/*SearchVC*/SettingsVC alloc] init]];
+    MySeries *series = [[MySeries alloc] init];
+    [series load];
+    
+    ScheduleVC *svc = [[ScheduleVC alloc] init];        
+    [svc setMyseries:series];
+    
+    nc_ = [[UINavigationController alloc] initWithRootViewController:svc];
 
+//    nc_ = [[UINavigationController alloc] 
+//           initWithRootViewController:[[/*SearchVC*/ ScheduleVC alloc] init]];
+    
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     view.image = [UIImage imageNamed:@"navbar@2x.png"];    
     [nc_.navigationBar addSubview:view];
     
 //    [nc_ setNavigationBarHidden:YES];
     nc_.delegate = self;
-
-//    UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];  
-//    UIImage *backImage = [UIImage imageNamed:@"backButton@2x.png"];  
-//    [back setImage:backImage forState:UIControlStateNormal];  
-//    
-//    [back addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
-//    back.frame = CGRectMake(0, 0, backImage.size.width, backImage.size.height);  
-//    
-//    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:back];                               
-//    [nc_.navigationItem setLeftBarButtonItem:backButton];
     
     NSArray *vcs = [NSArray arrayWithObjects:
-        [[ScheduleVC alloc] init],
+        svc,
         nc_,
         [[SettingsVC alloc] init],
         [[UIViewController alloc] init],

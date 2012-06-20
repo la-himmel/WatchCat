@@ -11,7 +11,7 @@
 
 + (int)height
 {
-    return 42;
+    return 60;
 }
 
 @end
