@@ -35,7 +35,7 @@
         } else if (i == 2) {
             [b addTarget:self action:@selector(settingsSelected) forControlEvents:UIControlEventTouchUpInside];
         } else {
-            [b addTarget:self action:@selector(savedSelected) forControlEvents:UIControlEventTouchUpInside];
+            [b addTarget:self action:@selector(bookmarkedSelected) forControlEvents:UIControlEventTouchUpInside];
         } 
                 
         [b setImage:uu(ui.buttonImages[i]) forState:UIControlStateNormal];
@@ -68,7 +68,7 @@
     [self didChangeValueForKey:@"selectedIndex"];
 }
 
-- (void)savedSelected
+- (void)bookmarkedSelected
 {
     [self willChangeValueForKey:@"selectedIndex"];
     selectedIndex_ = 3;

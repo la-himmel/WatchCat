@@ -20,10 +20,10 @@
 {
     NSURL *url = [NSURL URLWithString:[NSString
                                        stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
-                                       show_.id]];
+                                       show_.num]];
     DLOG("%@", [NSString
                 stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
-                show_.id]);
+                show_.num]);
     
     NSData *xmlData = [NSData dataWithContentsOfURL:url];
     
@@ -107,7 +107,7 @@
 
 - (void)rememberShow
 {
-    
+    [myseries_ rememberShow:show_];
 }
 
 - (void)addToFavourites

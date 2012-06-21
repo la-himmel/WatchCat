@@ -54,9 +54,9 @@ static TVShow *parseShow(CXMLNode *showNode)
     NSString *link = [[showNode nodeForXPath:@"link" error:nil] stringValue];
 
     result.name = name;
-    result.id = showId;
+    result.num = showId;
     result.episodes = [NSArray array];
-    result.link = link;
+    result.link = [NSURL URLWithString:link];
 
     return result;
 }

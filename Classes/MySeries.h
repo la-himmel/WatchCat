@@ -5,7 +5,7 @@
 @interface MySeries : NSObject
 
 @property (nonatomic, strong) NSMutableArray *favourites;
-@property (nonatomic, strong) NSMutableArray *saved;
+@property (nonatomic, strong) NSMutableArray *bookmarked;
 
 - (void)addToFavorites:(TVShow *)show;
 - (void)removeFromFavorites:(TVShow *)show;
@@ -13,6 +13,7 @@
 - (void)rememberShow:(TVShow *)show;
 - (void)forgetShow:(TVShow *)show;
 
-- (void)load;
+- (BOOL)load;
+- (void)save;
 
 @end

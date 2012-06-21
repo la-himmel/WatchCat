@@ -6,13 +6,14 @@
 #import "CustomNavigationBar.h"
 #import "SettingsVC.h"
 #import "MySeries.h"
+#import "BookmarkedVC.h"
 
 @interface AppDelegate()
 {
     UINavigationController *nc_;
     ScheduleVC *svc_;
     SearchVC *searchVC_;
-    
+    MySeries *series_;
 }
 @end
 
@@ -26,14 +27,17 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    MySeries *series = [[MySeries alloc] init];
-    [series load];
+    series_ = [[MySeries alloc] init];
+    [series_ load];
     
     svc_ = [[ScheduleVC alloc] init];        
-    [svc_ setMyseries:series];
+    [svc_ setMyseries:series_];
+    
+    BookmarkedVC *bvc = [[BookmarkedVC alloc] init];        
+    [bvc setMyseries:series_];
     
     searchVC_ = [[SearchVC alloc] init];
-    searchVC_.myseries = series;
+    searchVC_.myseries = series_;
     
     nc_ = [[UINavigationController alloc] initWithRootViewController:searchVC_];
     
@@ -58,7 +62,7 @@
         fnc,
         nc_,
         snc,
-        [[UIViewController alloc] init],
+        bvc,
         nil];
 
     self.window.rootViewController = [[TabbarVC alloc] initWithViewControllers:vcs];
@@ -66,6 +70,12 @@
     [self.window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    DLOG("Application will terminate");
+    [series_ save];    
 }
 
 - (void)navigationController:(UINavigationController *)navigationController 
