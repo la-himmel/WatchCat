@@ -72,7 +72,7 @@
     return YES;
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
+- (void)applicationDidEnterBackground:(UIApplication *)application
 {
     DLOG("Application will terminate");
     [series_ save];    

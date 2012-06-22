@@ -1,5 +1,6 @@
 #import "TVShow.h"
 #import "utils.h"
+#import "JSONKit.h"
 
 @implementation TVShow
 
@@ -17,9 +18,9 @@
 @synthesize image = image_;
 
 
-- (NSMutableDictionary *)dictionary 
+- (NSDictionary *)dictionary 
 {
-    DLOG("converting to dictionary...");
+    DLOG("converting to dictionary CALL");
     
     NSMutableDictionary *show = [[NSMutableDictionary alloc] init];
     
@@ -28,12 +29,41 @@
     [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:link_ forKey:LINK];
     [show setValue:image_ forKey:IMAGE];
-    
+        
     return show;
 }
 
-+ (TVShow *)showFromDictionary:(NSMutableDictionary *)item
+- (NSString *)jsonString
 {
+    NSDictionary *dict = [self dictionary];
+    if (dict == nil)
+        DLOG("nil!");
+    else {
+        DLOG("%@ %@ %@ %@", [dict objectForKey:NAME], [dict objectForKey:LINK], [dict objectForKey:IMAGE],
+             [dict objectForKey:DESCRIPTION]);
+    }
+
+    NSString *json = [dict JSONString];
+    
+    if (json  == nil)
+        DLOG("nil!");
+    
+    DLOG("serialized dictionary: %@", json);
+    return json;    
+}
+
++ (TVShow *)showFromJsonString:(NSString *)json
+{
+    NSDictionary *item = [json objectFromJSONString];
+    
+    TVShow *show = [TVShow showFromDictionary:item];
+    return show;    
+}
+
++ (TVShow *)showFromDictionary:(NSDictionary *)item
+{
+    DLOG("showFromDictionary: CALL");
+    
     TVShow *show = [[TVShow alloc] init];
     show.name = [item valueForKey:NAME];
     NSNumber *num = [item valueForKey:ID];

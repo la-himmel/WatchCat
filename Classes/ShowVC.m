@@ -25,9 +25,8 @@
                 stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
                 show_.num]);
     
-    NSData *xmlData = [NSData dataWithContentsOfURL:url];
-    
-    show_.image = [NSURL URLWithString:parseImageUrl(xmlData)];
+    NSData *xmlData = [NSData dataWithContentsOfURL:url];    
+    show_.image = parseImageUrl(xmlData);
     
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
     background.image = [UIImage imageNamed:@"details@2x.png"];
@@ -37,7 +36,7 @@
     UIImageView *pic = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
     pic.contentMode = UIViewContentModeScaleAspectFill;
     [pic setClipsToBounds:YES];
-    [pic setImageWithURL:show_.image placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [pic setImageWithURL:[NSURL URLWithString:show_.image] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     [self.view addSubview:pic];
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];

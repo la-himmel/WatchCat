@@ -1,5 +1,6 @@
 #import "MySeries.h"
 #import "utils.h"
+#import "JSONKit.h"
 
 @implementation MySeries
 
@@ -61,49 +62,76 @@
                                                            YES);
     NSString *documentsDir = [pathDir objectAtIndex:0];
     NSString *pathFavourites = [documentsDir stringByAppendingPathComponent:@"Favourites"];
+        
+    NSError *error;
+    NSString *json = [[NSString alloc] initWithContentsOfFile:pathFavourites encoding:NSUnicodeStringEncoding error:&error];
     
-    NSMutableArray *favs = [[NSMutableArray alloc] initWithContentsOfFile:pathFavourites];
-    favourites_ = [self extractArray:favs];
-    
+    DLOG("json: %@", json);    
+    NSArray *favs = [json objectFromJSONString];
+
+    DLOG("%d", [favs count]);
+    favourites_ = [self extractFromJsonArray:favs];
+        
     BOOL success = NO;
     if (favourites_ != nil) {
         success = YES;
+        DLOG("favs LOADED: %d", [favourites_ count]);        
     } else {
         DLOG("favs were NOT LOADED");        
     }
     
-    NSString *pathBookmarked = [documentsDir stringByAppendingPathComponent:@"Bookmarked"];    
-    NSMutableArray *bms = [[NSMutableArray alloc] initWithContentsOfFile:pathBookmarked];
-    bookmarked_ = [self extractArray:bms];
+//    NSString *pathBookmarked = [documentsDir stringByAppendingPathComponent:@"Bookmarked"];    
+//    NSMutableArray *bms = [[NSMutableArray alloc] initWithContentsOfFile:pathBookmarked];
+//    bookmarked_ = [self extractArray:bms];
     
-    if (bookmarked_ != nil && success) {
-        success = YES;
-        DLOG("book LOADED");        
-    } else {
-        success = NO;
-        DLOG("book NOT LOADED");
-    }
+//    if (bookmarked_ != nil && success) {
+//        success = YES;
+//        DLOG("book LOADED: %d", [bookmarked_ count]);        
+//    } else {
+//        success = NO;
+//        DLOG("book NOT LOADED");
+//    }
         
-    NSLog(@"%@", success ? @"Data was loaded." : @"Unable to load data" );    
+//    NSLog(@"%@", success ? @"Data was loaded." : @"Unable to load data" );    
     return success;
 }
 
-
-- (NSMutableArray *)convertArray:(NSArray *)array
+- (NSArray *)convertToJsonArray:(NSArray *)array
 {
-    DLOG("converting array...");
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (TVShow *show in array) {
-        [ma addObject:[show dictionary]];        
+        [ma addObject:[show jsonString]];        
     }
     
     return ma; 
 }
 
+- (NSMutableArray *)extractFromJsonArray:(NSArray *)array
+{
+    DLOG("extractFromJsonArray:");
+    NSMutableArray *ma = [[NSMutableArray alloc] init];
+    
+    for (NSString *show in array) {
+        [ma addObject:[TVShow showFromJsonString:show]];        
+    }
+    
+    return ma; 
+}
+
+- (NSArray *)convertArray:(NSArray *)array
+{
+    NSMutableArray *ma = [[NSMutableArray alloc] init];
+    
+    for (TVShow *show in array) {
+        [ma addObject:[show dictionary]];        
+    }
+
+    return ma; 
+}     
+
 - (NSMutableArray *)extractArray:(NSArray *)array
 {
-    DLOG("extracting array...");
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (NSMutableDictionary *show in array) {
@@ -115,12 +143,14 @@
 
 - (void)save
 {
+    DLOG("count before saving: %d %d", [favourites_ count], [bookmarked_ count]);
     [self saveFavourites];
     [self saveBookmarked];
 }
 
 - (void)saveFavourites
 {
+    DLOG("1");
     NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, 
                                                            NSUserDomainMask,  
                                                            YES);
@@ -128,8 +158,18 @@
     
     NSString *pathFavourites = [documentsDir stringByAppendingPathComponent:@"Favourites"];    
     
-    NSMutableArray *converted = [self convertArray:favourites_];
-    BOOL success = [converted writeToFile:pathFavourites atomically:YES];
+//    NSArray *converted = [self convertArray:favourites_];
+
+    DLOG("1");
+    NSArray *converted = [self convertToJsonArray:favourites_]; 
+    DLOG("1");
+    NSString *JSON = [converted JSONString];    
+    DLOG("Serialized: %@", JSON);
+    
+//    BOOL success = [converted writeToFile:pathFavourites atomically:YES];
+    NSError *error;
+    DLOG("1");
+    BOOL success = [JSON writeToFile:pathFavourites atomically:YES encoding:NSUnicodeStringEncoding error:&error];
     
     DLOG("saved: %d %d", [favourites_ count], [converted count]);
     
@@ -145,7 +185,7 @@
     
     NSString *pathBookmarked = [documentsDir stringByAppendingPathComponent:@"Bookmarked"];  
     
-    NSMutableArray *converted = [self convertArray:bookmarked_];    
+    NSArray *converted = [self convertArray:bookmarked_];    
     BOOL success = [converted writeToFile:pathBookmarked atomically:YES];
     
     DLOG("saved: %d %d", [bookmarked_ count], [converted count]);
@@ -165,6 +205,7 @@
     if (!found) {
         [favourites_ addObject:show];
     }
+    [self save];
 }
 
 - (void)removeFromFavorites:(TVShow *)show

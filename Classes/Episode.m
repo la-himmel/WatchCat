@@ -1,6 +1,7 @@
 #import "Episode.h"
 
 @implementation Episode
+@synthesize readableNumber = readableNumber_;
 
 - (NSString *)readableNumber
 {

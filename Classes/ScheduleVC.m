@@ -27,13 +27,16 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    DLOG("view will appear *******************************");
     DLOG("%d %d", [favourites_ count], [myseries_.favourites count]);
-
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
 }
+
+//- (void)viewWillDisappear:(BOOL)animated
+//{
+//    [myseries_ save];
+//}
 
 - (void)viewDidLoad
 {

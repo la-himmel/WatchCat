@@ -4,10 +4,13 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSArray *episodes;
 @property (nonatomic, strong) NSArray *description;
-@property (nonatomic, strong) NSURL *link;
-@property (nonatomic, strong) NSURL *image;
+@property (nonatomic, strong) NSString *link;
+@property (nonatomic, strong) NSString *image;
 
 - (NSDictionary *)dictionary;
-+ (TVShow *)showFromDictionary:(NSMutableDictionary *)item;
+- (NSString *)jsonString;
+
++ (TVShow *)showFromDictionary:(NSDictionary *)item;
++ (TVShow *)showFromJsonString:(NSString *)json;
 
 @end

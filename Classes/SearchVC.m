@@ -7,6 +7,7 @@
 #import "TVShow.h"
 #import "XMLDeserialization.h"
 #import "CustomBarButtonItem.h"
+#import "JSONKit.h"
 
 @interface SearchVC () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 {
@@ -71,9 +72,11 @@
     show7.num = 7;
     show7.name = @"Daria";
     show7.episodes = [NSArray array];
-
-    filteredShows_ = [NSArray arrayWithObjects:show1, show2, show3, show4, show5, show6, show7, nil];
+    show7.link = @"";
+    show7.image = @"ya.ru";
     
+    filteredShows_ = [NSArray arrayWithObjects:show1, show2, show3, show4, show5, show6, show7, nil];
+        
     return self;
 }
 

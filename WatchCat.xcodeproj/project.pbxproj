@@ -17,6 +17,7 @@
 		7A7E8998158B3849007EE616 /* delete2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7E8996158B3849007EE616 /* delete2.png */; };
 		7A7E899A158B38FC007EE616 /* delete3.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7E8999158B38FC007EE616 /* delete3.png */; };
 		7A7F371D1592FC810068DD35 /* BookmarkedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7F371C1592FC810068DD35 /* BookmarkedVC.m */; };
+		7A7F372515942FD80068DD35 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7F372415942FD80068DD35 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7A7FCD80158B494400241469 /* CustomNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7FCD7F158B494400241469 /* CustomNavigationBar.m */; };
 		7A817A361590489B00B42FF5 /* CustomBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A817A351590489B00B42FF5 /* CustomBarButtonItem.m */; };
 		7A817A3915905B8400B42FF5 /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A817A3815905B8400B42FF5 /* button.png */; };
@@ -98,6 +99,8 @@
 		7A7E8999158B38FC007EE616 /* delete3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delete3.png; path = ../navbar/delete3.png; sourceTree = "<group>"; };
 		7A7F371B1592FC810068DD35 /* BookmarkedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkedVC.h; sourceTree = "<group>"; };
 		7A7F371C1592FC810068DD35 /* BookmarkedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedVC.m; sourceTree = "<group>"; };
+		7A7F372315942FD80068DD35 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		7A7F372415942FD80068DD35 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		7A7FCD7E158B494400241469 /* CustomNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomNavigationBar.h; sourceTree = "<group>"; };
 		7A7FCD7F158B494400241469 /* CustomNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomNavigationBar.m; sourceTree = "<group>"; };
 		7A817A341590489A00B42FF5 /* CustomBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBarButtonItem.h; sourceTree = "<group>"; };
@@ -235,6 +238,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A7F372215942FD80068DD35 /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				7A7F372315942FD80068DD35 /* JSONKit.h */,
+				7A7F372415942FD80068DD35 /* JSONKit.m */,
+			);
+			path = JSONKit;
+			sourceTree = "<group>";
+		};
 		7A817A3A15905B8A00B42FF5 /* details */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,6 +415,7 @@
 		E18F9FA415243578005AC451 /* opt */ = {
 			isa = PBXGroup;
 			children = (
+				7A7F372215942FD80068DD35 /* JSONKit */,
 				7A817A6A159084BB00B42FF5 /* SDNetworkActivityIndicator */,
 				7A817A491590825D00B42FF5 /* SDWebImage */,
 				E1D514A21556BCE000FA5A83 /* UIView+position */,
@@ -647,6 +660,7 @@
 				7A817A8A15909DA100B42FF5 /* SettingsVC.m in Sources */,
 				7A817A901591ABD200B42FF5 /* MySeries.m in Sources */,
 				7A7F371D1592FC810068DD35 /* BookmarkedVC.m in Sources */,
+				7A7F372515942FD80068DD35 /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,7 +736,7 @@
 				INFOPLIST_FILE = "WatchCat-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/usr/include/libxml2 opt/SDWebImage";
+				USER_HEADER_SEARCH_PATHS = "/usr/include/libxml2 opt/SDWebImage opt/JSONKit";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -736,7 +750,7 @@
 				INFOPLIST_FILE = "WatchCat-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/usr/include/libxml2 opt/SDWebImage";
+				USER_HEADER_SEARCH_PATHS = "/usr/include/libxml2 opt/SDWebImage opt/JSONKit";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
