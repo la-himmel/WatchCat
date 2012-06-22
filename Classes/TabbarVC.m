@@ -83,16 +83,18 @@ typedef enum {
             case BrowseIdx:
                 vc = browseVC_;
                 break;
-            case TodoIdx:
-                vc = todoVC_;
-                break;
             case SettingsIdx:
                 vc = settingsVC_;
+                break;
+            case TodoIdx:
+                DLOG("3");
+                vc = todoVC_;
                 break;
             default:
                 NSAssert(NO, @"Unexpected tab index %@", newValue);
         }
 
+        DLOG("observing value");
         vc.view.frame = CONTENT_FRAME;
         [self.view addSubview:vc.view];
     } else {

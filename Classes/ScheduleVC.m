@@ -33,11 +33,6 @@
     [tableView_ setNeedsDisplay];
 }
 
-//- (void)viewWillDisappear:(BOOL)animated
-//{
-//    [myseries_ save];
-//}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

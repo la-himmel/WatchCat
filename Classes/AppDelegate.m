@@ -58,11 +58,15 @@
     UINavigationController *snc = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     [snc.navigationBar addSubview:settingsView];
     
+    UIImageView *bmView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];    
+    UINavigationController *bnc = [[UINavigationController alloc] initWithRootViewController:bvc];
+    [bnc.navigationBar addSubview:bmView];
+    
     NSArray *vcs = [NSArray arrayWithObjects:
         fnc,
         nc_,
         snc,
-        bvc,
+        bnc,
         nil];
 
     self.window.rootViewController = [[TabbarVC alloc] initWithViewControllers:vcs];
@@ -74,7 +78,6 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    DLOG("Application will terminate");
     [series_ save];    
 }
 
@@ -82,10 +85,8 @@
       willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     if(searchVC_ == viewController) {
-        DLOG("--- searchvc ---");
         [navigationController setNavigationBarHidden:YES animated:NO];
     } else {
-        DLOG("--- other vc ---");
         [navigationController setNavigationBarHidden:NO animated:NO];
     }
 }

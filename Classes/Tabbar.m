@@ -34,7 +34,7 @@
             [b addTarget:self action:@selector(searchSelected) forControlEvents:UIControlEventTouchUpInside];
         } else if (i == 2) {
             [b addTarget:self action:@selector(settingsSelected) forControlEvents:UIControlEventTouchUpInside];
-        } else {
+        } else if (i == 3) {
             [b addTarget:self action:@selector(bookmarkedSelected) forControlEvents:UIControlEventTouchUpInside];
         } 
                 

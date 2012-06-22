@@ -5,7 +5,7 @@
 #import "XMLDeserialization.h"
 #import "UIImageView+WebCache.h"
 #import "ScheduleVC.h"
-
+#import "BookmarkedVC.h"
 
 @interface ShowVC() 
 {
@@ -107,6 +107,10 @@
 - (void)rememberShow
 {
     [myseries_ rememberShow:show_];
+    
+    BookmarkedVC *vc = [[BookmarkedVC alloc] init];
+    vc.myseries = myseries_;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)addToFavourites
