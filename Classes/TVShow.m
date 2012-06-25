@@ -20,8 +20,6 @@
 
 - (NSDictionary *)dictionary 
 {
-    DLOG("converting to dictionary CALL");
-    
     NSMutableDictionary *show = [[NSMutableDictionary alloc] init];
     
     [show setValue:name_ forKey:NAME];
@@ -39,8 +37,8 @@
     if (dict == nil)
         DLOG("nil!");
     else {
-        DLOG("%@ %@ %@ %@", [dict objectForKey:NAME], [dict objectForKey:LINK], [dict objectForKey:IMAGE],
-             [dict objectForKey:DESCRIPTION]);
+//        DLOG("%@ %@ %@ %@", [dict objectForKey:NAME], [dict objectForKey:LINK], [dict objectForKey:IMAGE],
+//             [dict objectForKey:DESCRIPTION]);
     }
 
     NSString *json = [dict JSONString];
@@ -48,7 +46,6 @@
     if (json  == nil)
         DLOG("nil!");
     
-    DLOG("serialized dictionary: %@", json);
     return json;    
 }
 
@@ -62,8 +59,6 @@
 
 + (TVShow *)showFromDictionary:(NSDictionary *)item
 {
-    DLOG("showFromDictionary: CALL");
-    
     TVShow *show = [[TVShow alloc] init];
     show.name = [item valueForKey:NAME];
     NSNumber *num = [item valueForKey:ID];

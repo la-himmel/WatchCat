@@ -9,11 +9,14 @@
 #import "CustomBarButtonItem.h"
 #import "JSONKit.h"
 
+#define MIRROR_PATH @"http://thetvdb.com"
+#define API_KEY @"2737B5943CFB6DE1"
+
 @interface SearchVC () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 {
     UISearchBar *searchBar_;
     UITableView *tableView_;
-
+    
     // current search results
     NSArray *filteredShows_;
 }
@@ -100,7 +103,7 @@
                    state:UIControlStateHighlighted];
 
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.image = [UIImage imageNamed:@"search.png"];
+    view.image = [UIImage imageNamed:@"search@2x.png"];
     [self.view addSubview:view];
     
     [self.view addSubview:searchBar_];
@@ -164,13 +167,17 @@
     return [filteredShows_ count];
 }
 
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
 //    DLOG("searchBar.text = %@", searchBar.text);
 
     NSURL *url = [NSURL URLWithString:[NSString
-                     stringWithFormat:@"http://services.tvrage.com/feeds/search.php?show=%@",
+                     stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", 
                                         searchBar.text]];
+    //TVRage API: 
+    //http://services.tvrage.com/feeds/search.php?show=
+
 
     NSData *xmlData = [NSData dataWithContentsOfURL:url];
     if (xmlData == nil) {

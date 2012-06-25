@@ -19,14 +19,14 @@
 - (void)viewDidLoad
 {
     NSURL *url = [NSURL URLWithString:[NSString
-                                       stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
+                                       stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
                                        show_.num]];
-    DLOG("%@", [NSString
-                stringWithFormat:@"http://services.tvrage.com/feeds/full_show_info.php?sid=%d",
-                show_.num]);
+    
+    //TVRage API: @"http://services.tvrage.com/feeds/full_show_info.php?sid=%d"
     
     NSData *xmlData = [NSData dataWithContentsOfURL:url];    
-    show_.image = parseImageUrl(xmlData);
+    NSString *urlImage = @"http://thetvdb.com/banners/_cache/";
+    show_.image = [urlImage stringByAppendingString:parseImageUrl(xmlData)];
     
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
     background.image = [UIImage imageNamed:@"details@2x.png"];

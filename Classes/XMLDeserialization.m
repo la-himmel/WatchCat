@@ -18,9 +18,9 @@ NSString *parseImageUrl(NSData *xmlData)
         return image;
     }
     
-    CXMLNode *node = [document nodeForXPath:@"Show" error:nil];    
+    CXMLNode *node = [document nodeForXPath:@"Data/Series" error:nil];    
         
-    image = [[node nodeForXPath:@"image" error:nil] stringValue];
+    image = [[node nodeForXPath:@"fanart" error:nil] stringValue];
     
     return image;
 }
@@ -38,7 +38,7 @@ NSArray *parseSearchResults(NSData *xmlData)
         return results;
     }
 
-    for (CXMLNode *showNode in [document nodesForXPath:@"Results/show" error:nil]) {
+    for (CXMLNode *showNode in [document nodesForXPath:@"Data/Series" error:nil]) {
         [results addObject:parseShow(showNode)];
     }
 
@@ -49,14 +49,15 @@ static TVShow *parseShow(CXMLNode *showNode)
 {
     TVShow *result = [[TVShow alloc] init];
 
-    NSString *name = [[showNode nodeForXPath:@"name" error:nil] stringValue];
-    int showId = [[[showNode nodeForXPath:@"showid" error:nil] stringValue] intValue];
-    NSString *link = [[showNode nodeForXPath:@"link" error:nil] stringValue];
+    NSString *name = [[showNode nodeForXPath:@"SeriesName" error:nil] stringValue];
+    int showId = [[[showNode nodeForXPath:@"seriesid" error:nil] stringValue] intValue];
+    NSString *description = [[showNode nodeForXPath:@"Overview" error:nil] stringValue];
 
     result.name = name;
     result.num = showId;
-    result.episodes = [NSArray array];
-    result.link = link;
+    result.description = description;
+    
+    DLOG("Parsed: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
 
     return result;
 }

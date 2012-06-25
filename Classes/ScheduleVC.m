@@ -5,16 +5,29 @@
 #import "ShowVC.h"
 #import "utils.h"
 
-@interface ScheduleVC () <UITableViewDataSource, UITableViewDelegate>
+@interface ScheduleVC () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 {
     UITableView *tableView_;
     NSMutableArray *favourites_;
+    
+    BOOL tapped;
 }
 @end
 
 @implementation ScheduleVC
 
 @synthesize myseries = myseries_;
+
+- (id)init
+{
+    if (!(self = [super init])) {
+        return nil;
+    }
+    
+    tapped = NO;
+    
+    return self;
+}
 
 - (void)setMyseries:(MySeries *)myseries
 {
@@ -45,8 +58,37 @@
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
     
    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
+                                          initWithTarget:self action:@selector(handleLongPress:)];
+    lpgr.minimumPressDuration = 1.5; 
+    lpgr.delegate = self;
+    [tableView_ addGestureRecognizer:lpgr];
 
     [self.view addSubview:tableView_];       
+}
+
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (!tapped) {
+        DLOG("tapped once");
+        [tableView_ setEditing:!tableView_.editing animated:YES];
+        tapped = YES;
+    } else {
+        DLOG("hundred other taps");
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+forRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) 
+    { 
+        DLOG("deleting row...");
+        [favourites_ removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        [tableView_ reloadData];
+    }
 }
 
 
