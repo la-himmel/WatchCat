@@ -43,6 +43,11 @@ typedef enum {
     return self;
 }
 
+- (void)switchTabTo:(int)index
+{
+    tabbar_.selectedIndex = index;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

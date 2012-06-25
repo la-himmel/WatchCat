@@ -15,9 +15,13 @@
 
 @implementation ShowVC
 @synthesize myseries = myseries_;
+@synthesize switcher = switcher_;
+@synthesize searchTab = searchTab_;
 
 - (void)viewDidLoad
 {
+    searchTab_ = NO;
+    
     NSURL *url = [NSURL URLWithString:[NSString
                                        stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
                                        show_.num]];
@@ -110,7 +114,13 @@
     
     BookmarkedVC *vc = [[BookmarkedVC alloc] init];
     vc.myseries = myseries_;
-    [self.navigationController pushViewController:vc animated:YES];
+    
+    DLOG("pushing...");
+    if (searchTab_) {
+        [switcher_ pushViewController:vc tab:3];
+    } else {
+        [self.navigationController pushViewController:vc animated:YES];        
+    }
 }
 
 - (void)addToFavourites
@@ -119,7 +129,13 @@
     
     ScheduleVC *vc = [[ScheduleVC alloc] init];
     vc.myseries = myseries_;
-    [self.navigationController pushViewController:vc animated:YES];
+
+    DLOG("pushing...");
+    if (searchTab_) {
+        [switcher_ pushViewController:vc tab:0];        
+    } else {
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 

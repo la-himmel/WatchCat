@@ -150,6 +150,7 @@
 		7A8A0C271598785100CE9B2F /* brackets2last.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brackets2last.png; path = images/navbar/brackets2last.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C29159878B300CE9B2F /* half.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = half.png; path = images/navbar/half.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C2A159878B300CE9B2F /* halfl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = halfl.png; path = images/navbar/halfl.png; sourceTree = SOURCE_ROOT; };
+		7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabSwitcher.h; sourceTree = "<group>"; };
 		7AB73734158872CC0075D908 /* main20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main20@2x.png"; sourceTree = "<group>"; };
 		E1386E54154E9BF600B9286A /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		E1386E55154E9BF600B9286A /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchVC.m; sourceTree = "<group>"; };
@@ -398,6 +399,7 @@
 				E1386E55154E9BF600B9286A /* SearchVC.m */,
 				E18F9F9C15243578005AC451 /* AppDelegate.h */,
 				E18F9F9D15243578005AC451 /* AppDelegate.m */,
+				7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */,
 				7A7FCD7E158B494400241469 /* CustomNavigationBar.h */,
 				7A7FCD7F158B494400241469 /* CustomNavigationBar.m */,
 				7A817A8815909DA000B42FF5 /* SettingsVC.h */,

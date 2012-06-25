@@ -24,6 +24,7 @@
 
 @implementation SearchVC
 @synthesize myseries = myseries_;
+@synthesize switcher = switcher_;
 
 - (id)init
 {
@@ -201,6 +202,9 @@
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
     [vc setMyseries:myseries_];
+    vc.switcher = switcher_;
+    vc.searchTab = YES;
+    
     
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];

@@ -9,10 +9,14 @@
 #import "BookmarkedVC.h"
 
 @interface AppDelegate()
-{
-    UINavigationController *nc_;
-    ScheduleVC *svc_;
+{   
+    ScheduleVC *sheduleVC_;
     SearchVC *searchVC_;
+    
+    NSArray *vcs_;
+    
+    TabbarVC *tabbarVC_;
+    
     MySeries *series_;
 }
 @end
@@ -30,46 +34,54 @@
     series_ = [[MySeries alloc] init];
     [series_ load];
     
-    svc_ = [[ScheduleVC alloc] init];        
-    [svc_ setMyseries:series_];
+    sheduleVC_ = [[ScheduleVC alloc] init];        
+    [sheduleVC_ setMyseries:series_];
     
     BookmarkedVC *bvc = [[BookmarkedVC alloc] init];        
     [bvc setMyseries:series_];
     
     searchVC_ = [[SearchVC alloc] init];
     searchVC_.myseries = series_;
+    searchVC_.switcher = self;
     
-    nc_ = [[UINavigationController alloc] initWithRootViewController:searchVC_];
+    UINavigationController *searchNC = [[UINavigationController alloc] initWithRootViewController:searchVC_];
     
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     view.image = [UIImage imageNamed:@"navbar@2x.png"];  
     
-    [nc_.navigationBar addSubview:view];
-    
-    [nc_ setNavigationBarHidden:YES];
-    nc_.delegate = self;
+    [searchNC.navigationBar addSubview:view];    
+    [searchNC setNavigationBarHidden:YES];
+    searchNC.delegate = self;
 
-    UIImageView *scheduleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];
-    UINavigationController *fnc = [[UINavigationController alloc] initWithRootViewController:svc_];
-    [fnc.navigationBar addSubview:scheduleView];
+    UIImageView *scheduleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    scheduleView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+    
+    UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:sheduleVC_];
+    [favouritesNC.navigationBar addSubview:scheduleView];
 
-    UIImageView *settingsView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];
-    SettingsVC *settingsVC = [[SettingsVC alloc] init];    
-    UINavigationController *snc = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-    [snc.navigationBar addSubview:settingsView];
+    UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    settingsView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+        
+    SettingsVC *settingsVC = [[SettingsVC alloc] init]; 
     
-    UIImageView *bmView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar@2x.png"]];    
-    UINavigationController *bnc = [[UINavigationController alloc] initWithRootViewController:bvc];
-    [bnc.navigationBar addSubview:bmView];
+    UINavigationController *settingsNC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
+    [settingsNC.navigationBar addSubview:settingsView];
     
-    NSArray *vcs = [NSArray arrayWithObjects:
-        fnc,
-        nc_,
-        snc,
-        bnc,
+    UIImageView *bmView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    bmView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+    
+    UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
+    [bookmarkedNC.navigationBar addSubview:bmView];
+    
+    vcs_ = [NSArray arrayWithObjects:
+        favouritesNC,
+        searchNC,
+        settingsNC,
+        bookmarkedNC,
         nil];
 
-    self.window.rootViewController = [[TabbarVC alloc] initWithViewControllers:vcs];
+    tabbarVC_ = [[TabbarVC alloc] initWithViewControllers:vcs_];
+    self.window.rootViewController = tabbarVC_;
 
     [self.window makeKeyAndVisible];
 
@@ -79,6 +91,15 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [series_ save];    
+}
+
+- (void)pushViewController:(UIViewController *)vc tab:(int)tabId
+{
+    DLOG("pushing view controller, tab %d", tabId);
+    
+    UINavigationController *nc = [vcs_ objectAtIndex:(NSInteger)tabId];
+    [nc pushViewController:vc animated:YES];  
+    [tabbarVC_ switchTabTo:tabId];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController 
