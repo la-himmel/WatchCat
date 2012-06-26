@@ -7,6 +7,9 @@
 @synthesize favourites = favourites_;
 @synthesize bookmarked = bookmarked_;
 
+#define PATH_FAVOURITES @"Favourites"
+#define PATH_BOOKMARKED @"Bookmarked"
+
 - (id)init
 {
     if (!(self = [super init])) {
@@ -18,76 +21,57 @@
     return self;
 }
 
-- (void)loadTest
+- (void)loadTestBookMarked
 {
-    //test
-    TVShow *show4 = [[TVShow alloc] init];
-    show4.num = 4;
-    show4.name = @"Vampire diaries";
-    
-    TVShow *show5 = [[TVShow alloc] init];
-    show5.num = 5;
-    show5.name = @"Two and a half men";
-    
-    TVShow *show6 = [[TVShow alloc] init];
-    show6.num = 6;
-    show6.name = @"How i met your mother";
-    
     TVShow *show7 = [[TVShow alloc] init];
     show7.num = 7;
     show7.name = @"Daria";
     
-    [favourites_ addObject:show4];
-    [favourites_ addObject:show5];
-    [favourites_ addObject:show6];
-    [favourites_ addObject:show7];
-    
-    DLOG("nothing to do, favs: %d", [favourites_ count]);
+    [bookmarked_ addObject:show7];
 }
 
 - (BOOL)load
 {
-//    [self loadTest];
-//    return YES;
-            
+    DLOG("loading everything");
+    
+    [self loadPath:PATH_FAVOURITES];
+    [self loadPath:PATH_BOOKMARKED];
+    
+    return YES;
+}
+
+- (BOOL)loadPath:(NSString *)stringPath
+{
     NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, 
                                                            NSUserDomainMask, 
                                                            YES);
     NSString *documentsDir = [pathDir objectAtIndex:0];
-    NSString *pathFavourites = [documentsDir stringByAppendingPathComponent:@"Favourites"];
-        
+    NSString *path = [documentsDir stringByAppendingPathComponent:stringPath];
+    
     NSError *error;
-    NSString *json = [[NSString alloc] initWithContentsOfFile:pathFavourites 
+    NSString *json = [[NSString alloc] initWithContentsOfFile:path 
                                                      encoding:NSUnicodeStringEncoding error:&error];
     
-    NSArray *favs = [json objectFromJSONString];
-    favourites_ = [self extractFromJsonArray:favs];
-        
-    BOOL success = NO;
-    if (favourites_ != nil) {
-        success = YES;
-//        DLOG("favs LOADED: %d", [favourites_ count]);        
-    } else {
-        DLOG("favs were NOT LOADED");        
+    NSArray *items = [json objectFromJSONString];
+
+    if (stringPath == PATH_FAVOURITES) {
+        favourites_ = [self extractFromJsonArray:items];   
+        if (favourites_ != nil) {
+            DLOG("loaded f COUNT %d", [favourites_ count]);    
+        } else {
+           DLOG("NOT LOADED"); 
+           return NO;
+        } 
+    } else if (stringPath == PATH_BOOKMARKED) {
+        bookmarked_ = [self extractFromJsonArray:items];  
+        if (bookmarked_ != nil) {
+            DLOG("loaded f COUNT %d", [bookmarked_ count]);    
+        } else {
+            DLOG("NOT LOADED"); 
+            return NO;
+        } 
     }
-    
-    NSString *pathBookmarked = [documentsDir stringByAppendingPathComponent:@"Bookmarked"];  
-    NSString *jsonB = [[NSString alloc] initWithContentsOfFile:pathBookmarked 
-                                                     encoding:NSUnicodeStringEncoding error:&error];
-    
-    NSArray *bms = [jsonB objectFromJSONString];
-    bookmarked_ = [self extractFromJsonArray:bms];
-    
-    if (bookmarked_ != nil && success) {
-        success = YES;
-//        DLOG("book LOADED: %d", [bookmarked_ count]);        
-    } else {
-        success = NO;
-        DLOG("book NOT LOADED");
-    }
-        
-//    NSLog(@"%@", success ? @"Data was loaded." : @"Unable to load data" );    
-    return success;
+    return YES;
 }
 
 - (NSArray *)convertToJsonArray:(NSArray *)array
@@ -140,36 +124,40 @@
     [self saveBookmarked];
 }
 
-- (void)saveFavourites
+
+- (void)savePath:(NSString *)stringPath
 {
     NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, 
                                                            NSUserDomainMask,  
                                                            YES);
     NSString *documentsDir = [pathDir objectAtIndex:0];
-    NSString *pathFavourites = [documentsDir stringByAppendingPathComponent:@"Favourites"];    
+    NSString *path = [documentsDir stringByAppendingPathComponent:stringPath];    
     
-    NSArray *converted = [self convertToJsonArray:favourites_]; 
-    NSString *JSON = [converted JSONString];    
+    NSArray *converted;
+    if (stringPath == PATH_FAVOURITES) {
+        converted = [self convertToJsonArray:favourites_]; 
+    } else if (stringPath == PATH_BOOKMARKED) {
+        converted = [self convertToJsonArray:bookmarked_]; 
+    }
 
+    NSString *JSON = [converted JSONString];    
+    
     NSError *error;
-    BOOL success = [JSON writeToFile:pathFavourites atomically:YES encoding:NSUnicodeStringEncoding error:&error];
+    BOOL success = [JSON writeToFile:path atomically:YES encoding:NSUnicodeStringEncoding error:&error];
+    
+    DLOG("Array :: %d", [converted count]);
     
     NSLog(@"%@", success ? @"File was saved." : @"File was not saved.");    
 }
 
+- (void)saveFavourites
+{
+    [self savePath:PATH_FAVOURITES];
+}
+
 - (void)saveBookmarked
 {
-    NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, 
-                                                           NSUserDomainMask,  
-                                                           YES);
-    NSString *documentsDir = [pathDir objectAtIndex:0];
-    
-    NSString *pathBookmarked = [documentsDir stringByAppendingPathComponent:@"Bookmarked"];  
-    
-    NSArray *converted = [self convertArray:bookmarked_];    
-    BOOL success = [converted writeToFile:pathBookmarked atomically:YES];
-    
-    NSLog(@"%@", success ? @"File was bookmarked." : @"File was not bookmarked.");    
+    [self savePath:PATH_BOOKMARKED];
 }
 
 
@@ -183,17 +171,8 @@
     }    
     if (!found) {
         [favourites_ addObject:show];
+        [self saveFavourites];
     }
-    [self save];
-}
-
-- (void)removeFromFavorites:(TVShow *)show
-{
-    for (TVShow* show_ in favourites_) {
-        if ([show isEqual:show_]) {
-            [favourites_ removeObject:show_];
-        }
-    }  
 }
 
 - (void)rememberShow:(TVShow *)show
@@ -206,7 +185,18 @@
     }    
     if (!found) {
         [bookmarked_ addObject:show];
+        [self saveBookmarked];
     }
+}
+
+- (void)removeFromFavorites:(TVShow *)show
+{
+    for (TVShow* show_ in favourites_) {
+        if ([show isEqual:show_]) {
+            [favourites_ removeObject:show_];
+            [self saveFavourites];
+        }
+    }  
 }
 
 - (void)forgetShow:(TVShow *)show
@@ -214,6 +204,7 @@
     for (TVShow* show_ in bookmarked_) {
         if ([show isEqual:show_]) {
             [bookmarked_ removeObject:show_];
+            [self saveBookmarked];
         }
     }  
 }

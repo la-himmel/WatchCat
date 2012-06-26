@@ -42,8 +42,7 @@
     
     searchVC_ = [[SearchVC alloc] init];
     searchVC_.myseries = series_;
-    searchVC_.switcher = self;
-    
+
     UINavigationController *searchNC = [[UINavigationController alloc] initWithRootViewController:searchVC_];
     
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -81,8 +80,9 @@
         nil];
 
     tabbarVC_ = [[TabbarVC alloc] initWithViewControllers:vcs_];
+    
+    searchVC_.switcher = tabbarVC_;
     self.window.rootViewController = tabbarVC_;
-
     [self.window makeKeyAndVisible];
 
     return YES;
@@ -91,15 +91,6 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [series_ save];    
-}
-
-- (void)pushViewController:(UIViewController *)vc tab:(int)tabId
-{
-    DLOG("pushing view controller, tab %d", tabId);
-    
-    UINavigationController *nc = [vcs_ objectAtIndex:(NSInteger)tabId];
-    [nc pushViewController:vc animated:YES];  
-    [tabbarVC_ switchTabTo:tabId];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController 

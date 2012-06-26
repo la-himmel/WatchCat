@@ -33,53 +33,24 @@
     }
     
     [[self navigationController] setNavigationBarHidden:YES];
-    
-    NSString *longtext = @"Set in Manhattan, How I Met Your Mother follows the social and romantic lives of Ted Mosby and his friends Marshall Eriksen, Robin Scherbatsky, Lily Aldrin and Barney Stinson. As a framing device, the main character, Ted, using voiceover narration by Bob Saget, in the year 2030 recounts to his son and his daughter the events that led to his meeting their mother.";
-    
+   
+       
     TVShow *show1 = [[TVShow alloc] init];
     show1.num = 1;
     show1.name = @"Castle";
     show1.episodes = [NSArray array];
-    show1.description = [longtext copy];
 
-    TVShow *show2 = [[TVShow alloc] init];
-    show2.num = 2;
-    show2.name = @"Dollhouse";
-    show2.episodes = [NSArray array];
-    show2.description = [longtext copy];
-
-    TVShow *show3 = [[TVShow alloc] init];
-    show3.num = 3;
-    show3.name = @"Firefly";
-    show3.episodes = [NSArray array];
-    show3.description = [longtext copy];
-    
     TVShow *show4 = [[TVShow alloc] init];
     show4.num = 4;
     show4.name = @"Vampire diaries";
     show4.episodes = [NSArray array];
-    show4.description = [longtext copy];
     
     TVShow *show5 = [[TVShow alloc] init];
     show5.num = 5;
     show5.name = @"Two and a half men";
     show5.episodes = [NSArray array];
-    show5.description = [longtext copy];
-    
-    TVShow *show6 = [[TVShow alloc] init];
-    show6.num = 6;
-    show6.name = @"How i met your mother";
-    show6.episodes = [NSArray array];
-    show6.description = [longtext copy];
-    
-    TVShow *show7 = [[TVShow alloc] init];
-    show7.num = 7;
-    show7.name = @"Daria";
-    show7.episodes = [NSArray array];
-    show7.link = @"";
-    show7.image = @"ya.ru";
-    
-    filteredShows_ = [NSArray arrayWithObjects:show1, show2, show3, show4, show5, show6, show7, nil];
+   
+    filteredShows_ = [NSArray arrayWithObjects:show1, show4, show5, nil];
         
     return self;
 }
@@ -168,11 +139,18 @@
     return [filteredShows_ count];
 }
 
+- (void)setSwitcher:(id<TabSwitcher>)sw
+{
+    switcher_ = sw;
+}
+
+- (id<TabSwitcher>)switcher
+{
+    return switcher_;
+}
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-//    DLOG("searchBar.text = %@", searchBar.text);
-
     NSURL *url = [NSURL URLWithString:[NSString
                      stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", 
                                         searchBar.text]];
@@ -202,9 +180,8 @@
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
     [vc setMyseries:myseries_];
+
     vc.switcher = switcher_;
-    vc.searchTab = YES;
-    
     
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];

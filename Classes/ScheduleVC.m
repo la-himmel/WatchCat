@@ -40,7 +40,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    DLOG("%d %d", [favourites_ count], [myseries_.favourites count]);
+    DLOG("view vill appear %d %d", [favourites_ count], [myseries_.favourites count]);
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
@@ -71,7 +71,6 @@
 -(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     if (!tapped) {
-        DLOG("tapped once");
         [tableView_ setEditing:!tableView_.editing animated:YES];
         tapped = YES;
     } else {
@@ -84,13 +83,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) 
     { 
-        DLOG("deleting row...");
         [favourites_ removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         [tableView_ reloadData];
     }
 }
-
 
 - (int)tableView:(UITableView *)tableView numberOfRowsInSection:(int)section
 {
@@ -133,7 +130,4 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];
 }
-
-
-
 @end

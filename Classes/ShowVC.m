@@ -16,17 +16,12 @@
 @implementation ShowVC
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
-@synthesize searchTab = searchTab_;
 
 - (void)viewDidLoad
 {
-    searchTab_ = NO;
-    
     NSURL *url = [NSURL URLWithString:[NSString
                                        stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
                                        show_.num]];
-    
-    //TVRage API: @"http://services.tvrage.com/feeds/full_show_info.php?sid=%d"
     
     NSData *xmlData = [NSData dataWithContentsOfURL:url];    
     NSString *urlImage = @"http://thetvdb.com/banners/_cache/";
@@ -98,6 +93,16 @@
 
 }
 
+- (void)setSwitcher:(id<TabSwitcher>)sw
+{
+    switcher_ = sw;
+}
+
+- (id<TabSwitcher>)switcher
+{
+    return switcher_;
+}
+
 - (void)setShow:(TVShow *)show
 {
     show_ = show;
@@ -112,14 +117,10 @@
 {
     [myseries_ rememberShow:show_];
     
-    BookmarkedVC *vc = [[BookmarkedVC alloc] init];
-    vc.myseries = myseries_;
-    
-    DLOG("pushing...");
-    if (searchTab_) {
-        [switcher_ pushViewController:vc tab:3];
+    if ([switcher_ currentTab] != 3) {
+        [switcher_ goToRootAndRefreshTab:3];
     } else {
-        [self.navigationController pushViewController:vc animated:YES];        
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
@@ -127,14 +128,10 @@
 {
     [myseries_ addToFavorites:show_];
     
-    ScheduleVC *vc = [[ScheduleVC alloc] init];
-    vc.myseries = myseries_;
-
-    DLOG("pushing...");
-    if (searchTab_) {
-        [switcher_ pushViewController:vc tab:0];        
+    if ([switcher_ currentTab] != 0) {
+        [switcher_ goToRootAndRefreshTab:0];        
     } else {
-        [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

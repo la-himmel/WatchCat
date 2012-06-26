@@ -19,6 +19,8 @@ typedef enum {
     UIViewController *browseVC_;
     UIViewController *settingsVC_;
     UIViewController *todoVC_;
+    
+    NSArray *vcs_;
 
     Tabbar *tabbar_;
 }
@@ -31,8 +33,9 @@ typedef enum {
     if (!(self = [super init])) {
         return nil;
     }
+    
+    vcs_ = vcs;
 
-    DLOG("init with vc");
     NSAssert([vcs count] == 4, @"There must be 4 tabs");
 
     favoriteVC_ = [vcs objectAtIndex:0];
@@ -46,6 +49,11 @@ typedef enum {
 - (void)switchTabTo:(int)index
 {
     tabbar_.selectedIndex = index;
+}
+
+- (int)currentTab
+{
+    return tabbar_.selectedIndex;
 }
 
 - (void)viewDidLoad
@@ -81,9 +89,10 @@ typedef enum {
         id newValue = [change objectForKey:NSKeyValueChangeNewKey];
         UIViewController *vc = nil;
 
-        switch ([newValue intValue]) {
+        int value = [newValue intValue];
+        switch (value) {
             case FavoriteIdx:
-                vc = favoriteVC_;
+                vc = favoriteVC_;                
                 break;
             case BrowseIdx:
                 vc = browseVC_;
@@ -92,20 +101,33 @@ typedef enum {
                 vc = settingsVC_;
                 break;
             case TodoIdx:
-                DLOG("3");
                 vc = todoVC_;
                 break;
             default:
                 NSAssert(NO, @"Unexpected tab index %@", newValue);
         }
 
-        DLOG("observing value");
         vc.view.frame = CONTENT_FRAME;
         [self.view addSubview:vc.view];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 
+}
+
+- (void)goToRootAndRefreshTab:(int)tabId
+{
+    UINavigationController *nc = [vcs_ objectAtIndex:tabId];
+    [nc popToRootViewControllerAnimated:YES];
+    [self switchTabTo:tabId];
+    [[nc topViewController] viewWillAppear:YES];
+}
+
+- (void)pushViewController:(UIViewController *)vc tab:(int)tabId
+{
+    UINavigationController *nc = [vcs_ objectAtIndex:(NSInteger)tabId];
+    [nc pushViewController:vc animated:YES];  
+    [self switchTabTo:tabId];
 }
 
 @end

@@ -57,7 +57,7 @@ static TVShow *parseShow(CXMLNode *showNode)
     result.num = showId;
     result.description = description;
     
-    DLOG("Parsed: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
+//    DLOG("Parsed: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
 
     return result;
 }

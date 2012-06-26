@@ -18,8 +18,6 @@
 
 - (void)viewDidLoad
 {
-    DLOG("view did load");
-    
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.height)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     tableView_.dataSource = self;
@@ -35,7 +33,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    DLOG("%d %d", [bookmarked_ count], [myseries_.bookmarked count]);
+    DLOG("viewWill appear^ %d %d", [bookmarked_ count], [myseries_.bookmarked count]);
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
