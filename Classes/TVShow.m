@@ -9,6 +9,7 @@
 #define DESCRIPTION @"description"
 #define LINK @"link"
 #define IMAGE @"image"
+#define STATUS @"status"
 
 @synthesize name = name_;
 @synthesize num = num_;
@@ -16,6 +17,8 @@
 @synthesize description = description_;
 @synthesize link = link_;
 @synthesize image = image_;
+@synthesize status = status_;
+@synthesize nearestEpisode = nearestEpisode_;
 
 
 - (NSDictionary *)dictionary 
@@ -27,6 +30,7 @@
     [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:link_ forKey:LINK];
     [show setValue:image_ forKey:IMAGE];
+    [show setValue:status_ forKey:STATUS];
         
     return show;
 }
@@ -66,6 +70,7 @@
     show.description = [item valueForKey:DESCRIPTION];
     show.link = [item valueForKey:LINK];
     show.image = [item valueForKey:IMAGE];
+    show.status = [item valueForKey:STATUS];
     
     return show;
 }

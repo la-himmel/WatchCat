@@ -17,6 +17,7 @@
 @implementation ScheduleVC
 
 @synthesize myseries = myseries_;
+@synthesize switcher = switcher_;
 
 - (id)init
 {
@@ -126,6 +127,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     ShowVC *vc = [[ShowVC alloc] init];
     [vc setShow:[favourites_ objectAtIndex:indexPath.row]];
     [vc setMyseries:myseries_];
+    [vc setSwitcher:switcher_];
     
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];

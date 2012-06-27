@@ -1,6 +1,8 @@
 #import "MySeries.h"
 #import "utils.h"
 #import "JSONKit.h"
+#import "XMLDeserialization.h"
+#import "Episode.h"
 
 @implementation MySeries
 
@@ -21,13 +23,51 @@
     return self;
 }
 
-- (void)loadTestBookMarked
+- (void)downloadSeriesWithId:(int)seriesId
 {
-    TVShow *show7 = [[TVShow alloc] init];
-    show7.num = 7;
-    show7.name = @"Daria";
+    NSURL *url = [NSURL URLWithString:[NSString
+            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
+                                       seriesId]];
     
-    [bookmarked_ addObject:show7];
+    NSData *xmlData = [NSData dataWithContentsOfURL:url];
+    NSArray *episodes = parseEpisodes(xmlData);
+    
+    NSDate *now = [NSDate date];
+    
+    DLOG("Episode list was parsed, count: %d", [episodes count]);
+    
+    TVShow *currentShow;
+    for (TVShow* show in favourites_) {
+        if (show.num == seriesId) {
+            show.episodes = episodes;
+            
+            if (show.status == @"Ended") {
+                return;
+            } else {
+                currentShow = show;
+            }
+        }
+    }  
+    
+    for (Episode *ep in episodes) {
+        NSString *dateStr = ep.airDate;
+        
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd"];
+        NSDate *airdate = [dateFormat dateFromString:dateStr];  
+        
+        if (airdate == nil)
+            continue;
+        
+        if ([airdate compare: now] == NSOrderedAscending) {
+            DLOG("air date: %@ is earlier than %@", [airdate description], [now description]);
+        } else {
+            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
+            currentShow.nearestEpisode = ep;
+            DLOG("-------- Nearest episode: %d", currentShow.nearestEpisode.num);
+            return;
+        }       
+    }
 }
 
 - (BOOL)load
@@ -173,6 +213,10 @@
         [favourites_ addObject:show];
         [self saveFavourites];
     }
+    //TODO: background
+    [self downloadSeriesWithId:show.num];
+    
+    //And save in DB
 }
 
 - (void)rememberShow:(TVShow *)show
@@ -191,6 +235,9 @@
 
 - (void)removeFromFavorites:(TVShow *)show
 {
+    if ([favourites_ count] == 0)
+        return;
+    
     for (TVShow* show_ in favourites_) {
         if ([show isEqual:show_]) {
             [favourites_ removeObject:show_];
@@ -201,6 +248,10 @@
 
 - (void)forgetShow:(TVShow *)show
 {
+    if ([bookmarked_ count] == 0)
+        return;
+    
+    
     for (TVShow* show_ in bookmarked_) {
         if ([show isEqual:show_]) {
             [bookmarked_ removeObject:show_];

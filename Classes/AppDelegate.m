@@ -15,6 +15,8 @@
     
     NSArray *vcs_;
     
+    NSString *serverTime;
+    
     TabbarVC *tabbarVC_;
     
     MySeries *series_;
@@ -28,6 +30,9 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    serverTime = @"1340708900";
+    //TODO: save in user defaults or smth. First launch: go and save server time somewhere
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
