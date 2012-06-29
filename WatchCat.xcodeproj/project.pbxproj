@@ -48,6 +48,7 @@
 		7A8A0C281598785100CE9B2F /* brackets2last.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C271598785100CE9B2F /* brackets2last.png */; };
 		7A8A0C2B159878B300CE9B2F /* half.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C29159878B300CE9B2F /* half.png */; };
 		7A8A0C2C159878B300CE9B2F /* halfl.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C2A159878B300CE9B2F /* halfl.png */; };
+		7A8A0C2F159D872F00CE9B2F /* surprise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */; };
 		7AB73735158872CC0075D908 /* main20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AB73734158872CC0075D908 /* main20@2x.png */; };
 		E1386E57154E9BF600B9286A /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E1386E55154E9BF600B9286A /* SearchVC.m */; };
 		E1386E5D154E9C3600B9286A /* ui_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1386E5A154E9C3600B9286A /* ui_utils.m */; };
@@ -151,6 +152,7 @@
 		7A8A0C29159878B300CE9B2F /* half.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = half.png; path = images/navbar/half.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C2A159878B300CE9B2F /* halfl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = halfl.png; path = images/navbar/halfl.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabSwitcher.h; sourceTree = "<group>"; };
+		7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "surprise@2x.png"; sourceTree = "<group>"; };
 		7AB73734158872CC0075D908 /* main20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main20@2x.png"; sourceTree = "<group>"; };
 		E1386E54154E9BF600B9286A /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		E1386E55154E9BF600B9286A /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchVC.m; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 		7AB73733158872CC0075D908 /* main */ = {
 			isa = PBXGroup;
 			children = (
+				7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */,
 				7A8A0C29159878B300CE9B2F /* half.png */,
 				7A8A0C2A159878B300CE9B2F /* halfl.png */,
 				7A8A0C271598785100CE9B2F /* brackets2last.png */,
@@ -618,6 +621,7 @@
 				7A8A0C281598785100CE9B2F /* brackets2last.png in Resources */,
 				7A8A0C2B159878B300CE9B2F /* half.png in Resources */,
 				7A8A0C2C159878B300CE9B2F /* halfl.png in Resources */,
+				7A8A0C2F159D872F00CE9B2F /* surprise@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

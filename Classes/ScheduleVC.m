@@ -119,6 +119,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                    initWithImage:[[UIImage imageNamed:name] 
                                                   stretchableImageWithLeftCapWidth:0.0 
                                                   topCapHeight:5.0]];
+    if ([favourites_ count] <= 6) {
+        tableView_.bounces = NO;        
+    }
     return cell;
 }
 

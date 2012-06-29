@@ -78,6 +78,10 @@
                                    initWithImage:[[UIImage imageNamed:name] 
                                                   stretchableImageWithLeftCapWidth:0.0 
                                                   topCapHeight:5.0]];
+    if ([bookmarked_ count] <= 6) {
+        tableView_.bounces = NO;        
+    }
+    
     return cell;
 }
 

@@ -16,6 +16,9 @@
 {
     UISearchBar *searchBar_;
     UITableView *tableView_;
+    UIImageView *back_;
+    
+    UILabel *msg_;
     
     // current search results
     NSArray *filteredShows_;
@@ -28,35 +31,25 @@
 
 - (id)init
 {
+    DLOG("init");
+    
     if (!(self = [super init])) {
         return nil;
     }
     
     [[self navigationController] setNavigationBarHidden:YES];
-   
-       
-    TVShow *show1 = [[TVShow alloc] init];
-    show1.num = 1;
-    show1.name = @"Castle";
-    show1.episodes = [NSArray array];
-
-    TVShow *show4 = [[TVShow alloc] init];
-    show4.num = 4;
-    show4.name = @"Vampire diaries";
-    show4.episodes = [NSArray array];
-    
-    TVShow *show5 = [[TVShow alloc] init];
-    show5.num = 5;
-    show5.name = @"Two and a half men";
-    show5.episodes = [NSArray array];
-   
-    filteredShows_ = [NSArray arrayWithObjects:show1, show4, show5, nil];
+          
+    filteredShows_ = [[NSArray alloc] init];
         
+    
+
     return self;
 }
 
 - (void)viewDidLoad
 {
+    DLOG("view did load");
+    
     [super viewDidLoad];
     
     searchBar_ = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 170, 44)];
@@ -76,29 +69,50 @@
 
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     view.image = [UIImage imageNamed:@"search@2x.png"];
-    [self.view addSubview:view];
-    
+    [self.view addSubview:view];  
+   
     [self.view addSubview:searchBar_];
-    
+        
+    back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
+    back_.image = [UIImage imageNamed:@"main20@2x.png"];
+
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    
     tableView_.dataSource = self;
+    tableView_.backgroundColor = [UIColor redColor];//clearColor];
+    tableView_.backgroundView = back_;
+            
     tableView_.delegate = self;
     tableView_.rowHeight = [ShowCell height];
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
-    UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];  
-    UIImage *backImage = [UIImage imageNamed:@"backButton@2x.png"];  
-    [back setImage:backImage forState:UIControlStateNormal];  
-    
-    [back addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
-    back.frame = CGRectMake(0, 0, backImage.size.width, backImage.size.height);  
-    
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:back];
-    [self.navigationItem setLeftBarButtonItem:backButton];
-    
+
     [self.view addSubview:tableView_];
+    
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];  
+    UIImage *backImage = [UIImage imageNamed:@"backButton@2x.png"];  
+    [backButton setImage:backImage forState:UIControlStateNormal];  
+    
+    [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
+    backButton.frame = CGRectMake(0, 0, backImage.size.width, backImage.size.height); 
+    
+    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(0, 
+                                                     (self.view.height - 44 - 25) /2, 
+                                                     320, 
+                                                     25)];
+    msg_.backgroundColor = [UIColor clearColor];
+    msg_.textAlignment = UITextAlignmentCenter;
+    
+    if ([filteredShows_ count] == 0) {
+        msg_.text = @"No search results";
+        [self.view addSubview:msg_];
+    } else {
+        [msg_ removeFromSuperview];
+    }
+    DLOG("view did load end");
+
+//    UIBarButtonItem *barBackButton = [[UIBarButtonItem alloc] initWithCustomView:backImage];
+//    [self.navigationItem setLeftBarButtonItem:barBackButton];    
+
 }
 
 - (void)goback
@@ -123,13 +137,16 @@
 
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
         
+
     cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name] 
                                                               stretchableImageWithLeftCapWidth:0.0 
                                                               topCapHeight:5.0]];  
     cell.selectedBackgroundView = [[UIImageView alloc] 
                                    initWithImage:[[UIImage imageNamed:name] 
                                                   stretchableImageWithLeftCapWidth:0.0 
-                                                  topCapHeight:5.0]];
+                                                  topCapHeight:5.0]]; 
+    
+    [self adjust];
     
     return cell;
 }
@@ -166,7 +183,35 @@
     filteredShows_ = parseSearchResults(xmlData);
 
     [tableView_ reloadData];
+    [self adjust];
     [searchBar resignFirstResponder];
+}
+
+- (void)adjust
+{
+    DLOG("adjust, count: %d", [filteredShows_ count]);
+    tableView_.bounces = ([filteredShows_ count] > 6);        
+    
+    NSString *imageName = @"surprise@2x.png";
+    if ([filteredShows_ count] == 0) {
+        DLOG("no shows");
+        imageName = @"main20@2x.png";
+    } 
+    
+    back_.image = [UIImage imageNamed:imageName];
+    tableView_.backgroundView = back_;
+   
+    if ([filteredShows_ count] == 0) {
+        msg_.text = @"No search results";
+        [self.view addSubview:msg_];
+    } else {
+        [msg_ removeFromSuperview];
+    }
+
+    [msg_ setNeedsDisplay];
+    [tableView_.backgroundView setNeedsDisplay];
+    [tableView_ setNeedsDisplay];  
+
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar
