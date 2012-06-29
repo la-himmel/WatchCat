@@ -40,8 +40,6 @@
     [[self navigationController] setNavigationBarHidden:YES];
           
     filteredShows_ = [[NSArray alloc] init];
-        
-    
 
     return self;
 }
@@ -79,7 +77,7 @@
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     tableView_.dataSource = self;
-    tableView_.backgroundColor = [UIColor redColor];//clearColor];
+    tableView_.backgroundColor = [UIColor clearColor];
     tableView_.backgroundView = back_;
             
     tableView_.delegate = self;
@@ -109,10 +107,6 @@
         [msg_ removeFromSuperview];
     }
     DLOG("view did load end");
-
-//    UIBarButtonItem *barBackButton = [[UIBarButtonItem alloc] initWithCustomView:backImage];
-//    [self.navigationItem setLeftBarButtonItem:barBackButton];    
-
 }
 
 - (void)goback
@@ -190,10 +184,10 @@
 - (void)adjust
 {
     DLOG("adjust, count: %d", [filteredShows_ count]);
-    tableView_.bounces = ([filteredShows_ count] > 6);        
+    tableView_.bounces = ([filteredShows_ count] >= 6);        
     
-    NSString *imageName = @"surprise@2x.png";
-    if ([filteredShows_ count] == 0) {
+    NSString *imageName = @"surpriseBr@2x.png";
+    if ([filteredShows_ count] < 6) {
         DLOG("no shows");
         imageName = @"main20@2x.png";
     } 

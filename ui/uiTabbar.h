@@ -15,16 +15,16 @@ DEFINE_UI(uiTabbar) {
         {240, 0, 80, 50}
     },
     .buttonImages = {
-        UI_IMAGE_NAMED("tabbar_favorite"),
-        UI_IMAGE_NAMED("tabbar_browse"),
-        UI_IMAGE_NAMED("tabbar_settings"),
-        UI_IMAGE_NAMED("tabbar_todo")
+        UI_IMAGE_NAMED("favorite"),
+        UI_IMAGE_NAMED("browse"),
+        UI_IMAGE_NAMED("settings"),
+        UI_IMAGE_NAMED("todo")
     },
     .buttonSelectedImages = {
-        UI_IMAGE_NAMED("tabbar_favorite_selected"),
-        UI_IMAGE_NAMED("tabbar_browse_selected"),
-        UI_IMAGE_NAMED("tabbar_settings_selected"),
-        UI_IMAGE_NAMED("tabbar_todo_selected")
+        UI_IMAGE_NAMED("favorite_selected"),
+        UI_IMAGE_NAMED("browse_selected"),
+        UI_IMAGE_NAMED("settings_selected"),
+        UI_IMAGE_NAMED("todo_selected")
     },
     .background = UI_IMAGE_NAMED("tabbar_background")
 };

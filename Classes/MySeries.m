@@ -242,6 +242,7 @@
         if ([show isEqual:show_]) {
             [favourites_ removeObject:show_];
             [self saveFavourites];
+            return;
         }
     }  
 }
@@ -256,6 +257,7 @@
         if ([show isEqual:show_]) {
             [bookmarked_ removeObject:show_];
             [self saveBookmarked];
+            return;
         }
     }  
 }

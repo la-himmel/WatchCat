@@ -184,10 +184,14 @@
 - (void)unsubscribe
 {
     [myseries_ removeFromFavorites:show_];
+    DLOG("1");
     [downButton setTitle:@"Subscribe" forState:UIControlStateNormal];
+    DLOG("1");
     [downButton addTarget:self action:@selector(addToFavourites) 
          forControlEvents:UIControlEventTouchUpInside];
+    DLOG("1");
     [downButton setNeedsDisplay];
+    DLOG("1");
 }
 
 - (void)rememberShow
