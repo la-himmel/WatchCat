@@ -52,7 +52,7 @@
 
 - (void)switchButton:(int)index on:(BOOL)on
 {
-    DLOG("adjust button: %d %@", index, on ? @"true" : @"false");
+//    DLOG("adjust button: %d %@", index, on ? @"true" : @"false");
     UIButton *b = [buttons_ objectAtIndex:index];
     
     UI_SCOPED_ALIAS(ui, uiTabbar);

@@ -6,11 +6,10 @@
 #import "CustomNavigationBar.h"
 #import "SettingsVC.h"
 #import "MySeries.h"
-#import "BookmarkedVC.h"
 
 @interface AppDelegate()
 {   
-    ScheduleVC *sheduleVC_;
+    ScheduleVC *scheduleVC_;
     SearchVC *searchVC_;
     
     NSArray *vcs_;
@@ -39,10 +38,10 @@
     series_ = [[MySeries alloc] init];
     [series_ load];
     
-    sheduleVC_ = [[ScheduleVC alloc] init];        
-    [sheduleVC_ setMyseries:series_];
+    scheduleVC_ = [[ScheduleVC alloc] initWithItems:series_.favourites];        
+    [scheduleVC_ setMyseries:series_];
     
-    BookmarkedVC *bvc = [[BookmarkedVC alloc] init];        
+    ScheduleVC *bvc = [[ScheduleVC alloc] initWithItems:series_.bookmarked];        
     [bvc setMyseries:series_];
     
     searchVC_ = [[SearchVC alloc] init];
@@ -60,8 +59,9 @@
     UIImageView *scheduleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     scheduleView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
     
-    UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:sheduleVC_];
+    UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar addSubview:scheduleView];
+    favouritesNC.delegate = scheduleVC_;
 
     UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     settingsView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
@@ -76,6 +76,7 @@
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
     [bookmarkedNC.navigationBar addSubview:bmView];
+    bookmarkedNC.delegate = bvc;
     
     vcs_ = [NSArray arrayWithObjects:
         favouritesNC,
@@ -89,6 +90,11 @@
     searchVC_.switcher = tabbarVC_;
     self.window.rootViewController = tabbarVC_;
     [self.window makeKeyAndVisible];
+    
+
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered
+                                                              target:scheduleVC_ action:@selector(switchEditMode)];
+    scheduleVC_.navigationItem.rightBarButtonItem = button;
 
     return YES;
 }

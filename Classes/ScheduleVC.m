@@ -22,11 +22,14 @@
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
 
-- (id)init
+- (id)initWithItems:(NSMutableArray *)items
 {
     if (!(self = [super init])) {
         return nil;
     }
+    
+    favourites_ = items;
+    DLOG("items count: %d", [favourites_ count]);
     
     tapped = NO;
     
@@ -36,7 +39,7 @@
 - (void)setMyseries:(MySeries *)myseries
 {
     myseries_ = myseries;    
-    favourites_ = myseries_.favourites;
+//    favourites_ = myseries_.favourites;
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
@@ -104,7 +107,7 @@
     }
 }
 
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     if (!tapped) {
         [tableView_ setEditing:!tableView_.editing animated:YES];
@@ -112,6 +115,22 @@
     } else {
         DLOG("hundred other taps");
     }
+}
+
+- (void)switchEditMode
+{
+    DLOG("switching editing mode");
+    NSString *title;
+    
+    BOOL editing = !tableView_.editing;
+    if (editing) {
+        title = [[NSString alloc] initWithString:@"Done"];
+    } else {
+        title = [[NSString alloc] initWithString:@"Edit"];
+    }
+    
+    self.navigationItem.rightBarButtonItem.title = title;
+    [tableView_ setEditing:editing];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
@@ -196,4 +215,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [[self navigationController] setNavigationBarHidden:NO];
     [self.navigationController pushViewController:vc animated:YES];
 }
+
+
 @end

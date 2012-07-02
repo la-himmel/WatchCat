@@ -5,7 +5,6 @@
 #import "XMLDeserialization.h"
 #import "UIImageView+WebCache.h"
 #import "ScheduleVC.h"
-#import "BookmarkedVC.h"
 
 @interface ShowVC() 
 {
@@ -123,18 +122,15 @@
     }
     
     if ([switcher_ currentTab] == 1) {
-        DLOG("TAB 1");
         [upButton addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
         [downButton addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];        
     } else if ([switcher_ currentTab] == 0) {
-        DLOG("TAB 0");
         upText = @"Episode list";
         downText = @"Unsubscribe";
         
         [upButton addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
         [downButton addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];        
     } else if ([switcher_ currentTab] == 3) {
-        DLOG("TAB 3");
         upText = @"Episode list";
         downText = @"Forget";
         
@@ -147,6 +143,16 @@
 
     [textView addSubview:upButton];
     [textView addSubview:downButton];
+    
+//    UIButton *editButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 63, 30)];
+//    [editButton setImage:[UIImage imageNamed:@"back_OFF.png"] forState:UIControlStateNormal];
+//    [editButton setImage:[UIImage imageNamed:@"back_ON.png"] forState:UIControlStateSelected];
+    
+//    UIBarButtonItem *editButtonItem = [[UIBarButtonItem alloc] initWithCustomView:editButton];
+//    self.navigationItem.rightBarButtonItem = editButtonItem;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"                                                                style:UIBarButtonItemStyleDone target:nil action:nil];
+
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
