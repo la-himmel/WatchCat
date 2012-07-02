@@ -91,11 +91,6 @@
     self.window.rootViewController = tabbarVC_;
     [self.window makeKeyAndVisible];
     
-
-    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered
-                                                              target:scheduleVC_ action:@selector(switchEditMode)];
-    scheduleVC_.navigationItem.rightBarButtonItem = button;
-
     return YES;
 }
 

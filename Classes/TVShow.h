@@ -1,7 +1,7 @@
 #import "Episode.h"
 
 @interface TVShow: NSObject
-@property (nonatomic, assign) int num;
+@property (nonatomic, strong) NSString *idString;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSArray *episodes;
 @property (nonatomic, strong) NSString *description;

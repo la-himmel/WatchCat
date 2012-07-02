@@ -22,8 +22,8 @@
 - (void)viewDidLoad
 {
     NSURL *url = [NSURL URLWithString:[NSString
-            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
-            show_.num]];
+            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
+            show_.idString]];
     
     NSData *xmlData = [NSData dataWithContentsOfURL:url];    
     NSString *urlImage = @"http://thetvdb.com/banners/_cache/";

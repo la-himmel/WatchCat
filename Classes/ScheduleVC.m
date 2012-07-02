@@ -81,15 +81,6 @@
     tableView_.backgroundColor = [UIColor redColor];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     
- 
-    
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                          initWithTarget:self action:@selector(handleLongPress:)];
-    lpgr.minimumPressDuration = 1.5; 
-    lpgr.delegate = self;
-    [tableView_ addGestureRecognizer:lpgr];
-
-
     [self.view addSubview:tableView_];  
     
     msg_ = [[UILabel alloc] initWithFrame:CGRectMake(0, 
@@ -105,16 +96,10 @@
     } else {
         [msg_ removeFromSuperview];
     }
-}
-
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    if (!tapped) {
-        [tableView_ setEditing:!tableView_.editing animated:YES];
-        tapped = YES;
-    } else {
-        DLOG("hundred other taps");
-    }
+    
+    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered
+                                                                  target:self action:@selector(switchEditMode)];
+    self.navigationItem.rightBarButtonItem = editButton;
 }
 
 - (void)switchEditMode
@@ -156,7 +141,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     NSString *imageName = @"surpriseBr@2x.png";
     if ([favourites_ count] < 6) {
-        DLOG("no shows");
         imageName = @"main20@2x.png";
     } 
     

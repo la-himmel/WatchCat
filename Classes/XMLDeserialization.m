@@ -50,7 +50,7 @@ static Episode *parseEpisode(CXMLNode *node)
     result.description = description;
     result.image = image;
     
-    DLOG("Parsed EPISODE: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
+//    DLOG("Parsed EPISODE: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
     
     return result;
 }
@@ -118,12 +118,12 @@ static TVShow *parseShow(CXMLNode *showNode)
     TVShow *result = [[TVShow alloc] init];
 
     NSString *name = [[showNode nodeForXPath:@"SeriesName" error:nil] stringValue];
-    int showId = [[[showNode nodeForXPath:@"seriesid" error:nil] stringValue] intValue];
+    NSString *idString = [[showNode nodeForXPath:@"seriesid" error:nil] stringValue];
     NSString *description = [[showNode nodeForXPath:@"Overview" error:nil] stringValue];
 
     result.name = name;
-    result.num = showId;
     result.description = description;
+    result.idString = idString;
     
 //    DLOG("Parsed: Name: %@ Id: %d description: %@", result.name, result.num, result.description);
 

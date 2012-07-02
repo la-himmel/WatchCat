@@ -23,10 +23,10 @@
     return self;
 }
 
-- (void)downloadSeriesWithId:(int)seriesId
+- (void)downloadSeriesWithId:(NSString *)seriesId
 {
     NSURL *url = [NSURL URLWithString:[NSString
-            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%d/all/en.xml",
+            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
                                        seriesId]];
     
     NSData *xmlData = [NSData dataWithContentsOfURL:url];
@@ -38,7 +38,7 @@
     
     TVShow *currentShow;
     for (TVShow* show in favourites_) {
-        if (show.num == seriesId) {
+        if (show.idString == seriesId) {
             show.episodes = episodes;
             
             if (show.status == @"Ended") {
@@ -60,9 +60,9 @@
             continue;
         
         if ([airdate compare: now] == NSOrderedAscending) {
-            DLOG("air date: %@ is earlier than %@", [airdate description], [now description]);
+//            DLOG("air date: %@ is earlier than %@", [airdate description], [now description]);
         } else {
-            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
+//            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
             currentShow.nearestEpisode = ep;
             DLOG("-------- Nearest episode: %d", currentShow.nearestEpisode.num);
             return;
@@ -91,13 +91,13 @@
     NSError *error;
     NSString *json = [[NSString alloc] initWithContentsOfFile:path 
                                                      encoding:NSUnicodeStringEncoding error:&error];
-    
+    DLOG("JSON: %@", json);
     NSArray *items = [json objectFromJSONString];
 
     if (stringPath == PATH_FAVOURITES) {
         favourites_ = [self extractFromJsonArray:items];   
         if (favourites_ != nil) {
-            DLOG("loaded f COUNT %d", [favourites_ count]);    
+            DLOG("loaded f COUNT %d", [favourites_ count]);             
         } else {
            DLOG("NOT LOADED"); 
            return NO;
@@ -119,6 +119,7 @@
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (TVShow *show in array) {
+//        DLOG("convert TO: %d", show.num);
         [ma addObject:[show jsonString]];        
     }
     
@@ -130,29 +131,8 @@
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (NSString *show in array) {
+//        DLOG("convert FROM: %@", show);
         [ma addObject:[TVShow showFromJsonString:show]];        
-    }
-    
-    return ma; 
-}
-
-- (NSArray *)convertArray:(NSArray *)array
-{
-    NSMutableArray *ma = [[NSMutableArray alloc] init];
-    
-    for (TVShow *show in array) {
-        [ma addObject:[show dictionary]];        
-    }
-
-    return ma; 
-}     
-
-- (NSMutableArray *)extractArray:(NSArray *)array
-{
-    NSMutableArray *ma = [[NSMutableArray alloc] init];
-    
-    for (NSMutableDictionary *show in array) {
-        [ma addObject:[TVShow showFromDictionary:show]];        
     }
     
     return ma; 
@@ -185,8 +165,6 @@
     NSError *error;
     BOOL success = [JSON writeToFile:path atomically:YES encoding:NSUnicodeStringEncoding error:&error];
     
-    DLOG("Array :: %d", [converted count]);
-    
     NSLog(@"%@", success ? @"File was saved." : @"File was not saved.");    
 }
 
@@ -205,8 +183,12 @@
 {
     BOOL found = NO;
     for (TVShow* show_ in favourites_) {
-        if ([show isEqual:show_]) {
+        
+        if ([show.idString isEqual:show_.idString]) {
             found = YES;
+            DLOG("Same : %@ %@", show_.idString, show.idString);
+        } else {
+            DLOG("Different : %@ %@", show_.name, show.name);
         }
     }    
     if (!found) {
@@ -214,7 +196,7 @@
         [self saveFavourites];
     }
     //TODO: background
-    [self downloadSeriesWithId:show.num];
+    [self downloadSeriesWithId:show.idString];
     
     //And save in DB
 }
@@ -223,7 +205,7 @@
 {
     BOOL found = NO;
     for (TVShow* show_ in bookmarked_) {
-        if ([show isEqual:show_]) {
+        if ([show.idString isEqual:show_.idString]) {
             found = YES;
         }
     }    
@@ -239,7 +221,7 @@
         return;
     
     for (TVShow* show_ in favourites_) {
-        if ([show isEqual:show_]) {
+        if ([show.idString isEqual:show_.idString]) {
             [favourites_ removeObject:show_];
             [self saveFavourites];
             return;
@@ -254,7 +236,7 @@
     
     
     for (TVShow* show_ in bookmarked_) {
-        if ([show isEqual:show_]) {
+        if ([show.idString isEqual:show_.idString]) {
             [bookmarked_ removeObject:show_];
             [self saveBookmarked];
             return;
