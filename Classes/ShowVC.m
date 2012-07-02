@@ -190,19 +190,28 @@
 - (void)unsubscribe
 {
     [myseries_ removeFromFavorites:show_];
-    DLOG("1");
     [downButton setTitle:@"Subscribe" forState:UIControlStateNormal];
-    DLOG("1");
     [downButton addTarget:self action:@selector(addToFavourites) 
          forControlEvents:UIControlEventTouchUpInside];
-    DLOG("1");
     [downButton setNeedsDisplay];
-    DLOG("1");
 }
+
+- (void)alertWithMessage:(NSString *)message
+{
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@""
+                          message:message
+                          delegate:nil
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil];
+    [alert show];
+} 
 
 - (void)rememberShow
 {
-    [myseries_ rememberShow:show_];
+    if (![myseries_ rememberShow:show_]) {
+        [self alertWithMessage:@"This show is already in your bookmarks."];
+    } 
     
     if ([switcher_ currentTab] != 3) {
         [switcher_ goToRootAndRefreshTab:3];
@@ -213,7 +222,9 @@
 
 - (void)addToFavourites
 {
-    [myseries_ addToFavorites:show_];
+    if (![myseries_ addToFavorites:show_]) {
+        [self alertWithMessage:@"This show is already in your favourutes."];
+    }
     
     if ([switcher_ currentTab] != 0) {
         [switcher_ goToRootAndRefreshTab:0];        

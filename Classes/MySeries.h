@@ -7,10 +7,10 @@
 @property (nonatomic, strong) NSMutableArray *favourites;
 @property (nonatomic, strong) NSMutableArray *bookmarked;
 
-- (void)addToFavorites:(TVShow *)show;
+- (BOOL)addToFavorites:(TVShow *)show;
 - (void)removeFromFavorites:(TVShow *)show;
 
-- (void)rememberShow:(TVShow *)show;
+- (BOOL)rememberShow:(TVShow *)show;
 - (void)forgetShow:(TVShow *)show;
 
 - (BOOL)load;

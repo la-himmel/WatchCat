@@ -179,40 +179,36 @@
 }
 
 
-- (void)addToFavorites:(TVShow *)show 
+- (BOOL)addToFavorites:(TVShow *)show 
 {
-    BOOL found = NO;
     for (TVShow* show_ in favourites_) {
         
         if ([show.idString isEqual:show_.idString]) {
-            found = YES;
-            DLOG("Same : %@ %@", show_.idString, show.idString);
-        } else {
-            DLOG("Different : %@ %@", show_.name, show.name);
-        }
+            return NO;
+        } 
     }    
-    if (!found) {
-        [favourites_ addObject:show];
-        [self saveFavourites];
-    }
+
+    [favourites_ addObject:show];
+    [self saveFavourites];
+
     //TODO: background
     [self downloadSeriesWithId:show.idString];
-    
     //And save in DB
+    
+    return YES;
 }
 
-- (void)rememberShow:(TVShow *)show
+- (BOOL)rememberShow:(TVShow *)show
 {
-    BOOL found = NO;
     for (TVShow* show_ in bookmarked_) {
         if ([show.idString isEqual:show_.idString]) {
-            found = YES;
+            return NO;
         }
     }    
-    if (!found) {
-        [bookmarked_ addObject:show];
-        [self saveBookmarked];
-    }
+
+    [bookmarked_ addObject:show];
+    [self saveBookmarked];
+    return YES;
 }
 
 - (void)removeFromFavorites:(TVShow *)show

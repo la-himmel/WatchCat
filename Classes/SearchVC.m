@@ -31,8 +31,6 @@
 
 - (id)init
 {
-    DLOG("init");
-    
     if (!(self = [super init])) {
         return nil;
     }
@@ -46,8 +44,6 @@
 
 - (void)viewDidLoad
 {
-    DLOG("view did load");
-    
     [super viewDidLoad];
     
     searchBar_ = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 170, 44)];
@@ -162,9 +158,13 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    DLOG("search text: %@", searchBar.text);
+    NSString *replaced = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    DLOG("search text again: %@", replaced);
+    
     NSURL *url = [NSURL URLWithString:[NSString
                      stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", 
-                                        searchBar.text]];
+                                        replaced]];
     //TVRage API: 
     //http://services.tvrage.com/feeds/search.php?show=
 
@@ -183,12 +183,10 @@
 
 - (void)adjust
 {
-    DLOG("adjust, count: %d", [filteredShows_ count]);
     tableView_.bounces = ([filteredShows_ count] >= 6);        
     
     NSString *imageName = @"surpriseBr@2x.png";
     if ([filteredShows_ count] < 6) {
-        DLOG("no shows");
         imageName = @"main20@2x.png";
     } 
     
@@ -205,7 +203,6 @@
     [msg_ setNeedsDisplay];
     [tableView_.backgroundView setNeedsDisplay];
     [tableView_ setNeedsDisplay];  
-
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar
