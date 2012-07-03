@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A3231A115A1AC55006B3889 /* EpisodeListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3231A015A1AC55006B3889 /* EpisodeListVC.m */; };
+		7A3231A515A2E9B7006B3889 /* EpisodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3231A415A2E9B6006B3889 /* EpisodeVC.m */; };
 		7A7E898A158B0AEE007EE616 /* backButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7E8988158B0AEE007EE616 /* backButton@2x.png */; };
 		7A7E898B158B0AEE007EE616 /* navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7E8989158B0AEE007EE616 /* navbar@2x.png */; };
 		7A7E8990158B23B3007EE616 /* searchNB.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7E898F158B23B3007EE616 /* searchNB.png */; };
@@ -99,6 +100,8 @@
 /* Begin PBXFileReference section */
 		7A32319F15A1AC54006B3889 /* EpisodeListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpisodeListVC.h; sourceTree = "<group>"; };
 		7A3231A015A1AC55006B3889 /* EpisodeListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpisodeListVC.m; sourceTree = "<group>"; };
+		7A3231A315A2E9B6006B3889 /* EpisodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpisodeVC.h; sourceTree = "<group>"; };
+		7A3231A415A2E9B6006B3889 /* EpisodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EpisodeVC.m; sourceTree = "<group>"; };
 		7A7E8988158B0AEE007EE616 /* backButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backButton@2x.png"; path = "navbar/backButton@2x.png"; sourceTree = "<group>"; };
 		7A7E8989158B0AEE007EE616 /* navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navbar@2x.png"; path = "navbar/navbar@2x.png"; sourceTree = "<group>"; };
 		7A7E898F158B23B3007EE616 /* searchNB.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = searchNB.png; path = ../navbar/searchNB.png; sourceTree = "<group>"; };
@@ -424,6 +427,8 @@
 				7A817A8F1591ABD100B42FF5 /* MySeries.m */,
 				7A32319F15A1AC54006B3889 /* EpisodeListVC.h */,
 				7A3231A015A1AC55006B3889 /* EpisodeListVC.m */,
+				7A3231A315A2E9B6006B3889 /* EpisodeVC.h */,
+				7A3231A415A2E9B6006B3889 /* EpisodeVC.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -699,6 +704,7 @@
 				7A817A901591ABD200B42FF5 /* MySeries.m in Sources */,
 				7A7F372515942FD80068DD35 /* JSONKit.m in Sources */,
 				7A3231A115A1AC55006B3889 /* EpisodeListVC.m in Sources */,
+				7A3231A515A2E9B7006B3889 /* EpisodeVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

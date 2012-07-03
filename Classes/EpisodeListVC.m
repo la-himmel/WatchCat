@@ -3,6 +3,7 @@
 #import "ScheduleCell.h"
 #import "UIView+position.h"
 #import "utils.h"
+#import "EpisodeVC.h"
 
 @interface EpisodeListVC () <UITableViewDataSource, UITableViewDelegate>
 {
@@ -117,12 +118,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    ShowVC *vc = [[ShowVC alloc] init];
-//    [vc setShow:[episodes_ objectAtIndex:indexPath.row]];
-//    [vc setMyseries:myseries_];
-//    [vc setSwitcher:switcher_];
-//    [[self navigationController] setNavigationBarHidden:NO];
-//    [self.navigationController pushViewController:vc animated:YES];
+    Episode *episode = [episodes_ objectAtIndex:indexPath.row];
+    EpisodeVC *vc = [[EpisodeVC alloc] init];
+    vc.episode = episode;
+    
+    [[self navigationController] setNavigationBarHidden:NO];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

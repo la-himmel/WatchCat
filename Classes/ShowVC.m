@@ -55,9 +55,7 @@
     [self.view addSubview:title];
 
     if (show_.nearestEpisode != nil) {
-//        DLOG("NEAREST: %@ %@", [show_.nearestEpisode readableNumber], [show_.nearestEpisode name]);
-                
-        UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 90, 123, 25)];
+        UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 80, 123, 25)];
         nearestTitle.text = [[NSString alloc] initWithString:@"Next episode: "];
         [nearestTitle setFont:[UIFont fontWithName:@"Arial" size:15]];
         nearestTitle.lineBreakMode = UILineBreakModeWordWrap;
@@ -66,7 +64,7 @@
         [self.view addSubview:nearestTitle];
         
         
-        UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 110, 123, 25)];
+        UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 100, 123, 25)];
         nearestDate.text = show_.nearestEpisode.airDate;
         [nearestDate setFont:[UIFont fontWithName:@"Arial" size:14]];
         nearestDate.lineBreakMode = UILineBreakModeWordWrap;
@@ -187,16 +185,20 @@
 - (void)forgetShow
 {
     [myseries_ forgetShow:show_];
-    [self.navigationController popViewControllerAnimated:YES];    
+//    [self.navigationController popViewControllerAnimated:YES];    
+    [bookmarkButton_ setTitle:@"Remember" forState:UIControlStateNormal];
+    [bookmarkButton_ addTarget:self action:@selector(rememberShow) 
+               forControlEvents:UIControlEventTouchUpInside];
+    [bookmarkButton_ setNeedsDisplay];
 }
 
 - (void)unsubscribe
 {
     [myseries_ removeFromFavorites:show_];
-    [bookmarkButton_ setTitle:@"Subscribe" forState:UIControlStateNormal];
-    [bookmarkButton_ addTarget:self action:@selector(addToFavourites) 
+    [subscribeButton_ setTitle:@"Subscribe" forState:UIControlStateNormal];
+    [subscribeButton_ addTarget:self action:@selector(addToFavourites) 
          forControlEvents:UIControlEventTouchUpInside];
-    [bookmarkButton_ setNeedsDisplay];
+    [subscribeButton_ setNeedsDisplay];
 }
 
 - (void)alertWithMessage:(NSString *)message

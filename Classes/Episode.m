@@ -15,7 +15,7 @@
 
 - (NSString *)readableNumber
 {
-    NSString *readable = [NSString stringWithFormat:@"s%de%d", seasonNum_, combinedNum_];
+    NSString *readable = [NSString stringWithFormat:@"s%02de%02d", seasonNum_, combinedNum_];
     return readable;
 }
 
