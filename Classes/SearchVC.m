@@ -158,9 +158,7 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    DLOG("search text: %@", searchBar.text);
     NSString *replaced = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    DLOG("search text again: %@", replaced);
     
     NSURL *url = [NSURL URLWithString:[NSString
                      stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", 

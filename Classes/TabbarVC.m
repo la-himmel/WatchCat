@@ -90,6 +90,8 @@ typedef enum {
         UIViewController *vc = nil;
 
         int value = [newValue intValue];
+        [tabbar_ adjustButtonsToIndex:value];
+
         switch (value) {
             case FavoriteIdx:
                 vc = favoriteVC_;                

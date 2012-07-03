@@ -71,8 +71,6 @@
 
 - (void)adjustButtonsToIndex:(int)index
 {
-    DLOG("adjust button, count %d", [buttons_ count]);
-
     for (int i = 0; i < [buttons_ count]; i++) {
         [self switchButton:i on:NO];        
     }

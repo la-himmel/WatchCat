@@ -86,10 +86,7 @@ NSString *parseStatus(NSData *xmlData)
     }
     
     CXMLNode *node = [document nodeForXPath:@"Data/Series" error:nil]; 
-    status = [[node nodeForXPath:@"status" error:nil] stringValue];
-    
-    DLOG("STATUS parsed: %@", status);
-    
+    status = [[node nodeForXPath:@"Status" error:nil] stringValue];
     return status;
 }
 

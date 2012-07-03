@@ -23,57 +23,69 @@
     return self;
 }
 
-- (void)downloadSeriesWithId:(NSString *)seriesId
+- (NSArray *)downloadSeriesSyncWithId:(NSString *)seriesId
 {
     NSURL *url = [NSURL URLWithString:[NSString
-            stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
-                                       seriesId]];
-    
+                                       stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
+                                       seriesId]];    
     NSData *xmlData = [NSData dataWithContentsOfURL:url];
+    
     NSArray *episodes = parseEpisodes(xmlData);
+    DLOG("Episode list was parsed, count: %d", [episodes count]);  
+     
+    return episodes;
+}
+
+- (NSArray *)downloadSeriesWithId:(NSString *)seriesId
+{
+    NSURL *url = [NSURL URLWithString:[NSString
+                                       stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
+                                       seriesId]];    
+    NSData *xmlData = [NSData dataWithContentsOfURL:url];
     
-    NSDate *now = [NSDate date];
-    
-    DLOG("Episode list was parsed, count: %d", [episodes count]);
-    
-    TVShow *currentShow;
-    for (TVShow* show in favourites_) {
-        if (show.idString == seriesId) {
-            show.episodes = episodes;
-            
-            if (show.status == @"Ended") {
-                return;
-            } else {
-                currentShow = show;
+    __block NSArray *episodes;
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{  
+        episodes = parseEpisodes(xmlData);
+        DLOG("Episode list was parsed, count: %d", [episodes count]);  
+
+        TVShow *currentShow;
+        for (TVShow* show in favourites_) {
+            if (show.idString == seriesId) {
+                show.episodes = episodes;
+                
+                if (show.status != @"Ended") {
+                    currentShow = show;
+                }
             }
-        }
-    }  
+        }  
     
-    for (Episode *ep in episodes) {
-        NSString *dateStr = ep.airDate;
-        
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyy-MM-dd"];
-        NSDate *airdate = [dateFormat dateFromString:dateStr];  
-        
-        if (airdate == nil)
-            continue;
-        
-        if ([airdate compare: now] == NSOrderedAscending) {
-//            DLOG("air date: %@ is earlier than %@", [airdate description], [now description]);
-        } else {
-//            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
-            currentShow.nearestEpisode = ep;
-            DLOG("-------- Nearest episode: %d", currentShow.nearestEpisode.num);
-            return;
-        }       
-    }
+        NSDate *now = [NSDate date];
+        for (Episode *ep in episodes) {
+            NSString *dateStr = ep.airDate;
+            
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyy-MM-dd"];
+            NSDate *airdate = [dateFormat dateFromString:dateStr];  
+            
+            if (airdate == nil)
+                continue;
+            
+            if ([airdate compare: now] != NSOrderedAscending) {
+        //            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
+                currentShow.nearestEpisode = ep;
+                DLOG("-------- Nearest episode: %d", currentShow.nearestEpisode.num);
+                return;
+            }       
+        }
+    });  
+    
+    return episodes;
+          
 }
 
 - (BOOL)load
 {
-    DLOG("loading everything");
-    
     [self loadPath:PATH_FAVOURITES];
     [self loadPath:PATH_BOOKMARKED];
     
@@ -91,22 +103,17 @@
     NSError *error;
     NSString *json = [[NSString alloc] initWithContentsOfFile:path 
                                                      encoding:NSUnicodeStringEncoding error:&error];
-    DLOG("JSON: %@", json);
     NSArray *items = [json objectFromJSONString];
 
     if (stringPath == PATH_FAVOURITES) {
         favourites_ = [self extractFromJsonArray:items];   
-        if (favourites_ != nil) {
-            DLOG("loaded f COUNT %d", [favourites_ count]);             
-        } else {
+        if (favourites_ == nil) {
            DLOG("NOT LOADED"); 
            return NO;
         } 
     } else if (stringPath == PATH_BOOKMARKED) {
         bookmarked_ = [self extractFromJsonArray:items];  
-        if (bookmarked_ != nil) {
-            DLOG("loaded f COUNT %d", [bookmarked_ count]);    
-        } else {
+        if (bookmarked_ == nil) {            
             DLOG("NOT LOADED"); 
             return NO;
         } 
@@ -119,7 +126,6 @@
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (TVShow *show in array) {
-//        DLOG("convert TO: %d", show.num);
         [ma addObject:[show jsonString]];        
     }
     
@@ -131,7 +137,6 @@
     NSMutableArray *ma = [[NSMutableArray alloc] init];
     
     for (NSString *show in array) {
-//        DLOG("convert FROM: %@", show);
         [ma addObject:[TVShow showFromJsonString:show]];        
     }
     
@@ -190,11 +195,10 @@
 
     [favourites_ addObject:show];
     [self saveFavourites];
-
-    //TODO: background
-    [self downloadSeriesWithId:show.idString];
-    //And save in DB
     
+    [self downloadSeriesWithId:show.idString];                    
+   
+    //TODO: save
     return YES;
 }
 

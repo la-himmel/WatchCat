@@ -62,7 +62,6 @@
 {
     TVShow *show = [[TVShow alloc] init];
     show.name = [item valueForKey:NAME];
-    NSNumber *num = [item valueForKey:ID];
     show.description = [item valueForKey:DESCRIPTION];
     show.link = [item valueForKey:LINK];
     show.image = [item valueForKey:IMAGE];

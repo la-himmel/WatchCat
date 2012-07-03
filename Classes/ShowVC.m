@@ -5,13 +5,17 @@
 #import "XMLDeserialization.h"
 #import "UIImageView+WebCache.h"
 #import "ScheduleVC.h"
+#import "EpisodeListVC.h"
 
 @interface ShowVC() 
 {
     TVShow *show_;
     
-    UIButton *upButton;
-    UIButton *downButton;
+    UIButton *subscribeButton_;
+    UIButton *bookmarkButton_;
+    UIButton *episodeButton_;
+    
+    int currentTab_;
 }
 @end
 
@@ -28,9 +32,7 @@
     NSData *xmlData = [NSData dataWithContentsOfURL:url];    
     NSString *urlImage = @"http://thetvdb.com/banners/_cache/";
     show_.image = [urlImage stringByAppendingString:parseImageUrl(xmlData)];
-    
-//    show_.status = parseStatus(xmlData);
-//    DLOG("Status: %@", show_.status);
+    show_.status = parseStatus(xmlData);
     
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
     background.image = [UIImage imageNamed:@"details@2x.png"];
@@ -53,7 +55,7 @@
     [self.view addSubview:title];
 
     if (show_.nearestEpisode != nil) {
-        DLOG("NEAREST: %@ %@", [show_.nearestEpisode readableNumber], [show_.nearestEpisode name]);
+//        DLOG("NEAREST: %@ %@", [show_.nearestEpisode readableNumber], [show_.nearestEpisode name]);
                 
         UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 90, 123, 25)];
         nearestTitle.text = [[NSString alloc] initWithString:@"Next episode: "];
@@ -71,9 +73,7 @@
         [nearestDate setNumberOfLines:0];
         [nearestDate sizeToFit];
         [self.view addSubview:nearestDate];
-    } else {
-        DLOG("no nearest episode");
-    }
+    } 
     
     UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 213)];
     
@@ -88,14 +88,10 @@
     [description setNumberOfLines:0];
     [description sizeToFit];
 
-//    CGFloat red = 61.0;
-//    CGFloat blue = 69.0;
-//    CGFloat green = 44.0;
-//    description.textColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
     description.backgroundColor = [UIColor clearColor];
     
     CGSize textSize = description.frame.size;
-    textSize.height += 130;
+    textSize.height += 190;
     
     textView.contentSize = textSize;    
     textView.contentMode = UIViewContentModeTop;
@@ -103,46 +99,43 @@
     [self.view addSubview:textView];
     [textView addSubview:description];
     
-    upButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 
+    subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                     10 + description.frame.size.height, 300, 50)];
-    [upButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [upButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
+    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];    
        
-    downButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 
+    bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                 70 + description.frame.size.height, 300, 50)];
-    [downButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [downButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    
+    episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
+                                                                 130 + description.frame.size.height, 300, 50)];
+    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
+    [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
+    [textView addSubview:episodeButton_];
     
     NSString *upText = @"Subscribe";
     NSString *downText = @"Remember";
     
-    if (switcher_ == nil) {
-        DLOG("This b is NIL again!111");
-    }
-    
-    if ([switcher_ currentTab] == 1) {
-        [upButton addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
-        [downButton addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];        
-    } else if ([switcher_ currentTab] == 0) {
-        upText = @"Episode list";
-        downText = @"Unsubscribe";
-        
-        [upButton addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
-        [downButton addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];        
-    } else if ([switcher_ currentTab] == 3) {
-        upText = @"Episode list";
+    if (currentTab_ == 1) {
+        [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
+        [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];        
+    } else if (currentTab_ == 0) {
+        upText = @"Unsubscribe";
+        [subscribeButton_ addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];
+    } else if (currentTab_ == 3) {
         downText = @"Forget";
-        
-        [upButton addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
-        [downButton addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];        
+        [bookmarkButton_ addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];        
     }
 
-    [upButton setTitle:upText forState:UIControlStateNormal];    
-    [downButton setTitle:downText forState:UIControlStateNormal];
+    [subscribeButton_ setTitle:upText forState:UIControlStateNormal];    
+    [bookmarkButton_ setTitle:downText forState:UIControlStateNormal];
 
-    [textView addSubview:upButton];
-    [textView addSubview:downButton];
+    [textView addSubview:subscribeButton_];
+    [textView addSubview:bookmarkButton_];
     
 //    UIButton *editButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 63, 30)];
 //    [editButton setImage:[UIImage imageNamed:@"back_OFF.png"] forState:UIControlStateNormal];
@@ -157,8 +150,8 @@
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
 {
-    DLOG("setting switcher");
     switcher_ = sw;
+    currentTab_ = [switcher_ currentTab];
 }
 
 - (id<TabSwitcher>)switcher
@@ -178,7 +171,17 @@
 
 - (void)showEpisodeList
 {
-    DLOG("Need to show episode list...");
+    DLOG("Need to show episode list... %d", [[show_ episodes] count]);
+    EpisodeListVC *vc;
+    if ([[show_ episodes] count] == 0) {
+        vc = [[EpisodeListVC alloc] initWithShow:show_];
+    } else {
+        vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
+    }
+    
+    vc.myseries = myseries_;
+        
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)forgetShow
@@ -190,10 +193,10 @@
 - (void)unsubscribe
 {
     [myseries_ removeFromFavorites:show_];
-    [downButton setTitle:@"Subscribe" forState:UIControlStateNormal];
-    [downButton addTarget:self action:@selector(addToFavourites) 
+    [bookmarkButton_ setTitle:@"Subscribe" forState:UIControlStateNormal];
+    [bookmarkButton_ addTarget:self action:@selector(addToFavourites) 
          forControlEvents:UIControlEventTouchUpInside];
-    [downButton setNeedsDisplay];
+    [bookmarkButton_ setNeedsDisplay];
 }
 
 - (void)alertWithMessage:(NSString *)message
@@ -207,10 +210,29 @@
     [alert show];
 } 
 
+- (void)alertForCancelAndOkWithMessage:(NSString *)message delegate:(id<UIAlertViewDelegate>)delegate
+{
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@""
+                          message:message
+                          delegate:delegate
+                          cancelButtonTitle:@"Cancel"
+                          otherButtonTitles:@"Ok", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        [self rememberShow];
+    }
+}
+
 - (void)rememberShow
 {
     if (![myseries_ rememberShow:show_]) {
         [self alertWithMessage:@"This show is already in your bookmarks."];
+        return;
     } 
     
     if ([switcher_ currentTab] != 3) {
@@ -222,8 +244,16 @@
 
 - (void)addToFavourites
 {
+    if ([show_.status isEqual:@"Ended"]) {
+        NSString *msg = [[NSString alloc] 
+            initWithString:@"This show is ended. Do you want to add it to you bookmarks?"];
+        [self alertForCancelAndOkWithMessage:msg delegate:self];
+        return;
+    }
+    
     if (![myseries_ addToFavorites:show_]) {
         [self alertWithMessage:@"This show is already in your favourutes."];
+        return;
     }
     
     if ([switcher_ currentTab] != 0) {

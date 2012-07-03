@@ -2,7 +2,7 @@
 #import "MySeries.h"
 #import "TabSwitcher.h"
 
-@interface ScheduleVC: UIViewController<UINavigationControllerDelegate>
+@interface ScheduleVC: UIViewController
 {
     __unsafe_unretained id<TabSwitcher> switcher;
 }

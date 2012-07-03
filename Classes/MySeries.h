@@ -16,4 +16,7 @@
 - (BOOL)load;
 - (void)save;
 
+- (NSArray *)downloadSeriesWithId:(NSString *)seriesId;
+- (NSArray *)downloadSeriesSyncWithId:(NSString *)seriesId;
+
 @end

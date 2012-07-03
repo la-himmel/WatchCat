@@ -3,7 +3,7 @@
 
 @class TVShow;
 
-@interface ShowVC: UIViewController
+@interface ShowVC: UIViewController<UIAlertViewDelegate>
 {
     __unsafe_unretained id<TabSwitcher> switcher;
 }

@@ -5,15 +5,14 @@
 #import "ShowVC.h"
 #import "utils.h"
 
-@interface ScheduleVC () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface ScheduleVC () <UITableViewDataSource, UITableViewDelegate>
 {
     UITableView *tableView_;
     NSMutableArray *favourites_;
     
     UIImageView *back_;
     UILabel *msg_;
-    
-    BOOL tapped;
+
 }
 @end
 
@@ -29,17 +28,13 @@
     }
     
     favourites_ = items;
-    DLOG("items count: %d", [favourites_ count]);
-    
-    tapped = NO;
-    
+        
     return self;
 }
 
 - (void)setMyseries:(MySeries *)myseries
 {
     myseries_ = myseries;    
-//    favourites_ = myseries_.favourites;
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
@@ -47,8 +42,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    DLOG("view vill appear %d %d", [favourites_ count], [myseries_.favourites count]);
-    
     [tableView_ reloadData];
     [self adjust];
     [tableView_ setNeedsDisplay];
@@ -67,12 +60,8 @@
     
     NSString *imageName = @"surpriseBr@2x.png";
     if ([favourites_ count] < 6) {
-        DLOG("< 6");
         imageName = @"main20@2x.png";
     } 
-    DLOG("image name %@", imageName);
-    back_.backgroundColor = [UIColor redColor];
-//    back_.image = [UIImage imageNamed:imageName];    
     
     tableView_.backgroundView = back_;
     tableView_.rowHeight = [ScheduleCell height];
@@ -104,7 +93,6 @@
 
 - (void)switchEditMode
 {
-    DLOG("switching editing mode");
     NSString *title;
     
     BOOL editing = !tableView_.editing;
@@ -115,7 +103,7 @@
     }
     
     self.navigationItem.rightBarButtonItem.title = title;
-    [tableView_ setEditing:editing];
+    [tableView_ setEditing:editing animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
@@ -176,6 +164,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                       @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];
     
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
+    
+    if ([favourites_ count] < 6) {
+        name = @"placeholder.png";
+    }
     
     cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name] 
                                                               stretchableImageWithLeftCapWidth:0.0 
