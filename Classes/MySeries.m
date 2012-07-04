@@ -75,36 +75,9 @@
                 DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
                 currentShow.nearestAirDate = ep.airDate;
                 currentShow.nearestId = [NSString stringWithFormat:@"%d", ep.num];
-                DLOG("-------- Nearest episode: %@", currentShow.nearestId);
                 
-                UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+                [self setNotificationOnDate:airdate episodeId:ep.num show:currentShow.name];
                 
-                localNotification.fireDate = now;
-                localNotification.alertBody = [currentShow.name stringByAppendingString:@"'s next episode is coming today!"];
-                localNotification.soundName = UILocalNotificationDefaultSoundName;
-                localNotification.applicationIconBadgeNumber = 1;
-                
-                [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-                
-                NSDateComponents *dc = [[NSDateComponents alloc] init];
-                dc.day = 04;
-                dc.month = 07;
-                dc.year = 2012;
-                dc.hour = 06;
-                dc.minute = 00;               
-                
-                NSDate *someDate = [[NSCalendar currentCalendar] dateFromComponents:dc];
-                DLOG("result date: %@", [someDate description]);
-                
-                UILocalNotification *note = [[UILocalNotification alloc] init];
-                note.alertAction = @"some action";
-                note.alertBody = @"some body";
-                note.fireDate = airdate;
-                note.timeZone = [[NSCalendar currentCalendar] timeZone];
-                [[UIApplication sharedApplication] scheduleLocalNotification:note];     
-                
-                DLOG("notifications: %@ %@", [[localNotification fireDate] description], [[note fireDate] description]);
-
                 return;
             }       
         }
@@ -112,6 +85,34 @@
     
     return episodes;
           
+}
+
+- (void)setNotificationOnDate:(NSDate *)date episodeId:(int)epId show:(NSString *)show
+{
+    NSDateComponents *dc = [[NSDateComponents alloc] init];
+    dc.day = 4;
+    dc.month = 7;
+    dc.year = 2012;
+    dc.hour = 15;
+    dc.minute = 45;               
+
+    NSDate *someDate = [[NSCalendar currentCalendar] dateFromComponents:dc];
+    DLOG("result date: %@", [someDate description]);
+    NSDate *now = [NSDate date];
+    DLOG("and now its: %@", [now description]);
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];    
+    localNotification.fireDate = date;
+    localNotification.alertAction = @"Open app";
+    localNotification.alertBody = [show stringByAppendingString:@"'s next episode is coming today!"];
+    localNotification.timeZone = [[NSCalendar currentCalendar] timeZone];
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.applicationIconBadgeNumber = 1;    
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    
+    DLOG("notifications: %@", [[localNotification fireDate] description]);
+    
+
 }
 
 - (BOOL)load
