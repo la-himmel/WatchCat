@@ -1,5 +1,5 @@
 #import "EpisodeListVC.h"
-#import "ShowCell.h"
+#import "EpisodeCell.h"
 #import "ScheduleCell.h"
 #import "UIView+position.h"
 #import "utils.h"
@@ -89,13 +89,13 @@
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *MyIdentifier = @"someIdentifier";    
-    ShowCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    EpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     
     if (cell == nil) {
-        cell = [[ShowCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
+        cell = [[EpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
                                reuseIdentifier:MyIdentifier];
     }    
-    [cell setShow:[episodes_ objectAtIndex:indexPath.row]];
+    [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
     
     NSArray *backs = [[NSArray alloc] initWithObjects:@"main1@2x.png", @"main2@2x.png",
                       @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];

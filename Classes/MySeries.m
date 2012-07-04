@@ -72,9 +72,39 @@
                 continue;
             
             if ([airdate compare: now] != NSOrderedAscending) {
-        //            DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
-                currentShow.nearestEpisode = ep;
-                DLOG("-------- Nearest episode: %d", currentShow.nearestEpisode.num);
+                DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
+                currentShow.nearestAirDate = ep.airDate;
+                currentShow.nearestId = [NSString stringWithFormat:@"%d", ep.num];
+                DLOG("-------- Nearest episode: %@", currentShow.nearestId);
+                
+                UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+                
+                localNotification.fireDate = now;
+                localNotification.alertBody = [currentShow.name stringByAppendingString:@"'s next episode is coming today!"];
+                localNotification.soundName = UILocalNotificationDefaultSoundName;
+                localNotification.applicationIconBadgeNumber = 1;
+                
+                [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                
+                NSDateComponents *dc = [[NSDateComponents alloc] init];
+                dc.day = 04;
+                dc.month = 07;
+                dc.year = 2012;
+                dc.hour = 06;
+                dc.minute = 00;               
+                
+                NSDate *someDate = [[NSCalendar currentCalendar] dateFromComponents:dc];
+                DLOG("result date: %@", [someDate description]);
+                
+                UILocalNotification *note = [[UILocalNotification alloc] init];
+                note.alertAction = @"some action";
+                note.alertBody = @"some body";
+                note.fireDate = airdate;
+                note.timeZone = [[NSCalendar currentCalendar] timeZone];
+                [[UIApplication sharedApplication] scheduleLocalNotification:note];     
+                
+                DLOG("notifications: %@ %@", [[localNotification fireDate] description], [[note fireDate] description]);
+
                 return;
             }       
         }

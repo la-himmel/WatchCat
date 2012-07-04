@@ -8,7 +8,8 @@
 @property (nonatomic, strong) NSString *link;
 @property (nonatomic, strong) NSString *image;
 @property (nonatomic, strong) NSString *status;
-@property (nonatomic, strong) Episode *nearestEpisode;
+@property (nonatomic, strong) NSString *nearestAirDate;
+@property (nonatomic, strong) NSString *nearestId;
 
 - (NSDictionary *)dictionary;
 - (NSString *)jsonString;

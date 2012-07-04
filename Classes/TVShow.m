@@ -11,6 +11,8 @@
 #define IMAGE @"image"
 #define STATUS @"status"
 #define IDSTRING @"id_string"
+#define NEAREST_DATE @"nearest_date"
+#define NEAREST_ID @"nearest_id"
 
 @synthesize name = name_;
 @synthesize episodes = episodes_;
@@ -18,8 +20,9 @@
 @synthesize link = link_;
 @synthesize image = image_;
 @synthesize status = status_;
-@synthesize nearestEpisode = nearestEpisode_;
 @synthesize idString = idString_;
+@synthesize nearestId = nearestId_;
+@synthesize nearestAirDate = nearestAirDate_;
 
 
 - (NSDictionary *)dictionary 
@@ -32,7 +35,10 @@
     [show setValue:image_ forKey:IMAGE];
     [show setValue:status_ forKey:STATUS];
     [show setValue:idString_ forKey:IDSTRING];
-        
+    [show setValue:nearestId_ forKey:NEAREST_ID];
+    [show setValue:nearestAirDate_ forKey:NEAREST_DATE];
+
+    DLOG("nearest episode: %@ %@", nearestId_, [nearestAirDate_ description]);        
     return show;
 }
 
@@ -40,12 +46,12 @@
 {
     NSDictionary *dict = [self dictionary];
     if (dict == nil)
-        DLOG("nil!");
+        DLOG("dictionary is nil!");
    
     NSString *json = [dict JSONString];
     
     if (json  == nil)
-        DLOG("nil!");
+        DLOG("json string is nil!");
     
     return json;    
 }
@@ -67,6 +73,10 @@
     show.image = [item valueForKey:IMAGE];
     show.status = [item valueForKey:STATUS];
     show.idString = [item valueForKey:IDSTRING];
+    show.nearestAirDate = [item valueForKey:NEAREST_DATE];
+    show.nearestId = [item valueForKey:NEAREST_ID];
+    
+    DLOG("nearest episode: %@ %@", show.nearestId, [show.nearestAirDate description]);  
     
     return show;
 }

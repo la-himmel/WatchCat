@@ -73,14 +73,14 @@
     [self.view addSubview:tableView_];  
     
     msg_ = [[UILabel alloc] initWithFrame:CGRectMake(0, 
-                                                     (self.view.height - 44 - 25) /2, 
+                                                     (self.view.height - 44 - 55) /2, 
                                                      320, 
                                                      25)];
     msg_.backgroundColor = [UIColor clearColor];
     msg_.textAlignment = UITextAlignmentCenter;
     
     if ([favourites_ count] == 0) {
-        msg_.text = @"No favourites yet";
+        msg_.text = @"No series yet";
         [self.view addSubview:msg_];
     } else {
         [msg_ removeFromSuperview];

@@ -54,7 +54,7 @@
 
     [self.view addSubview:title];
 
-    if (show_.nearestEpisode != nil) {
+    if (show_.nearestAirDate != nil) {
         UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 80, 123, 25)];
         nearestTitle.text = [[NSString alloc] initWithString:@"Next episode: "];
         [nearestTitle setFont:[UIFont fontWithName:@"Arial" size:15]];
@@ -65,7 +65,7 @@
         
         
         UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 100, 123, 25)];
-        nearestDate.text = show_.nearestEpisode.airDate;
+        nearestDate.text = show_.nearestAirDate;
         [nearestDate setFont:[UIFont fontWithName:@"Arial" size:14]];
         nearestDate.lineBreakMode = UILineBreakModeWordWrap;
         [nearestDate setNumberOfLines:0];
