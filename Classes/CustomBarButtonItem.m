@@ -27,7 +27,7 @@
         
         [button setTitle:title forState:UIControlStateNormal];
         
-        UIImage *backgroundImage = [UIImage imageNamed:@"backButton@2x.png"]; 
+        UIImage *backgroundImage = [UIImage imageNamed:@"backButton"]; 
         [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     }
     return self;

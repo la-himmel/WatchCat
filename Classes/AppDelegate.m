@@ -50,21 +50,21 @@
     UINavigationController *searchNC = [[UINavigationController alloc] initWithRootViewController:searchVC_];
     
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.image = [UIImage imageNamed:@"navbar@2x.png"];  
+    view.image = [UIImage imageNamed:@"navbar"];  
     
     [searchNC.navigationBar addSubview:view];    
     [searchNC setNavigationBarHidden:YES];
     searchNC.delegate = self;
 
     UIImageView *scheduleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    scheduleView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+    scheduleView.image = [UIImage imageNamed:@"navbar"]; 
     
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar addSubview:scheduleView];
     favouritesNC.delegate = scheduleVC_;
 
     UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    settingsView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+    settingsView.image = [UIImage imageNamed:@"navbar"]; 
         
     SettingsVC *settingsVC = [[SettingsVC alloc] init]; 
     
@@ -72,7 +72,7 @@
     [settingsNC.navigationBar addSubview:settingsView];
     
     UIImageView *bmView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    bmView.image = [UIImage imageNamed:@"navbar@2x.png"]; 
+    bmView.image = [UIImage imageNamed:@"navbar"]; 
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
     [bookmarkedNC.navigationBar addSubview:bmView];

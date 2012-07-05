@@ -97,8 +97,8 @@
     }    
     [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
     
-    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1@2x.png", @"main2@2x.png",
-                      @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];
+    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1", @"main2",
+                      @"main3", @"main4", @"main5", @"main6", nil];
     
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
     

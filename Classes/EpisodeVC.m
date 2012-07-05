@@ -9,7 +9,7 @@
 - (void)viewDidLoad
 {
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
-    background.image = [UIImage imageNamed:@"details@2x.png"];
+    background.image = [UIImage imageNamed:@"details"];
     
     [self.view addSubview:background];
  

@@ -58,9 +58,9 @@
 
     back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
     
-    NSString *imageName = @"surpriseBr@2x.png";
+    NSString *imageName = @"surpriseBr";
     if ([favourites_ count] < 6) {
-        imageName = @"main20@2x.png";
+        imageName = @"main20";
     } 
     
     tableView_.backgroundView = back_;
@@ -127,9 +127,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     tableView_.bounces = ([favourites_ count] >= 6); 
 
     
-    NSString *imageName = @"surpriseBr@2x.png";
+    NSString *imageName = @"surpriseBr";
     if ([favourites_ count] < 6) {
-        imageName = @"main20@2x.png";
+        imageName = @"main20";
     } 
     
     back_.image = [UIImage imageNamed:imageName];
@@ -160,8 +160,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }    
     [cell setShow:[favourites_ objectAtIndex:indexPath.row]];
     
-    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1@2x.png", @"main2@2x.png",
-                      @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];
+    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1", @"main2",
+                      @"main3", @"main4", @"main5", @"main6", nil];
     
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
     

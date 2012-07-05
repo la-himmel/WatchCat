@@ -62,13 +62,13 @@
                    state:UIControlStateHighlighted];
 
     UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.image = [UIImage imageNamed:@"search@2x.png"];
+    view.image = [UIImage imageNamed:@"search"];
     [self.view addSubview:view];  
    
     [self.view addSubview:searchBar_];
         
     back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
-    back_.image = [UIImage imageNamed:@"main20@2x.png"];
+    back_.image = [UIImage imageNamed:@"main20"];
 
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -83,7 +83,7 @@
     [self.view addSubview:tableView_];
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];  
-    UIImage *backImage = [UIImage imageNamed:@"backButton@2x.png"];  
+    UIImage *backImage = [UIImage imageNamed:@"backButton"];  
     [backButton setImage:backImage forState:UIControlStateNormal];  
     
     [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
@@ -122,8 +122,8 @@
     }    
     [cell setShow:[filteredShows_ objectAtIndex:indexPath.row]];
    
-    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1@2x.png", @"main2@2x.png",
-                      @"main3@2x.png", @"main4@2x.png", @"main5@2x.png", @"main6@2x.png", nil];
+    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1", @"main2",
+                      @"main3", @"main4", @"main5", @"main6", nil];
 
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
         
@@ -183,9 +183,9 @@
 {
     tableView_.bounces = ([filteredShows_ count] >= 6);        
     
-    NSString *imageName = @"surpriseBr@2x.png";
+    NSString *imageName = @"surpriseBr";
     if ([filteredShows_ count] < 6) {
-        imageName = @"main20@2x.png";
+        imageName = @"main20";
     } 
     
     back_.image = [UIImage imageNamed:imageName];
