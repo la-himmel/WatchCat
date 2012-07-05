@@ -59,7 +59,9 @@
     back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
     
     NSString *imageName = @"surpriseBr";
-    if ([favourites_ count] < 6) {
+    if ([favourites_ count] == 0) {
+        imageName = @"mainClouds";
+    } else if ([favourites_ count] < 6) {
         imageName = @"main20";
     } 
     
@@ -72,13 +74,14 @@
     
     [self.view addSubview:tableView_];  
     
-    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(0, 
-                                                     (self.view.height - 44 - 55) /2, 
+    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(28, 
+                                                     107, 
                                                      320, 
                                                      25)];
     msg_.backgroundColor = [UIColor clearColor];
-    msg_.textAlignment = UITextAlignmentCenter;
-    
+    msg_.textColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.9];
+    msg_.textAlignment = UITextAlignmentLeft;
+    [msg_ setFont:[UIFont fontWithName:@"Arial" size:15]];
     if ([favourites_ count] == 0) {
         msg_.text = @"No series yet";
         [self.view addSubview:msg_];
@@ -128,7 +131,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
     
     NSString *imageName = @"surpriseBr";
-    if ([favourites_ count] < 6) {
+    if ([favourites_ count] == 0) {
+        imageName = @"mainClouds";
+    } else if ([favourites_ count] < 6) {
         imageName = @"main20";
     } 
     
@@ -136,7 +141,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     tableView_.backgroundView = back_;
     
     if ([favourites_ count] == 0) {
-        msg_.text = @"No favourites yet";
+        msg_.text = @"No series yet";
         [self.view addSubview:msg_];
     } else {
         [msg_ removeFromSuperview];

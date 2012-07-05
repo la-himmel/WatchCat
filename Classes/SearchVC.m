@@ -68,7 +68,7 @@
     [self.view addSubview:searchBar_];
         
     back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
-    back_.image = [UIImage imageNamed:@"main20"];
+    back_.image = [UIImage imageNamed:@"mainClouds"];
 
     tableView_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];
     tableView_.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -89,15 +89,16 @@
     [backButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];  
     backButton.frame = CGRectMake(0, 0, backImage.size.width, backImage.size.height); 
     
-    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(0, 
-                                                     (self.view.height - 44 - 25) /2, 
+    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(28, 
+                                                     149, 
                                                      320, 
                                                      25)];
     msg_.backgroundColor = [UIColor clearColor];
-    msg_.textAlignment = UITextAlignmentCenter;
+    msg_.textColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.9];
+    msg_.textAlignment = UITextAlignmentLeft;
     
     if ([filteredShows_ count] == 0) {
-        msg_.text = @"No search results";
+        msg_.text = @"No results";
         [self.view addSubview:msg_];
     } else {
         [msg_ removeFromSuperview];
@@ -184,7 +185,10 @@
     tableView_.bounces = ([filteredShows_ count] >= 6);        
     
     NSString *imageName = @"surpriseBr";
-    if ([filteredShows_ count] < 6) {
+    if ([filteredShows_ count] == 0) {
+        DLOG("count == 0");
+        imageName = @"mainClouds";
+    } else if ([filteredShows_ count] < 6) {
         imageName = @"main20";
     } 
     
@@ -192,7 +196,7 @@
     tableView_.backgroundView = back_;
    
     if ([filteredShows_ count] == 0) {
-        msg_.text = @"No search results";
+        msg_.text = @"No results";
         [self.view addSubview:msg_];
     } else {
         [msg_ removeFromSuperview];

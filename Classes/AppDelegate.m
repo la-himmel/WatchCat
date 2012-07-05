@@ -61,7 +61,6 @@
     
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar addSubview:scheduleView];
-    favouritesNC.delegate = scheduleVC_;
 
     UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     settingsView.image = [UIImage imageNamed:@"navbar"]; 
@@ -76,7 +75,6 @@
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
     [bookmarkedNC.navigationBar addSubview:bmView];
-    bookmarkedNC.delegate = bvc;
     
     vcs_ = [NSArray arrayWithObjects:
         favouritesNC,

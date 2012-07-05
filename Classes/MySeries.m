@@ -111,8 +111,6 @@
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     
     DLOG("notifications: %@", [[localNotification fireDate] description]);
-    
-
 }
 
 - (BOOL)load
