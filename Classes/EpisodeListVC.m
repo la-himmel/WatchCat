@@ -97,8 +97,8 @@
     }    
     [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
     
-    NSArray *backs = [[NSArray alloc] initWithObjects:@"main1", @"main2",
-                      @"main3", @"main4", @"main5", @"main6", nil];
+    NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
+                      @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
     
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
     
