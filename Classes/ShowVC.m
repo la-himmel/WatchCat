@@ -17,11 +17,13 @@
     
     int currentTab_;
 }
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 @implementation ShowVC
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
+@synthesize spinner = spinner_;
 
 - (void)viewDidLoad
 {
@@ -135,15 +137,13 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
-//    UIButton *editButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 63, 30)];
-//    [editButton setImage:[UIImage imageNamed:@"back_OFF.png"] forState:UIControlStateNormal];
-//    [editButton setImage:[UIImage imageNamed:@"back_ON.png"] forState:UIControlStateSelected];
-    
-//    UIBarButtonItem *editButtonItem = [[UIBarButtonItem alloc] initWithCustomView:editButton];
-//    self.navigationItem.rightBarButtonItem = editButtonItem;
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"                                                                style:UIBarButtonItemStyleDone target:nil action:nil];
+    UIImage *buttonImage = [UIImage imageNamed:@"Icon"];
 
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonImage 
+                                                      forState:UIControlStateNormal 
+                                                    barMetrics:UIBarMetricsDefault];
+//    DLOG("%@", NSStringFromCGRect(<#CGRect rect#>)); // [[UIBarButtonItem appearance] bounds];
+//     setBounds:CGRectMake(10, 10, 35, 25)];
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
@@ -170,16 +170,36 @@
 - (void)showEpisodeList
 {
     DLOG("Need to show episode list... %d", [[show_ episodes] count]);
-    EpisodeListVC *vc;
-    if ([[show_ episodes] count] == 0) {
-        vc = [[EpisodeListVC alloc] initWithShow:show_];
-    } else {
-        vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
-    }
     
-    vc.myseries = myseries_;
+    spinner_ = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner_ startAnimating];
+    
+    CGRect sp = CGRectMake((self.view.frame.size.width - spinner_.frame.size.width) /2,
+                           (self.view.frame.size.height - spinner_.frame.size.height) /2,
+                           spinner_.frame.size.width,
+                           spinner_.frame.size.height);
+    [spinner_ setFrame:sp];
+    [self.view addSubview:spinner_];
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{
+        EpisodeListVC *vc;
+        if ([[show_ episodes] count] == 0) {
+            vc = [[EpisodeListVC alloc] initWithShow:show_];
+        } else {
+            vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
+        }
         
-    [self.navigationController pushViewController:vc animated:YES];
+        vc.myseries = myseries_;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:vc animated:YES];
+            [spinner_ stopAnimating];
+        });
+    });
+        
+    
 }
 
 - (void)forgetShow

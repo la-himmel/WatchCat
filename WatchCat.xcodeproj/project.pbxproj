@@ -61,7 +61,6 @@
 		7A8A0C281598785100CE9B2F /* brackets2last.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C271598785100CE9B2F /* brackets2last.png */; };
 		7A8A0C2B159878B300CE9B2F /* half.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C29159878B300CE9B2F /* half.png */; };
 		7A8A0C2C159878B300CE9B2F /* halfl.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C2A159878B300CE9B2F /* halfl.png */; };
-		7A8A0C2F159D872F00CE9B2F /* surprise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */; };
 		7A8A0C31159DACF100CE9B2F /* todo_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C30159DACF100CE9B2F /* todo_selected@2x.png */; };
 		7A8A0C33159DAD1C00CE9B2F /* browse_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C32159DAD1C00CE9B2F /* browse_selected@2x.png */; };
 		7A8A0C37159DAD5600CE9B2F /* details@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A8A0C34159DAD5600CE9B2F /* details@2x.png */; };
@@ -186,7 +185,6 @@
 		7A8A0C29159878B300CE9B2F /* half.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = half.png; path = images/navbar/half.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C2A159878B300CE9B2F /* halfl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = halfl.png; path = images/navbar/halfl.png; sourceTree = SOURCE_ROOT; };
 		7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabSwitcher.h; sourceTree = "<group>"; };
-		7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "surprise@2x.png"; sourceTree = "<group>"; };
 		7A8A0C30159DACF100CE9B2F /* todo_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "todo_selected@2x.png"; sourceTree = "<group>"; };
 		7A8A0C32159DAD1C00CE9B2F /* browse_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_selected@2x.png"; sourceTree = "<group>"; };
 		7A8A0C34159DAD5600CE9B2F /* details@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "details@2x.png"; sourceTree = "<group>"; };
@@ -309,6 +307,36 @@
 			path = episodes;
 			sourceTree = "<group>";
 		};
+		7A519CD41637A57A004628E0 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7A817A341590489A00B42FF5 /* CustomBarButtonItem.h */,
+				7A817A351590489B00B42FF5 /* CustomBarButtonItem.m */,
+				7A7FCD7E158B494400241469 /* CustomNavigationBar.h */,
+				7A7FCD7F158B494400241469 /* CustomNavigationBar.m */,
+				7A3231A615A309CB006B3889 /* EpisodeCell.h */,
+				7A3231A715A309CC006B3889 /* EpisodeCell.m */,
+				E1907A7C157DF29500969E37 /* ScheduleCell.h */,
+				E1907A7D157DF29500969E37 /* ScheduleCell.m */,
+				E1D514691556723900FA5A83 /* ShowCell.h */,
+				E1D5146A1556723900FA5A83 /* ShowCell.m */,
+				E1D514A6155A77E500FA5A83 /* Tabbar.h */,
+				E1D514A7155A77E500FA5A83 /* Tabbar.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		7A519CD51637D11B004628E0 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				E1D5146B1556723900FA5A83 /* TVShow.h */,
+				E1D5146C1556723900FA5A83 /* TVShow.m */,
+				E1907A7F157DF68D00969E37 /* Episode.h */,
+				E1907A80157DF68D00969E37 /* Episode.m */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
 		7A7F372215942FD80068DD35 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,7 +411,6 @@
 			children = (
 				7A11A0F915A56E2000D3DB30 /* mainClouds@2x.png */,
 				7A8A0C3A159DAD8D00CE9B2F /* surpriseBr@2x.png */,
-				7A8A0C2E159D872E00CE9B2F /* surprise@2x.png */,
 				7A8A0C29159878B300CE9B2F /* half.png */,
 				7A8A0C2A159878B300CE9B2F /* halfl.png */,
 				7A8A0C271598785100CE9B2F /* brackets2last.png */,
@@ -445,43 +472,29 @@
 		E18F9F9B15243578005AC451 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				E1907A7F157DF68D00969E37 /* Episode.h */,
-				E1907A80157DF68D00969E37 /* Episode.m */,
-				E1907A7C157DF29500969E37 /* ScheduleCell.h */,
-				E1907A7D157DF29500969E37 /* ScheduleCell.m */,
-				E1907A76157DEC8200969E37 /* ScheduleVC.h */,
-				E1907A77157DEC8200969E37 /* ScheduleVC.m */,
-				E1907A78157DEC8200969E37 /* ShowVC.h */,
-				E1907A79157DEC8200969E37 /* ShowVC.m */,
-				7A817A341590489A00B42FF5 /* CustomBarButtonItem.h */,
-				7A817A351590489B00B42FF5 /* CustomBarButtonItem.m */,
-				E1D514A6155A77E500FA5A83 /* Tabbar.h */,
-				E1D514A7155A77E500FA5A83 /* Tabbar.m */,
-				E1D514A8155A77E500FA5A83 /* TabbarVC.h */,
-				E1D514A9155A77E500FA5A83 /* TabbarVC.m */,
-				E1D514701556BB2E00FA5A83 /* XMLDeserialization.h */,
-				E1D514711556BB2E00FA5A83 /* XMLDeserialization.m */,
-				E1D514691556723900FA5A83 /* ShowCell.h */,
-				E1D5146A1556723900FA5A83 /* ShowCell.m */,
-				E1D5146B1556723900FA5A83 /* TVShow.h */,
-				E1D5146C1556723900FA5A83 /* TVShow.m */,
-				E1386E54154E9BF600B9286A /* SearchVC.h */,
-				E1386E55154E9BF600B9286A /* SearchVC.m */,
+				7A519CD51637D11B004628E0 /* Data */,
+				7A519CD41637A57A004628E0 /* UI */,
 				E18F9F9C15243578005AC451 /* AppDelegate.h */,
 				E18F9F9D15243578005AC451 /* AppDelegate.m */,
-				7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */,
-				7A7FCD7E158B494400241469 /* CustomNavigationBar.h */,
-				7A7FCD7F158B494400241469 /* CustomNavigationBar.m */,
-				7A817A8815909DA000B42FF5 /* SettingsVC.h */,
-				7A817A8915909DA100B42FF5 /* SettingsVC.m */,
-				7A817A8E1591ABD100B42FF5 /* MySeries.h */,
-				7A817A8F1591ABD100B42FF5 /* MySeries.m */,
 				7A32319F15A1AC54006B3889 /* EpisodeListVC.h */,
 				7A3231A015A1AC55006B3889 /* EpisodeListVC.m */,
 				7A3231A315A2E9B6006B3889 /* EpisodeVC.h */,
 				7A3231A415A2E9B6006B3889 /* EpisodeVC.m */,
-				7A3231A615A309CB006B3889 /* EpisodeCell.h */,
-				7A3231A715A309CC006B3889 /* EpisodeCell.m */,
+				7A817A8E1591ABD100B42FF5 /* MySeries.h */,
+				7A817A8F1591ABD100B42FF5 /* MySeries.m */,
+				E1907A76157DEC8200969E37 /* ScheduleVC.h */,
+				E1907A77157DEC8200969E37 /* ScheduleVC.m */,
+				E1386E54154E9BF600B9286A /* SearchVC.h */,
+				E1386E55154E9BF600B9286A /* SearchVC.m */,
+				7A817A8815909DA000B42FF5 /* SettingsVC.h */,
+				7A817A8915909DA100B42FF5 /* SettingsVC.m */,
+				E1907A78157DEC8200969E37 /* ShowVC.h */,
+				E1907A79157DEC8200969E37 /* ShowVC.m */,
+				E1D514A8155A77E500FA5A83 /* TabbarVC.h */,
+				E1D514A9155A77E500FA5A83 /* TabbarVC.m */,
+				7A8A0C2D159880A900CE9B2F /* TabSwitcher.h */,
+				E1D514701556BB2E00FA5A83 /* XMLDeserialization.h */,
+				E1D514711556BB2E00FA5A83 /* XMLDeserialization.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -698,7 +711,6 @@
 				7A8A0C281598785100CE9B2F /* brackets2last.png in Resources */,
 				7A8A0C2B159878B300CE9B2F /* half.png in Resources */,
 				7A8A0C2C159878B300CE9B2F /* halfl.png in Resources */,
-				7A8A0C2F159D872F00CE9B2F /* surprise@2x.png in Resources */,
 				7A8A0C31159DACF100CE9B2F /* todo_selected@2x.png in Resources */,
 				7A8A0C33159DAD1C00CE9B2F /* browse_selected@2x.png in Resources */,
 				7A8A0C37159DAD5600CE9B2F /* details@2x.png in Resources */,

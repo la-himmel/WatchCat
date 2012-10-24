@@ -30,12 +30,12 @@
     NSMutableDictionary *show = [[NSMutableDictionary alloc] init];
     
     [show setValue:name_ forKey:NAME];
-    [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:link_ forKey:LINK];
     [show setValue:image_ forKey:IMAGE];
     [show setValue:status_ forKey:STATUS];
     [show setValue:idString_ forKey:IDSTRING];
     [show setValue:nearestId_ forKey:NEAREST_ID];
+    [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:nearestAirDate_ forKey:NEAREST_DATE];
 
     DLOG("nearest episode: %@ %@", nearestId_, [nearestAirDate_ description]);        

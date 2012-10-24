@@ -22,12 +22,15 @@
     
     // current search results
     NSArray *filteredShows_;
+    
 }
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 @implementation SearchVC
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
+@synthesize spinner = spinner_;
 
 - (id)init
 {
@@ -159,30 +162,46 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSString *replaced = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    
-    NSURL *url = [NSURL URLWithString:[NSString
-                     stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", 
-                                        replaced]];
-    //TVRage API: 
-    //http://services.tvrage.com/feeds/search.php?show=
-
-
-    NSData *xmlData = [NSData dataWithContentsOfURL:url];
-    if (xmlData == nil) {
-        DLOG("It's time to show popup!");
-    }
-
-    filteredShows_ = parseSearchResults(xmlData);
-
-    [tableView_ reloadData];
-    [self adjust];
     [searchBar resignFirstResponder];
+
+    spinner_ = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner_ startAnimating];
+    
+    CGRect sp = CGRectMake((tableView_.frame.size.width - spinner_.frame.size.width) /2,
+                           (tableView_.frame.size.height - spinner_.frame.size.height) /2,
+                           spinner_.frame.size.width,
+                           spinner_.frame.size.height);
+    [spinner_ setFrame:sp];
+    [tableView_ addSubview:spinner_];
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{
+        NSString *replaced = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        NSURL *url = [NSURL URLWithString:[NSString
+                                           stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@",
+                                           replaced]];
+        //TVRage API:
+        //http://services.tvrage.com/feeds/search.php?show=        
+        
+        NSData *xmlData = [NSData dataWithContentsOfURL:url];
+        if (xmlData == nil) {
+            DLOG("It's time to show popup!");
+        }
+        
+        filteredShows_ = parseSearchResults(xmlData);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [tableView_ reloadData];
+            [self adjust];
+            [spinner_ stopAnimating];
+        });
+    });
 }
 
 - (void)adjust
 {
-    tableView_.bounces = ([filteredShows_ count] >= 6);        
+    tableView_.bounces = ([filteredShows_ count] >= 6);
     
     NSString *imageName = @"surpriseBr";
     if ([filteredShows_ count] == 0) {
@@ -215,14 +234,31 @@
 {
     [searchBar_ resignFirstResponder];
     
-    ShowVC *vc = [[ShowVC alloc] init];
-    [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
-    [vc setMyseries:myseries_];
-
-    vc.switcher = switcher_;
+    spinner_ = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner_ startAnimating];
     
-    [[self navigationController] setNavigationBarHidden:NO];
-    [self.navigationController pushViewController:vc animated:YES];
+    CGRect sp = CGRectMake((tableView_.frame.size.width - spinner_.frame.size.width) /2,
+                           (tableView_.frame.size.height - spinner_.frame.size.height) /2,
+                           spinner_.frame.size.width,
+                           spinner_.frame.size.height);
+    [spinner_ setFrame:sp];
+    [tableView_ addSubview:spinner_];
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{
+        ShowVC *vc = [[ShowVC alloc] init];
+        [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
+        [vc setMyseries:myseries_];
+        
+        vc.switcher = switcher_;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self navigationController] setNavigationBarHidden:NO];
+            [self.navigationController pushViewController:vc animated:YES];
+            [spinner_ stopAnimating];
+        });
+    });
 }
 
 @end
