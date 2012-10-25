@@ -5,11 +5,14 @@
 #import "utils.h"
 #import "EpisodeVC.h"
 
+#define ROW_KEY @"rows"
+
 @interface EpisodeListVC () <UITableViewDataSource, UITableViewDelegate>
 {
     UITableView *tableView_;
     NSArray *episodes_;
     TVShow *show_;
+    BOOL severalSeasons_;
 
     UIImageView *back_; 
 }
@@ -25,18 +28,86 @@
     if (!(self = [super init])) {
         return nil;
     }
+        
+    episodes_ = items;
+
     
-    episodes_ = items;    
     return self;
 }
 
 - (id)initWithShow:(TVShow *)show
 {
+    DLOG("initing wth show");
     if (!(self = [super init])) {
         return nil;
     }    
     show_ = show;
     return self;
+}
+
+- (void)sortItems
+{
+    DLOG("sorting items...");
+    
+    int firstSeason = -1;
+    BOOL needToSort = NO;
+    
+    for (Episode *episode in episodes_) {
+        if (firstSeason < 0)
+            firstSeason = episode.seasonNum;
+        else if (firstSeason != episode.seasonNum) {
+            needToSort = YES;
+            severalSeasons_ = YES;
+            break;
+        }
+    }
+    
+    
+    NSMutableArray *sections = [[NSMutableArray alloc] init];
+    NSMutableDictionary *section = [[NSMutableDictionary alloc] init];
+    NSMutableArray *rows = [[NSMutableArray alloc] init];
+    
+    int counter = 0;
+    BOOL lastEpisode = NO;
+    
+    int currentSeason = -1;
+    if (needToSort) {
+        for (Episode *episode in episodes_) {
+            counter++;
+            if (counter == [episodes_ count])
+                lastEpisode = YES;
+                        
+            if (currentSeason < 0)
+                currentSeason = episode.seasonNum;
+            
+            if (currentSeason != episode.seasonNum || lastEpisode) {
+
+                if (lastEpisode) {
+                    [rows addObject:episode];
+                }
+
+                DLOG("small array %d, season: %d", [rows count], currentSeason);
+                currentSeason = episode.seasonNum;
+                
+                [section setObject:rows forKey:ROW_KEY];
+                [sections addObject:section];
+                
+                section = nil;
+                rows = nil;
+                
+                if (!lastEpisode) {
+                    section = [[NSMutableDictionary alloc] init];
+                    rows = [[NSMutableArray alloc] init];
+                    [rows addObject:episode];
+                }
+                
+            } else {
+                [rows addObject:episode];
+            }
+        
+        }
+    }
+    DLOG("array: %d", [sections count]);
 }
 
 - (void)viewDidLoad
@@ -73,6 +144,9 @@
         episodes_ = [myseries_ downloadSeriesSyncWithId:show_.idString];
         
         DLOG("Loaded: count %d", [episodes_ count]);
+        
+        severalSeasons_ = NO;
+        [self sortItems];
         
         [tableView_ reloadData];
         [tableView_ setNeedsDisplay];

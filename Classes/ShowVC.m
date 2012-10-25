@@ -64,8 +64,7 @@
         [nearestTitle setNumberOfLines:0];
         [nearestTitle sizeToFit];
         [self.view addSubview:nearestTitle];
-        
-        
+                
         UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 100, 123, 25)];
         nearestDate.text = show_.nearestAirDate;
         [nearestDate setFont:[UIFont fontWithName:@"Arial" size:14]];
@@ -137,13 +136,12 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
-    UIImage *buttonImage = [UIImage imageNamed:@"Icon"];
+    UIImage *buttonImage = [UIImage imageNamed:@"back_long"];
 
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonImage 
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonImage
                                                       forState:UIControlStateNormal 
                                                     barMetrics:UIBarMetricsDefault];
-//    DLOG("%@", NSStringFromCGRect(<#CGRect rect#>)); // [[UIBarButtonItem appearance] bounds];
-//     setBounds:CGRectMake(10, 10, 35, 25)];
+//    [[UIBarButtonItem appearance] setBounds:CGRectMake(0, 0, 110, 50)];    
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
