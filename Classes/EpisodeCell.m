@@ -25,8 +25,7 @@
 
 - (void)setEpisode:(Episode *)episode
 {
-    NSString //label = [episode.readableNumber stringByAppendingString:episode.name];
-    *label = [NSString stringWithFormat:@"%@ %@", episode.readableNumber, episode.name];
+    NSString *label = [NSString stringWithFormat:@"%@ %@", episode.readableNumber, episode.name];
     self.textLabel.text = label;
     self.textLabel.backgroundColor = [UIColor clearColor];
     self.textLabel.highlightedTextColor = [UIColor purpleColor];

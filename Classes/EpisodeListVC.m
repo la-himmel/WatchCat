@@ -4,21 +4,28 @@
 #import "UIView+position.h"
 #import "utils.h"
 #import "EpisodeVC.h"
-
-#define ROW_KEY @"rows"
+#import "SeasonCell.h"
 
 @interface EpisodeListVC () <UITableViewDataSource, UITableViewDelegate>
 {
     UITableView *tableView_;
-    NSArray *episodes_;
+    NSArray *episodes_; 
+    
     NSMutableArray *sections_;
+    NSMutableArray *emptySections_;
+    
+    NSMutableArray *dataSource_;
+    
     TVShow *show_;
     BOOL severalSeasons_;
+    NSInteger currentSeason_;
 
     UIImageView *back_; 
 }
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;   
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
+
+const NSString *ROW_KEY = @"rows";
 
 @implementation EpisodeListVC
 @synthesize spinner = spinner_;
@@ -42,7 +49,39 @@
         return nil;
     }    
     show_ = show;
+    
+    emptySections_ = [[NSMutableArray alloc] init];
+    dataSource_ = [[NSMutableArray alloc] init];
+    
+    currentSeason_ = -1;
+    
     return self;
+}
+
+- (void)createEmptySections
+{
+    int counter = 0;
+    for (NSDictionary *dict in sections_) {
+        NSArray *rows = [dict objectForKey:ROW_KEY];
+        Episode *episode = [rows objectAtIndex:0];
+        
+        NSString *season = [NSString stringWithFormat:@"Season %d", episode.seasonNum];
+        NSArray *array = [[NSArray alloc] initWithObjects:season, nil];
+        
+        NSMutableDictionary *section = [[NSMutableDictionary alloc] init];
+        [section setObject:array forKey:ROW_KEY];
+        
+        [emptySections_ addObject:section];
+        
+        if (counter != 2) {
+           [dataSource_ addObject:section];
+        } else {
+            [dataSource_ addObject:[sections_ objectAtIndex:2]];
+            currentSeason_ = 2;
+        }
+
+        counter++;
+    }
 }
 
 - (void)sortItems
@@ -143,6 +182,7 @@
         
         severalSeasons_ = NO;
         [self sortItems];
+        [self createEmptySections];
         
         [tableView_ reloadData];
         [tableView_ setNeedsDisplay];
@@ -157,8 +197,8 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[[sections_ objectAtIndex:section]
-             objectForKey:ROW_KEY] count];
+//    return [[[sections_ objectAtIndex:section] objectForKey:ROW_KEY] count];
+    return [[[dataSource_ objectAtIndex:section] objectForKey:ROW_KEY] count];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -171,21 +211,49 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *section = [sections_ objectAtIndex:(NSUInteger)indexPath.section];
+    
+//    NSDictionary *section = [sections_ objectAtIndex:(NSUInteger)indexPath.section];
+    NSDictionary *section = [dataSource_ objectAtIndex:(NSUInteger)indexPath.section];
     NSArray *rows = [section objectForKey:ROW_KEY];
+    
+    DLOG("section: %d", indexPath.section);
+    UITableViewCell *cell = nil;
+    
+    if (currentSeason_ == (NSUInteger)indexPath.section) {
+        DLOG("this is not a season, its episodes!");
+        
+        Episode *episode = [rows objectAtIndex:(NSUInteger)indexPath.row];
+        
+        static NSString *MyIdentifier = @"someIdentifier";
+        EpisodeCell *eCell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        
+        if (eCell == nil) {
+            eCell = [[EpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:MyIdentifier];
+        }
+
+        [eCell setEpisode:episode];
+        cell = eCell;
+                        
+    } else {
+        DLOG("this is season");
+        NSString *season = (NSString *)[rows objectAtIndex:0];
+        if ([season isKindOfClass:[NSString class]])
+            DLOG("this is string");
+        else
+            DLOG("this is NOT");
+        static NSString *MyTitleId = @"someTitleId";
+        SeasonCell *tvCell = [tableView dequeueReusableCellWithIdentifier:MyTitleId];
+        
+        if (tvCell == nil) {
+            tvCell = [[SeasonCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:MyTitleId];
+        }
+
+        [tvCell setTitle:season];
+        cell = tvCell;
+    }
     DLOG("rows: %d", [rows count]);
-    
-    Episode *episode = [rows objectAtIndex:(NSUInteger)indexPath.row];
-    
-    static NSString *MyIdentifier = @"someIdentifier";    
-    EpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-    
-    if (cell == nil) {
-        cell = [[EpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
-                               reuseIdentifier:MyIdentifier];
-    }    
-//    [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
-    [cell setEpisode:episode];
     
     NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
                       @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
@@ -208,12 +276,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Episode *episode = [episodes_ objectAtIndex:indexPath.row];
-    EpisodeVC *vc = [[EpisodeVC alloc] init];
-    vc.episode = episode;
+    NSDictionary *section = [dataSource_ objectAtIndex:indexPath.section];
+    NSArray *rows = [section objectForKey:ROW_KEY];
     
-    [[self navigationController] setNavigationBarHidden:NO];
-    [self.navigationController pushViewController:vc animated:YES];
+    if (currentSeason_ < 0) {
+        //open this section
+        
+//        NSDictionary *section = [sections_ objectAtIndex:indexPath.section];
+//        [dataSource_ replaceObjectAtIndex:indexPath.section withObject:section];
+//        [tableView reloadData];
+        
+    } else if (currentSeason_ == indexPath.section) {
+        //show episode
+        
+        Episode *episode = [rows objectAtIndex:indexPath.row];
+        EpisodeVC *vc = [[EpisodeVC alloc] init];
+        vc.episode = episode;
+        
+        [[self navigationController] setNavigationBarHidden:NO];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } else {
+        //close current section and open this one
+        currentSeason_ = indexPath.section;
+    }
+    
 }
 
 @end
