@@ -11,6 +11,7 @@
 {
     UITableView *tableView_;
     NSArray *episodes_;
+    NSMutableArray *sections_;
     TVShow *show_;
     BOOL severalSeasons_;
 
@@ -37,7 +38,6 @@
 
 - (id)initWithShow:(TVShow *)show
 {
-    DLOG("initing wth show");
     if (!(self = [super init])) {
         return nil;
     }    
@@ -47,8 +47,6 @@
 
 - (void)sortItems
 {
-    DLOG("sorting items...");
-    
     int firstSeason = -1;
     BOOL needToSort = NO;
     
@@ -63,8 +61,7 @@
     }
     
     
-    NSMutableArray *sections = [[NSMutableArray alloc] init];
-    NSMutableDictionary *section = [[NSMutableDictionary alloc] init];
+    sections_ = [[NSMutableArray alloc] init];
     NSMutableArray *rows = [[NSMutableArray alloc] init];
     
     int counter = 0;
@@ -89,14 +86,13 @@
                 DLOG("small array %d, season: %d", [rows count], currentSeason);
                 currentSeason = episode.seasonNum;
                 
+                NSMutableDictionary *section = [[NSMutableDictionary alloc] init];
                 [section setObject:rows forKey:ROW_KEY];
-                [sections addObject:section];
+                [sections_ addObject:section];
                 
-                section = nil;
                 rows = nil;
                 
                 if (!lastEpisode) {
-                    section = [[NSMutableDictionary alloc] init];
                     rows = [[NSMutableArray alloc] init];
                     [rows addObject:episode];
                 }
@@ -107,7 +103,7 @@
         
         }
     }
-    DLOG("array: %d", [sections count]);
+    DLOG("array: %d", [sections_ count]);
 }
 
 - (void)viewDidLoad
@@ -154,14 +150,33 @@
     }
 }
 
-- (int)tableView:(UITableView *)tableView numberOfRowsInSection:(int)section
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [episodes_ count];
+    return [sections_ count];
+}
+
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [[[sections_ objectAtIndex:section]
+             objectForKey:ROW_KEY] count];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
+    view.backgroundColor = [UIColor purpleColor];
+    return view;    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSDictionary *section = [sections_ objectAtIndex:(NSUInteger)indexPath.section];
+    NSArray *rows = [section objectForKey:ROW_KEY];
+    DLOG("rows: %d", [rows count]);
+    
+    Episode *episode = [rows objectAtIndex:(NSUInteger)indexPath.row];
+    
     static NSString *MyIdentifier = @"someIdentifier";    
     EpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     
@@ -169,7 +184,8 @@
         cell = [[EpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
                                reuseIdentifier:MyIdentifier];
     }    
-    [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
+//    [cell setEpisode:[episodes_ objectAtIndex:indexPath.row]];
+    [cell setEpisode:episode];
     
     NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
                       @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
