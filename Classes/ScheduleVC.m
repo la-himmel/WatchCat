@@ -14,12 +14,14 @@
     UILabel *msg_;
 
 }
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 @implementation ScheduleVC
 
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
+@synthesize spinner = spinner_;
 
 - (id)initWithItems:(NSMutableArray *)items
 {
@@ -100,9 +102,9 @@
     
     BOOL editing = !tableView_.editing;
     if (editing) {
-        title = [[NSString alloc] initWithString:@"Done"];
+        title = @"Done";
     } else {
-        title = [[NSString alloc] initWithString:@"Edit"];
+        title = @"Edit";
     }
     
     self.navigationItem.rightBarButtonItem.title = title;
@@ -188,13 +190,31 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ShowVC *vc = [[ShowVC alloc] init];
-    [vc setShow:[favourites_ objectAtIndex:indexPath.row]];
-    [vc setMyseries:myseries_];
-    [vc setSwitcher:switcher_];
+    spinner_ = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner_ startAnimating];
     
-    [[self navigationController] setNavigationBarHidden:NO];
-    [self.navigationController pushViewController:vc animated:YES];
+    CGRect sp = CGRectMake((tableView_.frame.size.width - spinner_.frame.size.width) /2,
+                           (tableView_.frame.size.height - spinner_.frame.size.height) /2,
+                           spinner_.frame.size.width,
+                           spinner_.frame.size.height);
+    [spinner_ setFrame:sp];
+    [tableView_ addSubview:spinner_];
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{
+        ShowVC *vc = [[ShowVC alloc] init];
+        [vc setShow:[favourites_ objectAtIndex:indexPath.row]];
+        [vc setMyseries:myseries_];
+        [vc setSwitcher:switcher_];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self navigationController] setNavigationBarHidden:NO];
+            [self.navigationController pushViewController:vc animated:YES];
+            [spinner_ stopAnimating];
+        });
+    });
+    
 }
 
 

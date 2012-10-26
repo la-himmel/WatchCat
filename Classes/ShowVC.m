@@ -58,7 +58,7 @@
 
     if (show_.nearestAirDate != nil) {
         UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 80, 123, 25)];
-        nearestTitle.text = [[NSString alloc] initWithString:@"Next episode: "];
+        nearestTitle.text = @"Next episode: ";
         [nearestTitle setFont:[UIFont fontWithName:@"Arial" size:15]];
         nearestTitle.lineBreakMode = UILineBreakModeWordWrap;
         [nearestTitle setNumberOfLines:0];
@@ -265,8 +265,7 @@
 - (void)addToFavourites
 {
     if ([show_.status isEqual:@"Ended"]) {
-        NSString *msg = [[NSString alloc] 
-            initWithString:@"This show is ended. Do you want to add it to you bookmarks?"];
+        NSString *msg = @"This show is ended. Do you want to add it to you bookmarks?";
         [self alertForCancelAndOkWithMessage:msg delegate:self];
         return;
     }
