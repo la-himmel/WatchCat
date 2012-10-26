@@ -38,8 +38,6 @@ const NSString *ROW_KEY = @"rows";
     }
         
     episodes_ = items;
-
-    
     return self;
 }
 
@@ -60,10 +58,10 @@ const NSString *ROW_KEY = @"rows";
 
 - (void)createEmptySections
 {
-    int counter = 0;
     for (NSDictionary *dict in sections_) {
         NSArray *rows = [dict objectForKey:ROW_KEY];
-        Episode *episode = [rows objectAtIndex:0];
+        Episode *episode = [rows objectAtIndex:1];
+        //0 element is always season title, so first episode is 1
         
         NSString *season = [NSString stringWithFormat:@"Season %d", episode.seasonNum];
         NSArray *array = [[NSArray alloc] initWithObjects:season, nil];
@@ -72,15 +70,7 @@ const NSString *ROW_KEY = @"rows";
         [section setObject:array forKey:ROW_KEY];
         
         [emptySections_ addObject:section];
-        
-        if (counter != 2) {
-           [dataSource_ addObject:section];
-        } else {
-            [dataSource_ addObject:[sections_ objectAtIndex:2]];
-            currentSeason_ = 2;
-        }
-
-        counter++;
+        [dataSource_ addObject:section];
     }
 }
 
@@ -115,12 +105,14 @@ const NSString *ROW_KEY = @"rows";
                         
             if (currentSeason < 0)
                 currentSeason = episode.seasonNum;
+            //initial season
             
             if (currentSeason != episode.seasonNum || lastEpisode) {
 
                 if (lastEpisode) {
                     [rows addObject:episode];
                 }
+                //the last episode in the list
 
                 DLOG("small array %d, season: %d", [rows count], currentSeason);
                 currentSeason = episode.seasonNum;
@@ -128,18 +120,23 @@ const NSString *ROW_KEY = @"rows";
                 NSMutableDictionary *section = [[NSMutableDictionary alloc] init];
                 [section setObject:rows forKey:ROW_KEY];
                 [sections_ addObject:section];
+                //push this array, because this is the next season
                 
                 rows = nil;
+                //clear array after pushing
                 
                 if (!lastEpisode) {
                     rows = [[NSMutableArray alloc] init];
+                    
+                    NSString *season = [NSString stringWithFormat:@"Season %d", episode.seasonNum];
+
+                    [rows addObject:season];
                     [rows addObject:episode];
                 }
                 
             } else {
                 [rows addObject:episode];
-            }
-        
+            }        
         }
     }
     DLOG("array: %d", [sections_ count]);
@@ -197,30 +194,46 @@ const NSString *ROW_KEY = @"rows";
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//    return [[[sections_ objectAtIndex:section] objectForKey:ROW_KEY] count];
     return [[[dataSource_ objectAtIndex:section] objectForKey:ROW_KEY] count];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
-    view.backgroundColor = [UIColor purpleColor];
-    return view;    
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
+//    view.backgroundColor = [UIColor purpleColor];
+//    return view;    
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-//    NSDictionary *section = [sections_ objectAtIndex:(NSUInteger)indexPath.section];
     NSDictionary *section = [dataSource_ objectAtIndex:(NSUInteger)indexPath.section];
     NSArray *rows = [section objectForKey:ROW_KEY];
     
     DLOG("section: %d", indexPath.section);
+    DLOG("current season: %d", currentSeason_);
     UITableViewCell *cell = nil;
     
-    if (currentSeason_ == (NSUInteger)indexPath.section) {
-        DLOG("this is not a season, its episodes!");
+    NSObject *season = [rows objectAtIndex:(NSUInteger)indexPath.row];
+    
+    if ([season isKindOfClass:[NSString class]]) {
+        DLOG("this is string season");
+        
+        NSString *season = [rows objectAtIndex:(NSUInteger)indexPath.row];
+        
+        static NSString *MyTitleId = @"someTitleId";
+        SeasonCell *tvCell = [tableView dequeueReusableCellWithIdentifier:MyTitleId];
+        
+        if (tvCell == nil) {
+            tvCell = [[SeasonCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                       reuseIdentifier:MyTitleId];
+        }
+        
+        [tvCell setTitle:season];
+        cell = tvCell;
+
+    } else if ([season isKindOfClass:[Episode class]]) {
+        DLOG("this is episode");
         
         Episode *episode = [rows objectAtIndex:(NSUInteger)indexPath.row];
         
@@ -229,35 +242,15 @@ const NSString *ROW_KEY = @"rows";
         
         if (eCell == nil) {
             eCell = [[EpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                      reuseIdentifier:MyIdentifier];
+                                       reuseIdentifier:MyIdentifier];
         }
-
+        
         [eCell setEpisode:episode];
         cell = eCell;
-                        
-    } else {
-        DLOG("this is season");
-        NSString *season = (NSString *)[rows objectAtIndex:0];
-        if ([season isKindOfClass:[NSString class]])
-            DLOG("this is string");
-        else
-            DLOG("this is NOT");
-        static NSString *MyTitleId = @"someTitleId";
-        SeasonCell *tvCell = [tableView dequeueReusableCellWithIdentifier:MyTitleId];
-        
-        if (tvCell == nil) {
-            tvCell = [[SeasonCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                      reuseIdentifier:MyTitleId];
-        }
-
-        [tvCell setTitle:season];
-        cell = tvCell;
     }
-    DLOG("rows: %d", [rows count]);
-    
+            
     NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
                       @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
-    
     NSString *name = [backs objectAtIndex:(indexPath.row %6)];
     
     if ([episodes_ count] < 6) {
@@ -281,24 +274,44 @@ const NSString *ROW_KEY = @"rows";
     
     if (currentSeason_ < 0) {
         //open this section
-        
-//        NSDictionary *section = [sections_ objectAtIndex:indexPath.section];
-//        [dataSource_ replaceObjectAtIndex:indexPath.section withObject:section];
-//        [tableView reloadData];
+        DLOG("no season");
+
+        currentSeason_ = indexPath.section;
+        NSDictionary *section = [sections_ objectAtIndex:indexPath.section];
+        [dataSource_ replaceObjectAtIndex:indexPath.section withObject:section];
+        [tableView reloadData];
         
     } else if (currentSeason_ == indexPath.section) {
         //show episode
+        DLOG("season opened");
         
-        Episode *episode = [rows objectAtIndex:indexPath.row];
-        EpisodeVC *vc = [[EpisodeVC alloc] init];
-        vc.episode = episode;
-        
-        [[self navigationController] setNavigationBarHidden:NO];
-        [self.navigationController pushViewController:vc animated:YES];
+        if (indexPath.row) {
+            Episode *episode = [rows objectAtIndex:indexPath.row];
+            EpisodeVC *vc = [[EpisodeVC alloc] init];
+            vc.episode = episode;
+            
+            [[self navigationController] setNavigationBarHidden:NO];
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            NSDictionary *emptysection = [emptySections_ objectAtIndex:currentSeason_];
+            [dataSource_ replaceObjectAtIndex:currentSeason_ withObject:emptysection];
+            
+            currentSeason_ = -1;
+            [tableView reloadData];
+        }
         
     } else {
         //close current section and open this one
+        DLOG("switch season");
+
+        NSDictionary *section = [sections_ objectAtIndex:indexPath.section];
+        [dataSource_ replaceObjectAtIndex:indexPath.section withObject:section];
+        
+        NSDictionary *emptysection = [emptySections_ objectAtIndex:currentSeason_];
+        [dataSource_ replaceObjectAtIndex:currentSeason_ withObject:emptysection];
+        
         currentSeason_ = indexPath.section;
+        [tableView reloadData];
     }
     
 }
