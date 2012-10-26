@@ -22,7 +22,7 @@
     [pic setImageWithURL:[NSURL URLWithString:fullUrl] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     [self.view addSubview:pic];
     
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 133, 100)];
     title.text = [episode_.name copy];
     [title setFont:[UIFont fontWithName:@"Arial" size:19]];
     title.lineBreakMode = UILineBreakModeWordWrap;
@@ -31,12 +31,13 @@
     
     [self.view addSubview:title];
     
-    UILabel *number = [[UILabel alloc] initWithFrame:CGRectMake(188, 95, 123, 25)];
+    UILabel *number = [[UILabel alloc] initWithFrame:CGRectMake(275, 2, 123, 15)]; //95
     number.text = episode_.readableNumber;
-    [number setFont:[UIFont fontWithName:@"Arial" size:19]];
+    [number setFont:[UIFont fontWithName:@"Arial" size:13]];
     number.lineBreakMode = UILineBreakModeWordWrap;
-//    [number setNumberOfLines:0];
+    number.backgroundColor = [UIColor clearColor];
     [number sizeToFit];
+    number.textColor = [UIColor grayColor];
     [self.view addSubview:number];
     
     UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 213)];

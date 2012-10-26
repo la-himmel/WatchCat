@@ -46,12 +46,12 @@
     return self;
 }
 
-- (BOOL)needToSort
+- (BOOL)theOnlySeason
 {
     Episode *first = [episodes_ objectAtIndex:0];
     Episode *last = [episodes_ objectAtIndex:([episodes_ count] -1)];
     
-    return !(first.seasonNum == last.seasonNum);
+    return first.seasonNum == last.seasonNum;
 }
 
 - (void)sortItems
@@ -63,42 +63,46 @@
     BOOL lastEpisode = NO;
     
     int currentSeason = -1;
-    if ([self needToSort]) {
-        for (Episode *episode in episodes_) {
-            counter++;
-            
-            if (counter == [episodes_ count]) {
-                lastEpisode = YES;
-            }
-                        
-            if (currentSeason < 0) {
-                currentSeason = episode.seasonNum;
-            }
-            //initial season
-            
-            if (currentSeason != episode.seasonNum || lastEpisode) {
-
-                if (lastEpisode) {
-                    [rows addObject:episode];
-                }
-                //the last episode in the list
-
-                DLOG("small array %d, season: %d", [rows count], currentSeason);
-                currentSeason = episode.seasonNum;
-                
-                [sections_ addObject:rows];
-                rows = nil;
-                
-                if (!lastEpisode) {
-                    rows = [[NSMutableArray alloc] init];
-                    [rows addObject:episode];
-                }
-                
-            } else {
-                [rows addObject:episode];
-            }        
+    
+    for (Episode *episode in episodes_) {
+        counter++;
+        
+        if (counter == [episodes_ count]) {
+            lastEpisode = YES;
         }
+                    
+        if (currentSeason < 0) {
+            currentSeason = episode.seasonNum;
+        }
+        //initial season
+        
+        if (currentSeason != episode.seasonNum || lastEpisode) {
+
+            if (lastEpisode) {
+                [rows addObject:episode];
+            }
+            //the last episode in the list
+
+            DLOG("small array %d, season: %d", [rows count], currentSeason);
+            currentSeason = episode.seasonNum;
+            
+            [sections_ addObject:rows];
+            rows = nil;
+            
+            if (!lastEpisode) {
+                rows = [[NSMutableArray alloc] init];
+                [rows addObject:episode];
+            }
+            
+        } else {
+            [rows addObject:episode];
+        }        
     }
+    if ([self theOnlySeason]) {
+        currentSeason_ = 0;
+    }
+        
+
     DLOG("array: %d", [sections_ count]);
 }
 
@@ -162,14 +166,12 @@
 {
     NSArray *rows = [sections_ objectAtIndex:(NSUInteger)indexPath.section];
     
-//    DLOG("section: %d", indexPath.section);
-//    DLOG("current season: %d", currentSeason_);
-
     UITableViewCell *cell = nil;
     
     if (indexPath.row == 0) {
+        Episode *firstEpisode = [rows objectAtIndex:1];
         
-        NSString *season = [NSString stringWithFormat:@"Season %d", indexPath.section];
+        NSString *season = [NSString stringWithFormat:@"Season %d", firstEpisode.seasonNum];
         
         static NSString *MyTitleId = @"someTitleId";
         SeasonCell *tvCell = [tableView dequeueReusableCellWithIdentifier:MyTitleId];
@@ -243,7 +245,7 @@
         
         if (indexPath.row) {
             NSArray *rows = [sections_ objectAtIndex:indexPath.section];
-            Episode *episode = [rows objectAtIndex:indexPath.row];
+            Episode *episode = [rows objectAtIndex:(indexPath.row -1)];
             EpisodeVC *vc = [[EpisodeVC alloc] init];
             vc.episode = episode;
             
