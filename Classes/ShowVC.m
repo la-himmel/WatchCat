@@ -137,16 +137,14 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
-
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
+                                    initWithTitle:@""
+                                    backgroundImage:[UIImage imageNamed:@"back_long"]
+                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
+                                    target:self
+                                    action:@selector(goback)];
     
-//    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
-//                                    initWithTitle:@"Back"
-//                                    backgroundImage:[UIImage imageNamed:@"back_long"]
-//                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
-//                                    target:self
-//                                    action:@selector(goback)];
-//    
-//    self.navigationItem.leftBarButtonItem = backBarItem;
+    self.navigationItem.leftBarButtonItem = backBarItem;
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw

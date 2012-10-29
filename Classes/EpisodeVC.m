@@ -1,6 +1,7 @@
 #import "EpisodeVC.h"
 #import "utils.h"
 #import "UIImageView+WebCache.h"
+#import "UIBarButtonItem+CustomImage.h"
 
 @implementation EpisodeVC
 
@@ -62,6 +63,21 @@
     
     [self.view addSubview:textView];
     [textView addSubview:description];        
+
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
+                                    initWithTitle:@""
+                                    backgroundImage:[UIImage imageNamed:@"back_long"]
+                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
+                                    target:self
+                                    action:@selector(goback)];
+    
+    self.navigationItem.leftBarButtonItem = backBarItem;
 }
+
+-(void)goback
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 @end

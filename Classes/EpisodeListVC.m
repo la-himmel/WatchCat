@@ -5,6 +5,7 @@
 #import "utils.h"
 #import "EpisodeVC.h"
 #import "SeasonCell.h"
+#import "UIBarButtonItem+CustomImage.h"
 
 @interface EpisodeListVC () <UITableViewDataSource, UITableViewDelegate>
 {
@@ -26,6 +27,7 @@
 
 - (id)initWithItems:(NSArray *)items
 {
+    DLOG("init with episodes");
     if (!(self = [super init])) {
         return nil;
     }
@@ -36,6 +38,7 @@
 
 - (id)initWithShow:(TVShow *)show
 {
+    DLOG("init with show");
     if (!(self = [super init])) {
         return nil;
     }    
@@ -146,6 +149,20 @@
         [tableView_ setNeedsDisplay];
         [spinner_ stopAnimating];
     }
+    
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
+                                    initWithTitle:@""
+                                    backgroundImage:[UIImage imageNamed:@"back_long"]
+                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
+                                    target:self
+                                    action:@selector(goback)];
+    
+    self.navigationItem.leftBarButtonItem = backBarItem;
+}
+
+-(void)goback
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -168,7 +185,7 @@
     UITableViewCell *cell = nil;
     
     if (indexPath.row == 0) {
-        Episode *firstEpisode = [rows objectAtIndex:1];
+        Episode *firstEpisode = [rows objectAtIndex:0];
         
         NSString *season = [NSString stringWithFormat:@"Season %d", firstEpisode.seasonNum];
         

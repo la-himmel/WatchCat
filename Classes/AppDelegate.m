@@ -3,10 +3,10 @@
 #import "SearchVC.h"
 #import "ScheduleVC.h"
 #import "TabbarVC.h"
-#import "CustomNavigationBar.h"
+//#import "CustomNavigationBar.h"
 #import "SettingsVC.h"
 #import "MySeries.h"
-#import "AdvancedNavigationBar.h"
+//#import "AdvancedNavigationBar.h"
 
 @interface AppDelegate()
 {   
@@ -39,48 +39,34 @@
     series_ = [[MySeries alloc] init];
     [series_ load];
     
-    scheduleVC_ = [[ScheduleVC alloc] initWithItems:series_.favourites];        
-    [scheduleVC_ setMyseries:series_];
-    
-    ScheduleVC *bvc = [[ScheduleVC alloc] initWithItems:series_.bookmarked];        
-    [bvc setMyseries:series_];
-    
+    //search NC & VC - tab 2
     searchVC_ = [[SearchVC alloc] init];
     searchVC_.myseries = series_;
 
-    UINavigationController *searchNC = [[UINavigationController alloc] initWithRootViewController:searchVC_];
-    
-    UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.image = [UIImage imageNamed:@"navbar"];  
-    
-    [searchNC.navigationBar addSubview:view];    
+    UINavigationController *searchNC = [[UINavigationController alloc] initWithRootViewController:searchVC_];    
+    [searchNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
     [searchNC setNavigationBarHidden:YES];
     searchNC.delegate = self;
-
-    UIImageView *scheduleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    scheduleView.image = [UIImage imageNamed:@"navbar"]; 
+    
+    //favourites NC - tab 1
+    scheduleVC_ = [[ScheduleVC alloc] initWithItems:series_.favourites];
+    [scheduleVC_ setMyseries:series_];
     
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
-    [favouritesNC.navigationBar addSubview:scheduleView];
-//    favouritesNC.navigationBar.backgroundImage = [UIImage imageNamed:@"navbar.png"];
-//    favouritesNC.navigationBar.backgroundColor = [UIColor whiteColor];
+    [favouritesNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
     
-    UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    settingsView.image = [UIImage imageNamed:@"navbar"];
-            
+    //settings VC & NC - tab 3
     SettingsVC *settingsVC = [[SettingsVC alloc] init]; 
     
     UINavigationController *settingsNC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-    [settingsNC.navigationBar addSubview:settingsView];
-//        [settingsNC.navigationBar addSubview:scheduleView];
-//    settingsNC.navigationBar.backgroundImage = [UIImage imageNamed:@"navbar.png"];
-//    settingsNC.navigationBar.backgroundColor = [UIColor whiteColor];
-    
-    UIImageView *bmView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    bmView.image = [UIImage imageNamed:@"navbar"]; 
+    [settingsNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
+   
+    //bookmarked VC & NC - tab 4
+    ScheduleVC *bvc = [[ScheduleVC alloc] initWithItems:series_.bookmarked];
+    [bvc setMyseries:series_];
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
-    [bookmarkedNC.navigationBar addSubview:bmView];
+    [bookmarkedNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
     
     vcs_ = [NSArray arrayWithObjects:
         favouritesNC,
