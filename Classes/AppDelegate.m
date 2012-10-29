@@ -6,6 +6,7 @@
 #import "CustomNavigationBar.h"
 #import "SettingsVC.h"
 #import "MySeries.h"
+#import "AdvancedNavigationBar.h"
 
 @interface AppDelegate()
 {   
@@ -61,14 +62,19 @@
     
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar addSubview:scheduleView];
-
+//    favouritesNC.navigationBar.backgroundImage = [UIImage imageNamed:@"navbar.png"];
+//    favouritesNC.navigationBar.backgroundColor = [UIColor whiteColor];
+    
     UIImageView *settingsView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    settingsView.image = [UIImage imageNamed:@"navbar"]; 
-        
+    settingsView.image = [UIImage imageNamed:@"navbar"];
+            
     SettingsVC *settingsVC = [[SettingsVC alloc] init]; 
     
     UINavigationController *settingsNC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     [settingsNC.navigationBar addSubview:settingsView];
+//        [settingsNC.navigationBar addSubview:scheduleView];
+//    settingsNC.navigationBar.backgroundImage = [UIImage imageNamed:@"navbar.png"];
+//    settingsNC.navigationBar.backgroundColor = [UIColor whiteColor];
     
     UIImageView *bmView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     bmView.image = [UIImage imageNamed:@"navbar"]; 
@@ -100,7 +106,7 @@
 - (void)navigationController:(UINavigationController *)navigationController 
       willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if(searchVC_ == viewController) {
+    if (searchVC_ == viewController) {
         [navigationController setNavigationBarHidden:YES animated:NO];
     } else {
         [navigationController setNavigationBarHidden:NO animated:NO];

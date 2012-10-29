@@ -38,7 +38,7 @@
         return nil;
     }
     
-    [[self navigationController] setNavigationBarHidden:YES];
+//    [[self navigationController] setNavigationBarHidden:YES];
           
     filteredShows_ = [[NSArray alloc] init];
 
@@ -254,7 +254,7 @@
         vc.switcher = switcher_;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[self navigationController] setNavigationBarHidden:NO];
+//            [[self navigationController] setNavigationBarHidden:NO];
             [self.navigationController pushViewController:vc animated:YES];
             [spinner_ stopAnimating];
         });

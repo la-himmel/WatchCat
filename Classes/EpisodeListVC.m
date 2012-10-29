@@ -83,7 +83,6 @@
             }
             //the last episode in the list
 
-            DLOG("small array %d, season: %d", [rows count], currentSeason);
             currentSeason = episode.seasonNum;
             
             [sections_ addObject:rows];
@@ -121,8 +120,8 @@
     tableView_.rowHeight = [ScheduleCell height];
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
-    [self.view addSubview:tableView_];          
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.view addSubview:tableView_];
     
     
     if ([episodes_ count] == 0) {
@@ -185,8 +184,7 @@
         cell = tvCell;
 
     } else {
-        DLOG("this is episode");
-        
+       
         Episode *episode = [rows objectAtIndex:((NSUInteger)indexPath.row -1)];
         
         static NSString *MyIdentifier = @"someIdentifier";
@@ -223,7 +221,6 @@
 {
     if (currentSeason_ < 0) {
         //open this section
-        DLOG("no season");
 
         NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
         NSArray *rows = [sections_ objectAtIndex:indexPath.section];
@@ -241,7 +238,6 @@
         
     } else if (currentSeason_ == indexPath.section) {
         //show episode
-        DLOG("season opened");
         
         if (indexPath.row) {
             NSArray *rows = [sections_ objectAtIndex:indexPath.section];
@@ -249,7 +245,7 @@
             EpisodeVC *vc = [[EpisodeVC alloc] init];
             vc.episode = episode;
             
-            [[self navigationController] setNavigationBarHidden:NO];
+//            [[self navigationController] setNavigationBarHidden:NO];
             [self.navigationController pushViewController:vc animated:YES];
         } else {
             

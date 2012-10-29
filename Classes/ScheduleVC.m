@@ -4,6 +4,7 @@
 #import "UIView+position.h"
 #import "ShowVC.h"
 #import "utils.h"
+#import "UIBarButtonItem+CustomImage.h"
 
 @interface ScheduleVC () <UITableViewDataSource, UITableViewDelegate>
 {
@@ -72,7 +73,7 @@
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     tableView_.backgroundColor = [UIColor redColor];
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     [self.view addSubview:tableView_];  
     
@@ -91,9 +92,15 @@
         [msg_ removeFromSuperview];
     }
     
-    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered
-                                                                  target:self action:@selector(switchEditMode)];
-    self.navigationItem.rightBarButtonItem = editButton;
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
+                                    initWithTitle:@"Edit"
+                                    backgroundImage:[UIImage imageNamed:@"back_long"]
+                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
+                                    target:self
+                                    action:@selector(switchEditMode)];
+    
+    self.navigationItem.rightBarButtonItem = backBarItem;
+   
 }
 
 - (void)switchEditMode
@@ -209,7 +216,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [vc setSwitcher:switcher_];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[self navigationController] setNavigationBarHidden:NO];
+//            [[self navigationController] setNavigationBarHidden:NO];
             [self.navigationController pushViewController:vc animated:YES];
             [spinner_ stopAnimating];
         });

@@ -6,6 +6,7 @@
 #import "UIImageView+WebCache.h"
 #import "ScheduleVC.h"
 #import "EpisodeListVC.h"
+#import "UIBarButtonItem+CustomImage.h"
 
 @interface ShowVC() 
 {
@@ -136,12 +137,16 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
-    UIImage *buttonImage = [UIImage imageNamed:@"back_long"];
 
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonImage
-                                                      forState:UIControlStateNormal 
-                                                    barMetrics:UIBarMetricsDefault];
-//    [[UIBarButtonItem appearance] setBounds:CGRectMake(0, 0, 110, 50)];    
+    
+//    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
+//                                    initWithTitle:@"Back"
+//                                    backgroundImage:[UIImage imageNamed:@"back_long"]
+//                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
+//                                    target:self
+//                                    action:@selector(goback)];
+//    
+//    self.navigationItem.leftBarButtonItem = backBarItem;
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
