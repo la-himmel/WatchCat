@@ -1,6 +1,9 @@
 #import "Tabbar.h"
+
 #import "utils.h"
 #import "uiTabbar.h"
+
+#import "AnimatedButton.h"
 
 @interface Tabbar ()
 {
@@ -22,12 +25,8 @@
 
     UI_SCOPED_ALIAS(ui, uiTabbar);
     
-    UIImageView *background = [[UIImageView alloc] initWithFrame:self.bounds];
-    background.image = uu(ui.background);
-    [self addSubview:background];
-    
     for (int i = 0; i < (sizeof(ui.buttonFrames)/sizeof(ui.buttonFrames[0])); ++i) {
-        UIButton *b = [UIButton buttonWithType:UIButtonTypeCustom];
+        AnimatedButton *b = [[AnimatedButton alloc] init];
         b.frame = ui.buttonFrames[i];
         
         if (i == 0) {
@@ -40,12 +39,18 @@
             [b addTarget:self action:@selector(bookmarkedSelected) forControlEvents:UIControlEventTouchUpInside];
         } 
         
-        [b setImage:uu(ui.buttonImages[i]) forState:UIControlStateNormal];
-        [b setImage:uu(ui.buttonSelectedImages[i]) forState:UIControlStateHighlighted];
+        b.image = uu(ui.buttonImages[i]);
+        b.selectedImage = uu(ui.buttonSelectedImages[i]);
+        b.overlayImage = [UIImage imageNamed:@"tabbar_paw"];
 
         [self addSubview:b];
         [buttons_ addObject:b];
     }
+
+    UIImageView *decoration = [[UIImageView alloc] initWithFrame:self.bounds];
+    decoration.image = uu(ui.decoration);
+    DLOG("decoration.image = %@", decoration.image);
+    [self addSubview:decoration];
 
     return self;
 }
@@ -53,20 +58,9 @@
 - (void)switchButton:(int)index on:(BOOL)on
 {
 //    DLOG("adjust button: %d %@", index, on ? @"true" : @"false");
-    UIButton *b = [buttons_ objectAtIndex:index];
+    AnimatedButton *b = [buttons_ objectAtIndex:index];
     
-    UI_SCOPED_ALIAS(ui, uiTabbar);
-    if (on) {
-        [b setImage:uu(ui.buttonSelectedImages[index]) forState:UIControlStateNormal];
-        [b setImage:uu(ui.buttonSelectedImages[index]) forState:UIControlStateHighlighted];
-
-        b.backgroundColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.4];
-    } else {
-        [b setImage:uu(ui.buttonImages[index]) forState:UIControlStateNormal];
-        [b setImage:uu(ui.buttonImages[index]) forState:UIControlStateHighlighted];
-        b.backgroundColor = [UIColor clearColor];
-    } 
-    [b setNeedsDisplay];
+    [b setSelected:on];
 }
 
 - (void)adjustButtonsToIndex:(int)index

@@ -4,7 +4,7 @@ DECLARE_UI(uiTabbar) {
     CGRect buttonFrames[4];
     ui_Image buttonImages[4];
     ui_Image buttonSelectedImages[4];
-    ui_Image background;
+    ui_Image decoration;
 };
 
 DEFINE_UI(uiTabbar) {
@@ -26,7 +26,7 @@ DEFINE_UI(uiTabbar) {
         UI_IMAGE_NAMED("settings_selected"),
         UI_IMAGE_NAMED("todo_selected")
     },
-    .background = UI_IMAGE_NAMED("tabbar_background")
+    .decoration = UI_IMAGE_NAMED("tabbar_background")
 };
 
 DEFINE_UI_END(uiTabbar)
