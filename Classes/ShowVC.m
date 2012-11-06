@@ -112,7 +112,8 @@
     episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                                  130 + description.frame.size.height, 300, 50)];
     [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active"] forState:UIControlStateHighlighted];
     [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
     [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
     [textView addSubview:episodeButton_];

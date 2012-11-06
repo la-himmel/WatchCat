@@ -16,6 +16,8 @@
 
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UIBarButtonItem *backBarItemActive;
+@property (nonatomic, strong) UIBarButtonItem *backBarItem;
 @end
 
 @implementation ScheduleVC
@@ -23,6 +25,8 @@
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
 @synthesize spinner = spinner_;
+@synthesize backBarItem = backBarItem_;
+@synthesize backBarItemActive = backBarItemActive_;
 
 - (id)initWithItems:(NSMutableArray *)items
 {
@@ -92,29 +96,33 @@
         [msg_ removeFromSuperview];
     }
     
-    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
-                                    initWithTitle:@"Edit"
-                                    backgroundImage:[UIImage imageNamed:@"back_long"]
-                                    backgroundHighlightedImage:[UIImage imageNamed:@"back_long"]
-                                    target:self
-                                    action:@selector(switchEditMode)];
+    backBarItem_ = [[UIBarButtonItem alloc]
+                    initWithTitle:@""
+                    backgroundImage:[UIImage imageNamed:@"edit2"]
+                    backgroundHighlightedImage:[UIImage imageNamed:@"edit2"]
+                    target:self
+                    action:@selector(switchEditMode)];
     
-    self.navigationItem.rightBarButtonItem = backBarItem;
+    backBarItemActive_ = [[UIBarButtonItem alloc]
+                    initWithTitle:@""
+                    backgroundImage:[UIImage imageNamed:@"edit2_active"]
+                    backgroundHighlightedImage:[UIImage imageNamed:@"edit2_active"]
+                    target:self
+                    action:@selector(switchEditMode)];
+    
+    self.navigationItem.rightBarButtonItem = backBarItem_;
    
 }
 
 - (void)switchEditMode
 {
-    NSString *title;
-    
     BOOL editing = !tableView_.editing;
     if (editing) {
-        title = @"Done";
+        self.navigationItem.rightBarButtonItem = backBarItemActive_;
     } else {
-        title = @"Edit";
+        self.navigationItem.rightBarButtonItem = backBarItem_;
     }
-    
-    self.navigationItem.rightBarButtonItem.title = title;
+
     [tableView_ setEditing:editing animated:YES];
 }
 
