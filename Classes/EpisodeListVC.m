@@ -199,9 +199,19 @@
         
         [tvCell setTitle:season];
         cell = tvCell;
-
+        
+        NSArray *backsSeason = [[NSArray alloc] initWithObjects:@"back_b8", @"back_f7",
+                                @"back_k5", @"back_s6", nil];
+        NSString *name = [backsSeason objectAtIndex:(firstEpisode.seasonNum %4)];
+        
+        cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name]
+                                                                  stretchableImageWithLeftCapWidth:0.0
+                                                                  topCapHeight:5.0]];
+        cell.selectedBackgroundView = [[UIImageView alloc]
+                                       initWithImage:[[UIImage imageNamed:name]
+                                                      stretchableImageWithLeftCapWidth:0.0
+                                                      topCapHeight:5.0]];
     } else {
-       
         Episode *episode = [rows objectAtIndex:((NSUInteger)indexPath.row -1)];
         
         static NSString *MyIdentifier = @"someIdentifier";
@@ -214,24 +224,24 @@
         
         [eCell setEpisode:episode];
         cell = eCell;
+        
+        NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
+                          @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
+        NSString *name = [backs objectAtIndex:(indexPath.row %6)];
+        if ([episodes_ count] < 6) {
+            name = @"placeholder.png";
+        }
+        
+        cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name]
+                                                                  stretchableImageWithLeftCapWidth:0.0
+                                                                  topCapHeight:5.0]];
+        cell.selectedBackgroundView = [[UIImageView alloc]
+                                       initWithImage:[[UIImage imageNamed:name]
+                                                      stretchableImageWithLeftCapWidth:0.0
+                                                      topCapHeight:5.0]];
     }
             
-    NSArray *backs = [[NSArray alloc] initWithObjects:@"episodes1", @"episodes2",
-                      @"episodes3", @"episodes4", @"episodes5", @"episodes6", nil];
-    NSString *name = [backs objectAtIndex:(indexPath.row %6)];
-    
-    if ([episodes_ count] < 6) {
-        name = @"placeholder.png";
-    }
-    
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name] 
-                                                              stretchableImageWithLeftCapWidth:0.0 
-                                                              topCapHeight:5.0]];  
-    cell.selectedBackgroundView = [[UIImageView alloc] 
-                                   initWithImage:[[UIImage imageNamed:name] 
-                                                  stretchableImageWithLeftCapWidth:0.0 
-                                                  topCapHeight:5.0]];
-    return cell;
+        return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

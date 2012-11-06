@@ -102,18 +102,20 @@
     subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                     10 + description.frame.size.height, 300, 50)];
     [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active3"] forState:UIControlStateHighlighted];
     [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];    
        
     bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                 70 + description.frame.size.height, 300, 50)];
     [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
     
     episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                                  130 + description.frame.size.height, 300, 50)];
     [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active"] forState:UIControlStateHighlighted];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active1"] forState:UIControlStateHighlighted];
     [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
     [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
     [textView addSubview:episodeButton_];
