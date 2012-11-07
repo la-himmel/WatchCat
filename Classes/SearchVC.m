@@ -22,6 +22,8 @@
     
     // current search results
     NSArray *filteredShows_;
+    BOOL keyboardOpen_;
+    UIGestureRecognizer *recognizer_;
     
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
@@ -37,6 +39,10 @@
     if (!(self = [super init])) {
         return nil;
     }
+    
+    keyboardOpen_ = NO;
+    recognizer_ = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                          action:@selector(closeKeyboard)];
     
 //    [[self navigationController] setNavigationBarHidden:YES];
           
@@ -106,7 +112,23 @@
     } else {
         [msg_ removeFromSuperview];
     }
+            
     DLOG("view did load end");
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    DLOG("start");
+    [self.view addGestureRecognizer:recognizer_];
+
+    return YES;
+}
+
+- (void)closeKeyboard
+{
+    DLOG("close keyboard?");
+    [searchBar_ resignFirstResponder];
+    [self.view removeGestureRecognizer:recognizer_];
 }
 
 - (void)goback

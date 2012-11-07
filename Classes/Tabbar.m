@@ -41,7 +41,7 @@
         
         b.image = uu(ui.buttonImages[i]);
         b.selectedImage = uu(ui.buttonSelectedImages[i]);
-        b.overlayImage = [UIImage imageNamed:@"tabbar_paw"];
+        b.overlayImage = [UIImage imageNamed:@"tabbar_paw_white"];
 
         [self addSubview:b];
         [buttons_ addObject:b];
