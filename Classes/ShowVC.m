@@ -115,7 +115,7 @@
                                                                  130 + description.frame.size.height, 300, 50)];
     [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active1"] forState:UIControlStateHighlighted];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
     [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
     [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
     [textView addSubview:episodeButton_];
@@ -171,9 +171,25 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (BOOL)addressIsAvailable
+{
+    NSError *error;
+    NSString *URLString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://www.thetvdb.com"]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:&error];
+    return ( URLString != NULL ) ? YES : NO;
+}
+
 - (void)showEpisodeList
 {
     DLOG("Need to show episode list... %d", [[show_ episodes] count]);
+    
+    //if there is no internet connection, show popup
+    if (![self addressIsAvailable]) {
+        [self alertWithMessage:@"There is no internet connection or host is unavailable"];
+        return;
+    }
+
     
     spinner_ = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

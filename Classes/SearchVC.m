@@ -160,9 +160,34 @@
     return switcher_;
 }
 
+- (BOOL)addressIsAvailable
+{
+    NSError *error;
+    NSString *URLString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://www.thetvdb.com"]
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:&error];
+    return ( URLString != NULL ) ? YES : NO;
+}
+
+- (void)alertWithMessage:(NSString *)message
+{
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@""
+                          message:message
+                          delegate:nil
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil];
+    [alert show];
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
+    
+    if (![self addressIsAvailable]) {
+        [self alertWithMessage:@"There is no internet connection or host is unavailable"];
+        return;
+    }
 
     spinner_ = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
