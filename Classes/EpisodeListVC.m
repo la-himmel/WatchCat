@@ -137,7 +137,8 @@
                                spinner_.frame.size.width, 
                                spinner_.frame.size.height);
         [spinner_ setFrame:sp];
-        [tableView_ addSubview:spinner_];
+//        [tableView_ addSubview:spinner_];
+        [self.view addSubview:spinner_];
         
         episodes_ = [myseries_ downloadSeriesSyncWithId:show_.idString];
         

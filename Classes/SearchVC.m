@@ -219,8 +219,12 @@
                            (tableView_.frame.size.height - spinner_.frame.size.height) /2,
                            spinner_.frame.size.width,
                            spinner_.frame.size.height);
+    
+    DLOG("spinner rect: %@", NSStringFromCGRect(sp));
+    
     [spinner_ setFrame:sp];
-    [tableView_ addSubview:spinner_];
+//    [tableView_ addSubview:spinner_];
+    [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{
@@ -290,7 +294,8 @@
                            spinner_.frame.size.width,
                            spinner_.frame.size.height);
     [spinner_ setFrame:sp];
-    [tableView_ addSubview:spinner_];
+//    [tableView_ addSubview:spinner_];
+     [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{

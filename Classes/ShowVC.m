@@ -207,8 +207,8 @@
         EpisodeListVC *vc;
         if ([[show_ episodes] count] == 0) {
             vc = [[EpisodeListVC alloc] initWithShow:show_];
-        } else {
-            vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
+//        } else {
+//            vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
         }
         
         vc.myseries = myseries_;

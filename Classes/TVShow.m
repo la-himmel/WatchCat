@@ -38,7 +38,7 @@
     [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:nearestAirDate_ forKey:NEAREST_DATE];
 
-    DLOG("nearest episode: %@ %@", nearestId_, [nearestAirDate_ description]);        
+//    DLOG("nearest episode: %@ %@", nearestId_, [nearestAirDate_ description]);        
     return show;
 }
 
@@ -76,7 +76,7 @@
     show.nearestAirDate = [item valueForKey:NEAREST_DATE];
     show.nearestId = [item valueForKey:NEAREST_ID];
     
-    DLOG("nearest episode: %@ %@", show.nearestId, [show.nearestAirDate description]);  
+//    DLOG("nearest episode: %@ %@", show.nearestId, [show.nearestAirDate description]);  
     
     return show;
 }
