@@ -45,7 +45,14 @@
     UIImageView *pic = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
     pic.contentMode = UIViewContentModeScaleAspectFill;
     [pic setClipsToBounds:YES];
-    [pic setImageWithURL:[NSURL URLWithString:show_.image] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+
+    if (![show_.image isEqualToString:urlImage]) {
+        [pic setImageWithURL:[NSURL URLWithString:show_.image] placeholderImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+    } else {
+        DLOG("empty picture adress");
+        [pic setImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+    }
+
     [self.view addSubview:pic];
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
@@ -83,6 +90,11 @@
     
     UILabel *description = [[UILabel alloc] initWithFrame:textRect];
     description.text = [show_.description copy];
+    
+    if (!description.text.length) {
+        description.text = @"No description available.";
+    }
+    
     [description setFont:[UIFont fontWithName:@"Arial" size:17]];
     description.lineBreakMode = UILineBreakModeWordWrap;
     [description setNumberOfLines:0];
