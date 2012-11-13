@@ -213,8 +213,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                            (tableView_.frame.size.height - spinner_.frame.size.height) /2,
                            spinner_.frame.size.width,
                            spinner_.frame.size.height);
+    
     [spinner_ setFrame:sp];
-//    [tableView_ addSubview:spinner_];
     [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
@@ -225,7 +225,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [vc setSwitcher:switcher_];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [[self navigationController] setNavigationBarHidden:NO];
             [self.navigationController pushViewController:vc animated:YES];
             [spinner_ stopAnimating];
         });

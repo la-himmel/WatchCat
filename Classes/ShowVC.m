@@ -55,15 +55,15 @@
 
     [self.view addSubview:pic];
     
+    
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [show_.name copy];
-    [title setFont:[UIFont fontWithName:@"Arial" size:19]];
     title.lineBreakMode = UILineBreakModeWordWrap;
     [title setNumberOfLines:0];
     [title sizeToFit];
-
+//    title.backgroundColor = [UIColor purpleColor];
     [self.view addSubview:title];
-
+    
     if (show_.nearestAirDate != nil) {
         UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 80, 123, 25)];
         nearestTitle.text = @"Next episode: ";

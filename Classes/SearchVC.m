@@ -24,6 +24,7 @@
     NSArray *filteredShows_;
     BOOL keyboardOpen_;
     UIGestureRecognizer *recognizer_;
+    CGRect spinnerRect_;
     
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
@@ -39,6 +40,8 @@
     if (!(self = [super init])) {
         return nil;
     }
+    
+    spinnerRect_ = CGRectMake(150, 173 + 44, 20, 20); //173 + toolbar height
     
     keyboardOpen_ = NO;
     recognizer_ = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -214,14 +217,7 @@
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [spinner_ startAnimating];
     
-    CGRect sp = CGRectMake((tableView_.frame.size.width - spinner_.frame.size.width) /2,
-                           (tableView_.frame.size.height - spinner_.frame.size.height) /2,
-                           spinner_.frame.size.width,
-                           spinner_.frame.size.height);
-    
-    DLOG("spinner rect: %@", NSStringFromCGRect(sp));
-    
-    [spinner_ setFrame:sp];
+    [spinner_ setFrame:spinnerRect_];
     [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
@@ -286,12 +282,8 @@
     spinner_ = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [spinner_ startAnimating];
-    
-    CGRect sp = CGRectMake((tableView_.frame.size.width - spinner_.frame.size.width) /2,
-                           (tableView_.frame.size.height - spinner_.frame.size.height) /2,
-                           spinner_.frame.size.width,
-                           spinner_.frame.size.height);
-    [spinner_ setFrame:sp];
+
+    [spinner_ setFrame:spinnerRect_];
     [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
