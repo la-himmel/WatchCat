@@ -44,8 +44,6 @@
     recognizer_ = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                           action:@selector(closeKeyboard)];
     
-//    [[self navigationController] setNavigationBarHidden:YES];
-          
     filteredShows_ = [[NSArray alloc] init];
 
     return self;
@@ -205,6 +203,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
+    [self.view removeGestureRecognizer:recognizer_];
     
     if (![self addressIsAvailable]) {
         [self alertWithMessage:@"There is no internet connection or host is unavailable"];
@@ -223,7 +222,6 @@
     DLOG("spinner rect: %@", NSStringFromCGRect(sp));
     
     [spinner_ setFrame:sp];
-//    [tableView_ addSubview:spinner_];
     [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
@@ -294,8 +292,7 @@
                            spinner_.frame.size.width,
                            spinner_.frame.size.height);
     [spinner_ setFrame:sp];
-//    [tableView_ addSubview:spinner_];
-     [self.view addSubview:spinner_];
+    [self.view addSubview:spinner_];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{
@@ -306,7 +303,6 @@
         vc.switcher = switcher_;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [[self navigationController] setNavigationBarHidden:NO];
             [self.navigationController pushViewController:vc animated:YES];
             [spinner_ stopAnimating];
         });
