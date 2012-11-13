@@ -20,12 +20,19 @@
     UIImageView *pic = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
     pic.contentMode = UIViewContentModeScaleAspectFill;
     [pic setClipsToBounds:YES];
-    [pic setImageWithURL:[NSURL URLWithString:fullUrl] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
+    if (![fullUrl isEqualToString:urlImage]) {
+        [pic setImageWithURL:[NSURL URLWithString:fullUrl] placeholderImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+    } else {
+        DLOG("empty picture adress");
+        [pic setImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+    }
+
     [self.view addSubview:pic];
     
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 133, 100)];
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [episode_.name copy];
-    [title setFont:[UIFont fontWithName:@"Arial" size:19]];
+//    [title setFont:[UIFont fontWithName:@"Arial" size:19]];
     title.lineBreakMode = UILineBreakModeWordWrap;
     [title setNumberOfLines:0];
     [title sizeToFit];
@@ -49,6 +56,11 @@
     
     UILabel *description = [[UILabel alloc] initWithFrame:textRect];
     description.text = [episode_.description copy];
+    
+    if (!description.text.length) {
+        description.text = @"No description available.";
+    }
+    
     [description setFont:[UIFont fontWithName:@"Arial" size:17]];
     description.lineBreakMode = UILineBreakModeWordWrap;
     [description setNumberOfLines:0];

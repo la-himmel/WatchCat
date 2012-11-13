@@ -61,7 +61,6 @@
     title.lineBreakMode = UILineBreakModeWordWrap;
     [title setNumberOfLines:0];
     [title sizeToFit];
-//    title.backgroundColor = [UIColor purpleColor];
     [self.view addSubview:title];
     
     if (show_.nearestAirDate != nil) {
