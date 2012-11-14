@@ -17,6 +17,7 @@
     UIButton *episodeButton_;
     
     UIImageView *photo_;
+    UIView *calcView_;
     
     int currentTab_;
 }
@@ -45,10 +46,12 @@
     NSData *xmlData = [NSData dataWithContentsOfURL:url];
     NSString *urlImage = @"http://thetvdb.com/banners/_cache/";
     show_.image = [urlImage stringByAppendingString:parseImageUrl(xmlData)];
+    DLOG("picture address: %@", show_.image);
+    
     show_.status = parseStatus(xmlData);
 
     //test stuff - photo resizable
-    photo_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 146, 87)];
+    photo_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 146, 87)]; //146 87 / 300 167
     photo_.contentMode = UIViewContentModeScaleAspectFill;
     [photo_ setClipsToBounds:YES];
     
@@ -64,13 +67,18 @@
     scrollView_.delegate = self;
 //    scrollView_.contentSize = CGSizeMake(14, 8);//(146, 87); 320 191
     
-    scrollView_.contentSize = CGSizeMake(320, 191);
+    scrollView_.contentSize = CGSizeMake(300, 167);
     scrollView_.contentSize = CGSizeMake(photo_.frame.size.width, photo_.frame.size.height);
     scrollView_.contentOffset = CGPointMake(0.0, 0.0);
     scrollView_.minimumZoomScale = 1.0;
-    scrollView_.maximumZoomScale = 2.19;
+    scrollView_.maximumZoomScale = 2.054;
     scrollView_.zoomScale = 1.0;
     scrollView_.backgroundColor = [UIColor purpleColor];
+    
+    
+//    scrollView_.minimumZoomScale = 0.487;
+//    scrollView_.maximumZoomScale = 1.0;
+//    scrollView_.zoomScale = 0.487;
 
     
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -176,6 +184,13 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
+    //adding calc
+    calcView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    calcView_.backgroundColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.5];
+    [self.view addSubview:calcView_];
+    [calcView_ setHidden:YES];
+    
+    //adding scrollview so that is  on top
     [self.view addSubview:scrollView_];
     
     //back button
@@ -192,24 +207,32 @@
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    DLOG("double tap, min %f max %f ", self.scrollView.minimumZoomScale, self.scrollView.maximumZoomScale);
+//    DLOG("double tap, min %f max %f ", self.scrollView.minimumZoomScale, self.scrollView.maximumZoomScale);
 
     if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
-        DLOG("double tap 1, min scale %f and current %f", self.scrollView.minimumZoomScale, self.scrollView.zoomScale);
-        DLOG("panel bounds now: %@", NSStringFromCGRect(self.scrollView.bounds));
-        
+
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:NO];
+        [UIView animateWithDuration:.250
+                              delay:0
+                            options:(UIViewAnimationOptionAllowUserInteraction)
+                         animations:^{
+                             [calcView_ setHidden:YES];
+                         }
+                         completion:nil];
+
+
         [self.scrollView setFrame:CGRectMake(20, 20, 146, 87)];
-        self.scrollView.contentOffset = CGPointMake(0.0, 0.0);
         
     } else {
-        DLOG("double tap 2, max scale %f and current %f", self.scrollView.maximumZoomScale, self.scrollView.zoomScale);
-        DLOG("panel bounds now: %@", NSStringFromCGRect(self.scrollView.bounds));
-        
-        [self.scrollView setFrame:CGRectMake(0, 0, 320, 191)];
-        self.scrollView.contentOffset = CGPointMake(-20.0, -20.0);
-        [scrollView_ setZoomScale:scrollView_.maximumZoomScale animated:NO];
-
+        [calcView_ setHidden:NO];
+        [UIView animateWithDuration:.25
+                              delay:0
+                            options:(UIViewAnimationOptionAllowUserInteraction)
+                         animations:^{
+                             [self.scrollView setFrame:CGRectMake(10, 60, 300, 167)];
+                         }
+                         completion:nil];
+        [scrollView_ setZoomScale:scrollView_.maximumZoomScale animated:YES];
     }
 }
 
