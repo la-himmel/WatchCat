@@ -50,7 +50,7 @@
     
     show_.status = parseStatus(xmlData);
 
-    //test stuff - photo resizable
+    //photo resizable
     photo_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 146, 87)]; //146 87 / 300 167
     photo_.contentMode = UIViewContentModeScaleAspectFill;
     [photo_ setClipsToBounds:YES];
@@ -65,7 +65,6 @@
     
     scrollView_ = [[UIScrollView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
     scrollView_.delegate = self;
-//    scrollView_.contentSize = CGSizeMake(14, 8);//(146, 87); 320 191
     
     scrollView_.contentSize = CGSizeMake(300, 167);
     scrollView_.contentSize = CGSizeMake(photo_.frame.size.width, photo_.frame.size.height);
@@ -73,14 +72,7 @@
     scrollView_.minimumZoomScale = 1.0;
     scrollView_.maximumZoomScale = 2.054;
     scrollView_.zoomScale = 1.0;
-    scrollView_.backgroundColor = [UIColor purpleColor];
-    
-    
-//    scrollView_.minimumZoomScale = 0.487;
-//    scrollView_.maximumZoomScale = 1.0;
-//    scrollView_.zoomScale = 0.487;
-
-    
+   
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                 action:@selector(handleDoubleTap:)];
     [scrollView_ addSubview:photo_];
@@ -89,7 +81,26 @@
     [self.scrollView addGestureRecognizer:doubleTap];
     
     
+    [self fillWithContent];
+    [self fillScrollPanel];
+            
+    //adding calc
+    calcView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    calcView_.backgroundColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.5];
+    [self.view addSubview:calcView_];
+    [calcView_ setHidden:YES];
+    
+    //adding scrollview so that is  on top
+    [self.view addSubview:scrollView_];
+    
+
+    [self addBackButton];
+}
+
+- (void)fillWithContent
+{
     //filling the page w content
+    //title
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [show_.name copy];
     title.lineBreakMode = UILineBreakModeWordWrap;
@@ -97,6 +108,7 @@
     [title sizeToFit];
     [self.view addSubview:title];
     
+    //nearest episode for series
     if (show_.nearestAirDate != nil) {
         UILabel *nearestTitle = [[UILabel alloc] initWithFrame:CGRectMake(188, 80, 123, 25)];
         nearestTitle.text = @"Next episode: ";
@@ -105,7 +117,7 @@
         [nearestTitle setNumberOfLines:0];
         [nearestTitle sizeToFit];
         [self.view addSubview:nearestTitle];
-                
+        
         UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 100, 123, 25)];
         nearestDate.text = show_.nearestAirDate;
         [nearestDate setFont:[UIFont fontWithName:@"Arial" size:14]];
@@ -114,7 +126,11 @@
         [nearestDate sizeToFit];
         [self.view addSubview:nearestDate];
     }
-    
+
+}
+
+- (void)fillScrollPanel
+{
     //description
     UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 227)];
     CGRect textRect = textView.frame;
@@ -137,62 +153,29 @@
     CGSize textSize = description.frame.size;
     textSize.height += 190;
     
-    textView.contentSize = textSize;    
+    textView.contentSize = textSize;
     textView.contentMode = UIViewContentModeTop;
     
     [self.view addSubview:textView];
     [textView addSubview:description];
     
-    //buttons
-    subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
-                                                    10 + description.frame.size.height, 300, 50)];
-    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-       
-    bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
-                                70 + description.frame.size.height, 300, 50)];
-    [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [self initializeButtonsAfterRect:description.frame];
     
-    episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
-                                                                 130 + description.frame.size.height, 300, 50)];
-    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
-    [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
-    [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
-    [textView addSubview:episodeButton_];
-    
-    NSString *upText = @"Subscribe";
-    NSString *downText = @"Remember";
-    
-    //actions
-    if (currentTab_ == 1) {
-        [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
-        [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];        
-    } else if (currentTab_ == 0) {
-        upText = @"Unsubscribe";
-        [subscribeButton_ addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];
-    } else if (currentTab_ == 3) {
-        downText = @"Forget";
-        [bookmarkButton_ addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];        
+    if (![episodeButton_ isEqual:nil]) {
+        [textView addSubview:episodeButton_];
     }
+    
+    if (![subscribeButton_ isEqual:nil]) {
+        [textView addSubview:subscribeButton_];
+    }
+    
+    if (![bookmarkButton_ isEqual:nil]) {
+        [textView addSubview:bookmarkButton_];
+    }
+}
 
-    [subscribeButton_ setTitle:upText forState:UIControlStateNormal];    
-    [bookmarkButton_ setTitle:downText forState:UIControlStateNormal];
-
-    [textView addSubview:subscribeButton_];
-    [textView addSubview:bookmarkButton_];
-    
-    //adding calc
-    calcView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    calcView_.backgroundColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.5];
-    [self.view addSubview:calcView_];
-    [calcView_ setHidden:YES];
-    
-    //adding scrollview so that is  on top
-    [self.view addSubview:scrollView_];
-    
+- (void)addBackButton
+{
     //back button
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
                                     initWithTitle:@""
@@ -202,8 +185,48 @@
                                     action:@selector(goback)];
     
     self.navigationItem.leftBarButtonItem = backBarItem;
+    
 }
 
+- (void)initializeButtonsAfterRect:(CGRect)rect
+{
+    //buttons
+    subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
+                                                                  10 + rect.size.height, 300, 50)];
+    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    
+    bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
+                                                                 70 + rect.size.height, 300, 50)];
+    [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    
+    episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
+                                                                130 + rect.size.height, 300, 50)];
+    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
+    [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
+    [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
+    
+    NSString *upText = @"Subscribe";
+    NSString *downText = @"Remember";
+    
+    //actions
+    if (currentTab_ == 1) {
+        [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
+        [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];
+    } else if (currentTab_ == 0) {
+        upText = @"Unsubscribe";
+        [subscribeButton_ addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];
+    } else if (currentTab_ == 3) {
+        downText = @"Forget";
+        [bookmarkButton_ addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [subscribeButton_ setTitle:upText forState:UIControlStateNormal];
+    [bookmarkButton_ setTitle:downText forState:UIControlStateNormal];
+}
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
