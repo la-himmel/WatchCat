@@ -8,7 +8,7 @@
 #import "EpisodeListVC.h"
 #import "UIBarButtonItem+CustomImage.h"
 
-@interface ShowVC() 
+@interface ShowVC()
 {
     TVShow *show_;
     
@@ -16,46 +16,72 @@
     UIButton *bookmarkButton_;
     UIButton *episodeButton_;
     
+    UIImageView *photo_;
+    
     int currentTab_;
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @end
 
 @implementation ShowVC
 @synthesize myseries = myseries_;
 @synthesize switcher = switcher_;
 @synthesize spinner = spinner_;
+@synthesize scrollView = scrollView_;
 
 - (void)viewDidLoad
 {
+    //setting page background
+    UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
+    background.image = [UIImage imageNamed:@"details"];
+    [self.view addSubview:background];
+ 
+    //getting image url
     NSURL *url = [NSURL URLWithString:[NSString
             stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
             show_.idString]];
     
-    NSData *xmlData = [NSData dataWithContentsOfURL:url];    
+    NSData *xmlData = [NSData dataWithContentsOfURL:url];
     NSString *urlImage = @"http://thetvdb.com/banners/_cache/";
     show_.image = [urlImage stringByAppendingString:parseImageUrl(xmlData)];
     show_.status = parseStatus(xmlData);
-    
-    UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
-    background.image = [UIImage imageNamed:@"details"];
-    
-    [self.view addSubview:background];
-    
-    UIImageView *pic = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
-    pic.contentMode = UIViewContentModeScaleAspectFill;
-    [pic setClipsToBounds:YES];
 
+    //test stuff - photo resizable
+    photo_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 146, 87)];
+    photo_.contentMode = UIViewContentModeScaleAspectFill;
+    [photo_ setClipsToBounds:YES];
+    
     if (![show_.image isEqualToString:urlImage]) {
-        [pic setImageWithURL:[NSURL URLWithString:show_.image] placeholderImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+        [photo_ setImageWithURL:[NSURL URLWithString:show_.image]
+               placeholderImage:[UIImage imageNamed:@"placeholder"]];
     } else {
         DLOG("empty picture adress");
-        [pic setImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+        [photo_ setImage:[UIImage imageNamed:@"placeholder_show_bright"]];
     }
+    
+    scrollView_ = [[UIScrollView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
+    scrollView_.delegate = self;
+//    scrollView_.contentSize = CGSizeMake(14, 8);//(146, 87); 320 191
+    
+    scrollView_.contentSize = CGSizeMake(320, 191);
+    scrollView_.contentSize = CGSizeMake(photo_.frame.size.width, photo_.frame.size.height);
+    scrollView_.contentOffset = CGPointMake(0.0, 0.0);
+    scrollView_.minimumZoomScale = 1.0;
+    scrollView_.maximumZoomScale = 2.19;
+    scrollView_.zoomScale = 1.0;
+    scrollView_.backgroundColor = [UIColor purpleColor];
 
-    [self.view addSubview:pic];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(handleDoubleTap:)];
+    [scrollView_ addSubview:photo_];
+    
+    [doubleTap setNumberOfTapsRequired:2];
+    [self.scrollView addGestureRecognizer:doubleTap];
     
     
+    //filling the page w content
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [show_.name copy];
     title.lineBreakMode = UILineBreakModeWordWrap;
@@ -79,10 +105,10 @@
         [nearestDate setNumberOfLines:0];
         [nearestDate sizeToFit];
         [self.view addSubview:nearestDate];
-    } 
+    }
     
+    //description
     UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 213)];
-    
     CGRect textRect = textView.frame;
     textRect.origin.x = 0;
     textRect.origin.y = 0;
@@ -98,7 +124,6 @@
     description.lineBreakMode = UILineBreakModeWordWrap;
     [description setNumberOfLines:0];
     [description sizeToFit];
-
     description.backgroundColor = [UIColor clearColor];
     
     CGSize textSize = description.frame.size;
@@ -110,17 +135,16 @@
     [self.view addSubview:textView];
     [textView addSubview:description];
     
+    //buttons
     subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                     10 + description.frame.size.height, 300, 50)];
     [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-//    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active3"] forState:UIControlStateHighlighted];
     [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
        
     bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                 70 + description.frame.size.height, 300, 50)];
     [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-//    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
     
     episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0, 
                                                                  130 + description.frame.size.height, 300, 50)];
@@ -134,6 +158,7 @@
     NSString *upText = @"Subscribe";
     NSString *downText = @"Remember";
     
+    //actions
     if (currentTab_ == 1) {
         [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
         [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];        
@@ -151,6 +176,9 @@
     [textView addSubview:subscribeButton_];
     [textView addSubview:bookmarkButton_];
     
+    [self.view addSubview:scrollView_];
+    
+    //back button
     UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc]
                                     initWithTitle:@""
                                     backgroundImage:[UIImage imageNamed:@"back_long"]
@@ -159,6 +187,35 @@
                                     action:@selector(goback)];
     
     self.navigationItem.leftBarButtonItem = backBarItem;
+}
+
+
+- (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+    DLOG("double tap, min %f max %f ", self.scrollView.minimumZoomScale, self.scrollView.maximumZoomScale);
+
+    if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
+        DLOG("double tap 1, min scale %f and current %f", self.scrollView.minimumZoomScale, self.scrollView.zoomScale);
+        DLOG("panel bounds now: %@", NSStringFromCGRect(self.scrollView.bounds));
+        
+        [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:NO];
+        [self.scrollView setFrame:CGRectMake(20, 20, 146, 87)];
+        self.scrollView.contentOffset = CGPointMake(0.0, 0.0);
+        
+    } else {
+        DLOG("double tap 2, max scale %f and current %f", self.scrollView.maximumZoomScale, self.scrollView.zoomScale);
+        DLOG("panel bounds now: %@", NSStringFromCGRect(self.scrollView.bounds));
+        
+        [self.scrollView setFrame:CGRectMake(0, 0, 320, 191)];
+        self.scrollView.contentOffset = CGPointMake(-20.0, -20.0);
+        [scrollView_ setZoomScale:scrollView_.maximumZoomScale animated:NO];
+
+    }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return photo_;
 }
 
 - (void)setSwitcher:(id<TabSwitcher>)sw
