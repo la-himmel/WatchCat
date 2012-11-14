@@ -116,7 +116,7 @@
     }
     
     //description
-    UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 213)];
+    UIScrollView *textView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 136, 300, 227)];
     CGRect textRect = textView.frame;
     textRect.origin.x = 0;
     textRect.origin.y = 0;

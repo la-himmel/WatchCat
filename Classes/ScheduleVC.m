@@ -65,7 +65,7 @@
 
     back_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, self.view.height - 44)];   
     
-    NSString *imageName = @"surpriseBr";
+    NSString *imageName = @"surprise_double";
     if ([favourites_ count] == 0) {
         imageName = @"mainClouds";
     } else if ([favourites_ count] < 6) {
@@ -147,7 +147,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     tableView_.bounces = ([favourites_ count] >= 6); 
 
     
-    NSString *imageName = @"surpriseBr";
+    NSString *imageName = @"surprise_double";
     if ([favourites_ count] == 0) {
         imageName = @"mainClouds";
     } else if ([favourites_ count] < 6) {

@@ -113,21 +113,17 @@
     } else {
         [msg_ removeFromSuperview];
     }
-            
-    DLOG("view did load end");
+         
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
-    DLOG("start");
     [self.view addGestureRecognizer:recognizer_];
-
     return YES;
 }
 
 - (void)closeKeyboard
 {
-    DLOG("close keyboard?");
     [searchBar_ resignFirstResponder];
     [self.view removeGestureRecognizer:recognizer_];
 }
@@ -248,7 +244,7 @@
 {
     tableView_.bounces = ([filteredShows_ count] >= 6);
     
-    NSString *imageName = @"surpriseBr";
+    NSString *imageName = @"surprise_double";
     if ([filteredShows_ count] == 0) {
         DLOG("count == 0");
         imageName = @"mainClouds";
