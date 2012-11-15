@@ -13,6 +13,7 @@
 #define IDSTRING @"id_string"
 #define NEAREST_DATE @"nearest_date"
 #define NEAREST_ID @"nearest_id"
+#define LAST_SCHEDULED @"last_scheduled"
 
 @synthesize name = name_;
 @synthesize episodes = episodes_;
@@ -22,7 +23,9 @@
 @synthesize status = status_;
 @synthesize idString = idString_;
 @synthesize nearestId = nearestId_;
+@synthesize lastScheduled = lastScheduled_;
 @synthesize nearestAirDate = nearestAirDate_;
+
 
 
 - (NSDictionary *)dictionary 
@@ -37,6 +40,7 @@
     [show setValue:nearestId_ forKey:NEAREST_ID];
     [show setValue:description_ forKey:DESCRIPTION];
     [show setValue:nearestAirDate_ forKey:NEAREST_DATE];
+    [show setValue:lastScheduled_ forKey:LAST_SCHEDULED];
 
 //    DLOG("nearest episode: %@ %@", nearestId_, [nearestAirDate_ description]);        
     return show;
@@ -68,13 +72,15 @@
 {
     TVShow *show = [[TVShow alloc] init];
     show.name = [item valueForKey:NAME];
-    show.description = [item valueForKey:DESCRIPTION];
+
     show.link = [item valueForKey:LINK];
     show.image = [item valueForKey:IMAGE];
     show.status = [item valueForKey:STATUS];
     show.idString = [item valueForKey:IDSTRING];
-    show.nearestAirDate = [item valueForKey:NEAREST_DATE];
     show.nearestId = [item valueForKey:NEAREST_ID];
+    show.description = [item valueForKey:DESCRIPTION];
+    show.nearestAirDate = [item valueForKey:NEAREST_DATE];
+    show.lastScheduled = [item valueForKey:LAST_SCHEDULED];
     
 //    DLOG("nearest episode: %@ %@", show.nearestId, [show.nearestAirDate description]);  
     

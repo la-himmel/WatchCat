@@ -71,9 +71,11 @@
             if (airdate == nil)
                 continue;
             
+            //schedule only first nearest date
             if ([airdate compare: now] != NSOrderedAscending) {
                 DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
                 currentShow.nearestAirDate = ep.airDate;
+                currentShow.lastScheduled = ep.airDate;
                 currentShow.nearestId = [NSString stringWithFormat:@"%d", ep.num];
                 
                 [self setNotificationOnDate:airdate episodeId:ep.num show:currentShow.name];
@@ -85,6 +87,76 @@
     
     return episodes;
           
+}
+
+- (void)refreshShows
+{
+    dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
+    dispatch_async(downloadQueue, ^{
+        
+        for (TVShow *show in favourites_) {
+            DLOG("Found: %@", show.name);
+            DLOG("last: %@", show.lastScheduled);
+            
+            NSURL *url = [NSURL URLWithString:[NSString
+                                               stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
+                                               show.idString]];
+            NSData *xmlData = [NSData dataWithContentsOfURL:url];
+
+            show.episodes = nil;
+            show.episodes = parseEpisodes(xmlData);            
+            
+            for (Episode *ep in show.episodes) {
+                NSString *dateStr = ep.airDate;
+                
+                NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+                [dateFormat setDateFormat:@"yyyy-MM-dd"];
+                NSDate *airdate = [dateFormat dateFromString:dateStr];
+                
+                if (airdate == nil)
+                    continue;
+                
+                if (![show.lastScheduled length]) {
+                    DLOG("warning! last scheduled is null");
+
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+                    
+                    NSString *today = [formatter stringFromDate:[NSDate date]];
+                    show.lastScheduled = today;
+                    DLOG("today date: %@ --------------", show.lastScheduled);
+                    //TODO: change today to yesterday for not to lose today episodes
+                }
+
+                
+                if ([dateStr compare: show.lastScheduled] == NSOrderedDescending) {
+                    DLOG("last: %@", show.lastScheduled);
+                    DLOG("airdate: %@, so SCHEDULE!", dateStr);
+                    
+                    //                DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
+                    //                show.nearestAirDate = ep.airDate;
+                    //                show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
+                    
+                    //                [self setNotificationOnDate:airdate episodeId:ep.num show:show.name];
+                }
+            }
+
+            
+//            DLOG("Episode list was parsed, count: %d", [show.episodes count]);                
+                          
+            //check for status
+        }
+        DLOG("shows refreshed");
+
+    });
+}
+
+- (void)update
+{
+    DLOG("updating...");    
+    [self refreshShows];
+    
+    //2. check statuses
 }
 
 - (void)setNotificationOnDate:(NSDate *)date episodeId:(int)epId show:(NSString *)show

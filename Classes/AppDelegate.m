@@ -27,6 +27,7 @@
 
 @synthesize window = window_;
 
+
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -38,6 +39,8 @@
 
     series_ = [[MySeries alloc] init];
     [series_ load];
+    
+    [series_ update];
     
     //search NC & VC - tab 2
     searchVC_ = [[SearchVC alloc] init];

@@ -90,11 +90,31 @@
     [self.view addSubview:calcView_];
     [calcView_ setHidden:YES];
     
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(closePic)];
+    [singleTap setNumberOfTapsRequired:1];
+    [calcView_ addGestureRecognizer:singleTap];
+    
     //adding scrollview so that is  on top
     [self.view addSubview:scrollView_];
     
 
     [self addBackButton];
+}
+
+- (void)closePic
+{
+    [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:NO];
+    [UIView animateWithDuration:.250
+                          delay:0
+                        options:(UIViewAnimationOptionAllowUserInteraction)
+                     animations:^{
+                         [calcView_ setHidden:YES];
+                     }
+                     completion:nil];
+    
+    
+    [self.scrollView setFrame:CGRectMake(20, 20, 146, 87)];    
 }
 
 - (void)fillWithContent
@@ -230,21 +250,8 @@
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-//    DLOG("double tap, min %f max %f ", self.scrollView.minimumZoomScale, self.scrollView.maximumZoomScale);
-
     if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
-
-        [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:NO];
-        [UIView animateWithDuration:.250
-                              delay:0
-                            options:(UIViewAnimationOptionAllowUserInteraction)
-                         animations:^{
-                             [calcView_ setHidden:YES];
-                         }
-                         completion:nil];
-
-
-        [self.scrollView setFrame:CGRectMake(20, 20, 146, 87)];
+        [self closePic];       
         
     } else {
         [calcView_ setHidden:NO];

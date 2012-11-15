@@ -32,7 +32,6 @@
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [episode_.name copy];
-//    [title setFont:[UIFont fontWithName:@"Arial" size:19]];
     title.lineBreakMode = UILineBreakModeWordWrap;
     [title setNumberOfLines:0];
     [title sizeToFit];
