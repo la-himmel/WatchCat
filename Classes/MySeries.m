@@ -96,7 +96,6 @@
         
         for (TVShow *show in favourites_) {
             DLOG("Found: %@", show.name);
-            DLOG("last: %@", show.lastScheduled);
             
             NSURL *url = [NSURL URLWithString:[NSString
                                                stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
@@ -113,66 +112,50 @@
                 [dateFormat setDateFormat:@"yyyy-MM-dd"];
                 NSDate *airdate = [dateFormat dateFromString:dateStr];
                 
+                NSString *now = [dateFormat stringFromDate:[NSDate date]];
+                
                 if (airdate == nil)
                     continue;
                 
+                BOOL includeToday = NO;
+                
                 if (![show.lastScheduled length]) {
-                    DLOG("warning! last scheduled is null");
+                    show.lastScheduled = now;
+                    includeToday = YES;
 
-                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                    [dateFormat setDateFormat:@"yyyy-MM-dd"];
-                    
-                    NSString *today = [formatter stringFromDate:[NSDate date]];
-                    show.lastScheduled = today;
-                    DLOG("today date: %@ --------------", show.lastScheduled);
                     //TODO: change today to yesterday for not to lose today episodes
+                    //Todo: change the nearest episode field
+                    //Todo: 
                 }
 
+                NSComparisonResult result = [dateStr compare: show.lastScheduled];
                 
-                if ([dateStr compare: show.lastScheduled] == NSOrderedDescending) {
-                    DLOG("last: %@", show.lastScheduled);
-                    DLOG("airdate: %@, so SCHEDULE!", dateStr);
+                if (( result == NSOrderedDescending && !includeToday ) ||
+                    ( result != NSOrderedAscending && includeToday ))
+                {
+//                    DLOG("last: %@", show.lastScheduled);
+//                    DLOG("airdate: %@, so SCHEDULE!", dateStr);
                     
-                    //                DLOG("air date: %@ is LATER than %@", [airdate description], [now description]);
-                    //                show.nearestAirDate = ep.airDate;
-                    //                show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
-                    
-                    //                [self setNotificationOnDate:airdate episodeId:ep.num show:show.name];
+                    show.lastScheduled = dateStr;
+                    show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
+                    [self setNotificationOnDate:airdate episodeId:ep.num show:show.name];
                 }
             }
-
             
-//            DLOG("Episode list was parsed, count: %d", [show.episodes count]);                
-                          
-            //check for status
+            //Todo: check for status
         }
-        DLOG("shows refreshed");
-
     });
 }
 
 - (void)update
 {
-    DLOG("updating...");    
     [self refreshShows];
-    
-    //2. check statuses
+//    [self save];
+
 }
 
 - (void)setNotificationOnDate:(NSDate *)date episodeId:(int)epId show:(NSString *)show
-{
-    NSDateComponents *dc = [[NSDateComponents alloc] init];
-    dc.day = 4;
-    dc.month = 7;
-    dc.year = 2012;
-    dc.hour = 15;
-    dc.minute = 45;               
-
-    NSDate *someDate = [[NSCalendar currentCalendar] dateFromComponents:dc];
-    DLOG("result date: %@", [someDate description]);
-    NSDate *now = [NSDate date];
-    DLOG("and now its: %@", [now description]);
-    
+{    
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];    
     localNotification.fireDate = date;
     localNotification.alertAction = @"Open app";
@@ -182,7 +165,7 @@
     localNotification.applicationIconBadgeNumber = 1;    
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     
-    DLOG("notifications: %@", [[localNotification fireDate] description]);
+//    DLOG("notifications: %@", [[localNotification fireDate] description]);
 }
 
 - (BOOL)load

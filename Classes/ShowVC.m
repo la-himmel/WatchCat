@@ -19,6 +19,8 @@
     UIImageView *photo_;
     UIView *calcView_;
     
+    BOOL noResize;
+    
     int currentTab_;
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
@@ -55,12 +57,15 @@
     photo_.contentMode = UIViewContentModeScaleAspectFill;
     [photo_ setClipsToBounds:YES];
     
+    //dont resize if its placeholder
     if (![show_.image isEqualToString:urlImage]) {
         [photo_ setImageWithURL:[NSURL URLWithString:show_.image]
                placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        noResize = NO;
     } else {
         DLOG("empty picture adress");
         [photo_ setImage:[UIImage imageNamed:@"placeholder_show_bright"]];
+        noResize = YES;
     }
     
     scrollView_ = [[UIScrollView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
@@ -104,6 +109,10 @@
 
 - (void)closePic
 {
+    if (noResize) {
+        return;
+    }
+    
     [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:NO];
     [UIView animateWithDuration:.250
                           delay:0
@@ -250,6 +259,11 @@
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
+    if (noResize) {
+        return;
+    }
+    
+    
     if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
         [self closePic];       
         
