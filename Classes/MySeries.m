@@ -3,14 +3,30 @@
 #import "JSONKit.h"
 #import "XMLDeserialization.h"
 #import "Episode.h"
+#import "JSONKit.h"
+
+@interface MySeries()
+@property (nonatomic, strong) NSString *lastUpdated;
+@property (nonatomic, strong) NSString *whenToUpdate;
+@property (nonatomic, strong) NSMutableArray *scheduledTimes;
+@end
 
 @implementation MySeries
 
 @synthesize favourites = favourites_;
 @synthesize bookmarked = bookmarked_;
 
+@synthesize whenToUpdate = whenToUpdate_;
+@synthesize lastUpdated = lastUpdated_;
+
+@synthesize scheduledTimes = scheduledTimes_;
+
 #define PATH_FAVOURITES @"Favourites"
 #define PATH_BOOKMARKED @"Bookmarked"
+#define PATH_UPDATE @"UpdateInfo"
+
+#define KEY_LAST_UPDATED @"LastUpdated"
+#define KEY_WHEN_TO_UPDATE @"WhenToUpdate"
 
 - (id)init
 {
@@ -19,6 +35,12 @@
     }    
     favourites_ = [[NSMutableArray alloc] init];
     bookmarked_ = [[NSMutableArray alloc] init];
+    
+    scheduledTimes_ = [[NSMutableArray alloc] init];
+    
+    //test. TODO: remove
+    whenToUpdate_ = @"2012-12-12";
+    lastUpdated_ = @"2012-10-12";
 
     return self;
 }
@@ -86,7 +108,81 @@
     });  
     
     return episodes;
-          
+}
+
+- (NSString *)getTodayString
+{
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    NSString *now = [dateFormat stringFromDate:[NSDate date]];
+    
+    return now;
+}
+
+- (void)saveUpdateInfo
+{
+    DLOG("lastUpdated: %@", lastUpdated_);
+    DLOG("whenToUpdate: %@", whenToUpdate_);
+    DLOG("Today: %@", [self getTodayString]);
+    
+    NSMutableDictionary *update = [[NSMutableDictionary alloc] init];
+    [update setObject:lastUpdated_ forKey:KEY_LAST_UPDATED];
+    [update setObject:whenToUpdate_ forKey:KEY_WHEN_TO_UPDATE];
+    
+    NSString *json = [update JSONString];
+    DLOG("json: %@", json);
+
+    NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
+                                                           NSUserDomainMask,
+                                                           YES);
+    NSString *documentsDir = [pathDir objectAtIndex:0];
+    NSString *path = [documentsDir stringByAppendingPathComponent:PATH_UPDATE];
+    
+    NSError *error;
+    BOOL success = [json writeToFile:path atomically:YES encoding:NSUnicodeStringEncoding error:&error];
+    
+    NSLog(@"%@", success ? @"UpdateInfo was saved." : @"UpdateInfo was not saved.");
+}
+
+- (void)loadUpdateInfo
+{
+    NSArray *pathDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
+                                                           NSUserDomainMask,
+                                                           YES);
+    NSString *documentsDir = [pathDir objectAtIndex:0];
+    NSString *path = [documentsDir stringByAppendingPathComponent:PATH_UPDATE];
+    
+    NSError *error;
+    NSString *json = [[NSString alloc] initWithContentsOfFile:path
+                                                     encoding:NSUnicodeStringEncoding error:&error];
+
+    NSDictionary *update = [json objectFromJSONString];
+
+    lastUpdated_ = [update objectForKey:KEY_LAST_UPDATED];
+    whenToUpdate_ = [update objectForKey:KEY_WHEN_TO_UPDATE];
+ 
+    DLOG("lastUpdated: %@", lastUpdated_);
+    DLOG("whenToUpdate: %@", whenToUpdate_);
+    DLOG("Today: %@", [self getTodayString]);
+}
+
+- (BOOL)needsUpdate
+{
+    DLOG("lastUpdated: %@", lastUpdated_);
+    DLOG("whenToUpdate: %@", whenToUpdate_);
+    DLOG("Today: %@", [self getTodayString]);
+    
+    if ([lastUpdated_ compare:[self getTodayString]] == NSOrderedSame) {
+        return NO;
+    }
+    if ([lastUpdated_ compare:[self getTodayString]] == NSOrderedAscending) {
+        if ([[self getTodayString] compare:whenToUpdate_] == NSOrderedAscending) {
+            return NO;
+        } else {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (void)refreshShows
@@ -112,15 +208,13 @@
                 [dateFormat setDateFormat:@"yyyy-MM-dd"];
                 NSDate *airdate = [dateFormat dateFromString:dateStr];
                 
-                NSString *now = [dateFormat stringFromDate:[NSDate date]];
-                
                 if (airdate == nil)
                     continue;
                 
                 BOOL includeToday = NO;
                 
                 if (![show.lastScheduled length]) {
-                    show.lastScheduled = now;
+                    show.lastScheduled = [self getTodayString];
                     includeToday = YES;
 
                     //TODO: change today to yesterday for not to lose today episodes
@@ -143,14 +237,60 @@
             }
             
             //Todo: check for status
+            
+            [scheduledTimes_ addObject:show.lastScheduled];
         }
+        
+        lastUpdated_ = [self getTodayString];
     });
+    
+}
+
+- (void)setNextDate
+{
+    if (![scheduledTimes_ count]) {
+        return;
+    }
+    
+    NSString *closestTime = [scheduledTimes_ objectAtIndex:0];
+    
+    for (NSString *time in scheduledTimes_) {
+        if ([closestTime compare:time] == NSOrderedDescending) {
+            closestTime = time;
+        }
+    }
+    
+    NSDate *today = [NSDate date];
+    
+    NSDateComponents *plusWeek = [[NSDateComponents alloc] init];
+    [plusWeek setDay:+7];
+    NSDate *weekAfter = [[NSCalendar currentCalendar] dateByAddingComponents:plusWeek
+                                                                      toDate:today
+                                                                     options:0];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    NSString *weekAfterString = [dateFormat stringFromDate:weekAfter];
+    
+    if ([weekAfterString compare:closestTime] == NSOrderedDescending) {
+        whenToUpdate_ = closestTime;
+    } else {
+        whenToUpdate_ = weekAfterString;
+    }
 }
 
 - (void)update
 {
-    [self refreshShows];
-//    [self save];
+    [self loadUpdateInfo];
+    if ([self needsUpdate]) {
+        DLOG("So, we need update!");
+        [self refreshShows];
+        [self setNextDate];
+        [self save];
+//        [self saveUpdateInfo];
+    } else {
+        DLOG("So, we don't have to update.");
+    }
+
 
 }
 
@@ -232,7 +372,6 @@
     [self saveFavourites];
     [self saveBookmarked];
 }
-
 
 - (void)savePath:(NSString *)stringPath
 {
