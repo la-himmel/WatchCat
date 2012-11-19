@@ -39,7 +39,7 @@
     scheduledTimes_ = [[NSMutableArray alloc] init];
     
     //test. TODO: remove
-    whenToUpdate_ = @"2012-12-12";
+    whenToUpdate_ = @"2012-11-12";
     lastUpdated_ = @"2012-10-12";
 
     return self;
@@ -187,11 +187,20 @@
 
 - (void)refreshShows
 {
+    DLOG("refresh shows");
+    
+    lastUpdated_ = [self getTodayString];
+    
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{
         
         for (TVShow *show in favourites_) {
             DLOG("Found: %@", show.name);
+            
+            //"old" status
+            if ([show.status isEqualToString:@"Ended"]) {
+                continue;
+            }
             
             NSURL *url = [NSURL URLWithString:[NSString
                                                stringWithFormat:@"http://www.thetvdb.com/api/2737B5943CFB6DE1/series/%@/all/en.xml",
@@ -216,10 +225,6 @@
                 if (![show.lastScheduled length]) {
                     show.lastScheduled = [self getTodayString];
                     includeToday = YES;
-
-                    //TODO: change today to yesterday for not to lose today episodes
-                    //Todo: change the nearest episode field
-                    //Todo: 
                 }
 
                 NSComparisonResult result = [dateStr compare: show.lastScheduled];
@@ -227,27 +232,37 @@
                 if (( result == NSOrderedDescending && !includeToday ) ||
                     ( result != NSOrderedAscending && includeToday ))
                 {
-//                    DLOG("last: %@", show.lastScheduled);
-//                    DLOG("airdate: %@, so SCHEDULE!", dateStr);
-                    
                     show.lastScheduled = dateStr;
+                    
+                    DLOG("last scheduled for show: %@ %@", show.name, dateStr);
+                    
                     show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
                     [self setNotificationOnDate:airdate episodeId:ep.num show:show.name];
                 }
             }
             
-            //Todo: check for status
+            //getting "new" status
+            show.status = parseStatus(xmlData);
+//            DLOG("STATUS: %@", show.status);
             
-            [scheduledTimes_ addObject:show.lastScheduled];
+            if (show.lastScheduled != nil && ![show.status isEqualToString:@"Ended"]) {
+                [scheduledTimes_ addObject:show.lastScheduled];
+            } else {
+                [scheduledTimes_ addObject:[self getTodayString]];
+            }
         }
         
-        lastUpdated_ = [self getTodayString];
+        DLOG("end of show refresh");
+        [self setNextDate];
+        [self save];
+        [self saveUpdateInfo];
+
     });
-    
 }
 
 - (void)setNextDate
 {
+    DLOG("set next date");
     if (![scheduledTimes_ count]) {
         return;
     }
@@ -256,7 +271,14 @@
     
     for (NSString *time in scheduledTimes_) {
         if ([closestTime compare:time] == NSOrderedDescending) {
-            closestTime = time;
+            
+            DLOG("closest time / time: %@ %@", closestTime, time);
+
+            if ([[self getTodayString] compare:time] == NSOrderedDescending) {
+                closestTime = [self getTodayString];
+            } else {
+                closestTime = time;
+            }
         }
     }
     
@@ -271,27 +293,46 @@
     [dateFormat setDateFormat:@"yyyy-MM-dd"];
     NSString *weekAfterString = [dateFormat stringFromDate:weekAfter];
     
+    if ([closestTime isEqualToString:[self getTodayString]]) {
+        closestTime = weekAfterString;
+    }
+    
     if ([weekAfterString compare:closestTime] == NSOrderedDescending) {
         whenToUpdate_ = closestTime;
     } else {
         whenToUpdate_ = weekAfterString;
     }
+    
 }
 
 - (void)update
 {
     [self loadUpdateInfo];
-    if ([self needsUpdate]) {
+//    if ([self needsUpdate]) {
         DLOG("So, we need update!");
         [self refreshShows];
-        [self setNextDate];
-        [self save];
-//        [self saveUpdateInfo];
-    } else {
-        DLOG("So, we don't have to update.");
-    }
+//    } else {
+//        DLOG("So, we don't have to update.");
+//    }
+}
 
+- (void)setUpdateNotification
+{
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd"];
+    NSDate *update = [dateFormat dateFromString:whenToUpdate_];
+    
+    localNotification.fireDate = update;
+    localNotification.alertAction = @"Update";
+    localNotification.alertBody = @"It's time to update!";
+    localNotification.timeZone = [[NSCalendar currentCalendar] timeZone];
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
 
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    
+    //    DLOG("notifications: %@", [[localNotification fireDate] description]);
 }
 
 - (void)setNotificationOnDate:(NSDate *)date episodeId:(int)epId show:(NSString *)show
@@ -302,7 +343,7 @@
     localNotification.alertBody = [show stringByAppendingString:@"'s next episode is coming today!"];
     localNotification.timeZone = [[NSCalendar currentCalendar] timeZone];
     localNotification.soundName = UILocalNotificationDefaultSoundName;
-    localNotification.applicationIconBadgeNumber = 1;    
+//    localNotification.applicationIconBadgeNumber = 1;    
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     
 //    DLOG("notifications: %@", [[localNotification fireDate] description]);

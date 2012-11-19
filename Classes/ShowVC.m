@@ -56,6 +56,8 @@
     photo_ = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 146, 87)]; //146 87 / 300 167
     photo_.contentMode = UIViewContentModeScaleAspectFill;
     [photo_ setClipsToBounds:YES];
+    [photo_ setMultipleTouchEnabled:NO];
+    [photo_ setExclusiveTouch:YES];
     
     //dont resize if its placeholder
     if (![show_.image isEqualToString:urlImage]) {
@@ -77,6 +79,8 @@
     scrollView_.minimumZoomScale = 1.0;
     scrollView_.maximumZoomScale = 2.054;
     scrollView_.zoomScale = 1.0;
+    [scrollView_ setMultipleTouchEnabled:NO];
+    [scrollView_ setExclusiveTouch:YES];
    
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                 action:@selector(handleDoubleTap:)];
@@ -261,6 +265,10 @@
 {
     if (noResize) {
         return;
+    }
+    
+    if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
+        DLOG("pinch! -----------");
     }
     
     

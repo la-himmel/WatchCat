@@ -92,6 +92,17 @@
     [series_ save];    
 }
 
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    DLOG("app will enter foreground");
+    
+    [series_ load];
+    DLOG("loaded");
+    
+    [series_ update];
+    DLOG("update");
+}
+
 - (void)navigationController:(UINavigationController *)navigationController 
       willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
