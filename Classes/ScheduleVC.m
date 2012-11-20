@@ -27,6 +27,7 @@
 @synthesize spinner = spinner_;
 @synthesize backBarItem = backBarItem_;
 @synthesize backBarItemActive = backBarItemActive_;
+@synthesize isAFavouritesList = isAFavouritesList_;
 
 - (id)initWithItems:(NSMutableArray *)items
 {
@@ -75,11 +76,8 @@
     tableView_.backgroundView = back_;
     tableView_.rowHeight = [ScheduleCell height];
     tableView_.separatorStyle = UITableViewCellSeparatorStyleNone;
-
     tableView_.backgroundColor = [UIColor redColor];
-//    [self.navigationController setNavigationBarHidden:NO animated:NO];
-    
-    [self.view addSubview:tableView_];  
+    [self.view addSubview:tableView_];
     
     msg_ = [[UILabel alloc] initWithFrame:CGRectMake(28, 
                                                      107, 
@@ -89,6 +87,7 @@
     msg_.textColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.9];
     msg_.textAlignment = UITextAlignmentLeft;
     [msg_ setFont:[UIFont fontWithName:@"Arial" size:15]];
+    
     if ([favourites_ count] == 0) {
         msg_.text = @"No series yet";
         [self.view addSubview:msg_];
@@ -226,6 +225,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [vc setShow:[favourites_ objectAtIndex:indexPath.row]];
         [vc setMyseries:myseries_];
         [vc setSwitcher:switcher_];
+        
+        vc.isAFavouriteShow = self.isAFavouritesList;
+        vc.isABookmarkedShow = !self.isAFavouritesList;
+        
+        DLOG("favourite: %@", vc.isAFavouriteShow ? @"yes" : @"no");
+        DLOG("bookmarked: %@", vc.isABookmarkedShow ? @"yes" : @"no");
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationController pushViewController:vc animated:YES];

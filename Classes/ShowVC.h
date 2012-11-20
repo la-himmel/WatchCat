@@ -10,6 +10,8 @@
 
 @property (unsafe_unretained) id<TabSwitcher> switcher;
 @property (nonatomic, strong) MySeries *myseries;
+@property BOOL isAFavouriteShow;
+@property BOOL isABookmarkedShow;
 
 - (void)setShow:(TVShow *)show;
 

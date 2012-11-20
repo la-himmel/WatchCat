@@ -54,6 +54,7 @@
     //favourites NC - tab 1
     scheduleVC_ = [[ScheduleVC alloc] initWithItems:series_.favourites];
     [scheduleVC_ setMyseries:series_];
+    scheduleVC_.isAFavouritesList = YES;
     
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
@@ -68,6 +69,7 @@
     //bookmarked VC & NC - tab 4
     ScheduleVC *bvc = [[ScheduleVC alloc] initWithItems:series_.bookmarked];
     [bvc setMyseries:series_];
+    bvc.isAFavouritesList = NO;
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
     [bookmarkedNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];

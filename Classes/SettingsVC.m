@@ -1,14 +1,20 @@
 #import "SettingsVC.h"
 
 @interface SettingsVC ()
-
+@property BOOL enabled;
+@property (nonatomic, strong) UIButton *notifications;
 @end
 
 @implementation SettingsVC
+
 @synthesize myseries = myseries_;
+@synthesize enabled = enabled_;
+@synthesize notifications = notifications_;
 
 - (void)viewDidLoad
 {
+    enabled_ = true;
+    
     UIImageView *back = [[UIImageView alloc] 
                          initWithFrame:CGRectMake(0, 0, 320, 356)];
     back.image = [UIImage imageNamed:@"settingsBg.png"];
@@ -27,18 +33,14 @@
     title.backgroundColor = [UIColor clearColor];
 //    [self.view addSubview:title];
     
-    UIButton *timeZone = [[UIButton alloc] initWithFrame:CGRectMake(10, 120, 300, 50)];
-    [timeZone setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [timeZone setTitle:@"Enable notifications" forState:UIControlStateNormal];
-    [timeZone setTitleColor:myPurple forState:UIControlStateNormal];
-    [self.view addSubview:timeZone];
-    
-//    UIButton *notificationType = [[UIButton alloc] initWithFrame:CGRectMake(10, 100, 300, 50)];
-//    [notificationType setTitle:@"Disable notifications" forState:UIControlStateNormal];
-//    [notificationType setTitleColor:myDarkPurple forState:UIControlStateNormal];
-//    [notificationType setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-//    [self.view addSubview:notificationType];
-    
+    notifications_ = [[UIButton alloc] initWithFrame:CGRectMake(10, 120, 300, 50)];
+    [notifications_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [notifications_ setBackgroundImage:[UIImage imageNamed:@"button_active3.png"] forState:UIControlStateHighlighted];
+    [notifications_ setTitle:@"Disable notifications" forState:UIControlStateNormal];
+    [notifications_ setTitleColor:myPurple forState:UIControlStateNormal];
+    [notifications_ addTarget:self action:@selector(toggleNotifications) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:notifications_];
+        
     int yOffset = 80;
     
     UILabel *about = [[UILabel alloc] initWithFrame:CGRectMake(10, 150 + yOffset, 300, 150)];
@@ -68,4 +70,15 @@
     [self.view addSubview:email2];
 }
 
+- (void)toggleNotifications
+{
+    if (enabled_) {
+        enabled_ = NO;
+        [notifications_ setTitle:@"Enable notifications" forState:UIControlStateNormal];
+    } else {
+        enabled_ = YES;
+       [notifications_ setTitle:@"Disable notifications" forState:UIControlStateNormal];
+    }
+    [myseries_ setNotificationsEnabled:enabled_];
+}
 @end

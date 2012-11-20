@@ -290,6 +290,8 @@
         ShowVC *vc = [[ShowVC alloc] init];
         [vc setShow:[filteredShows_ objectAtIndex:indexPath.row]];
         [vc setMyseries:myseries_];
+        vc.isABookmarkedShow = NO;
+        vc.isAFavouriteShow = NO;
         
         vc.switcher = switcher_;
         

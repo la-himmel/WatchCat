@@ -32,6 +32,8 @@
 @synthesize switcher = switcher_;
 @synthesize spinner = spinner_;
 @synthesize scrollView = scrollView_;
+@synthesize isAFavouriteShow = isAFavouriteShow_;
+@synthesize isABookmarkedShow = isABookmarkedShow_;
 
 - (void)viewDidLoad
 {
@@ -224,41 +226,61 @@
 - (void)initializeButtonsAfterRect:(CGRect)rect
 {
     //buttons
-    subscribeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
-                                                                  10 + rect.size.height, 300, 50)];
-    [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    CGRect rect1 = CGRectMake(0, 10 + rect.size.height, 300, 50);
+    CGRect rect2 = CGRectMake(0, 70 + rect.size.height, 300, 50);
+    CGRect rect3 = CGRectMake(0, 130 + rect.size.height, 300, 50);
+    CGRect zeroRect = CGRectMake(0, 0, 0, 0);
     
-    bookmarkButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
-                                                                 70 + rect.size.height, 300, 50)];
-    [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    CGRect favRect = rect1, bookmRect = rect2, epRect = rect3;
     
-    episodeButton_ = [[UIButton alloc] initWithFrame:CGRectMake(0,
-                                                                130 + rect.size.height, 300, 50)];
-    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
-    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2"] forState:UIControlStateHighlighted];
-    [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
-    [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
-    
-    NSString *upText = @"Subscribe";
-    NSString *downText = @"Remember";
-    
-    //actions
-    if (currentTab_ == 1) {
-        [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
-        [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];
-    } else if (currentTab_ == 0) {
-        upText = @"Unsubscribe";
-        [subscribeButton_ addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];
-    } else if (currentTab_ == 3) {
-        downText = @"Forget";
-        [bookmarkButton_ addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];
+    if (self.isABookmarkedShow) {
+        favRect = zeroRect;
+        bookmRect = rect1;
+        epRect = rect2;
+    } else if (self.isAFavouriteShow) {
+        bookmRect = zeroRect;
+        epRect = rect2;
     }
     
-    [subscribeButton_ setTitle:upText forState:UIControlStateNormal];
-    [bookmarkButton_ setTitle:downText forState:UIControlStateNormal];
+    
+    if (!self.isABookmarkedShow) {
+        subscribeButton_ = [[UIButton alloc] initWithFrame:favRect];
+        [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+        [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active3.png"] forState:UIControlStateHighlighted];
+        [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        
+        if (!self.isAFavouriteShow) {
+            [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
+            [subscribeButton_ setTitle:@"Subscribe" forState:UIControlStateNormal];
+        } else {
+            [subscribeButton_ addTarget:self action:@selector(unsubscribe) forControlEvents:UIControlEventTouchUpInside];
+            [subscribeButton_ setTitle:@"Unsubscribe" forState:UIControlStateNormal];
+        }
+    
+    }
+    if (!self.isAFavouriteShow) {
+        bookmarkButton_ = [[UIButton alloc] initWithFrame:bookmRect];
+        [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+        [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2.png"] forState:UIControlStateHighlighted];
+        
+        if (!self.isABookmarkedShow) {
+            [bookmarkButton_ addTarget:self action:@selector(rememberShow) forControlEvents:UIControlEventTouchUpInside];
+            [bookmarkButton_ setTitle:@"Remember" forState:UIControlStateNormal];
+            
+        } else {
+            [bookmarkButton_ addTarget:self action:@selector(forgetShow) forControlEvents:UIControlEventTouchUpInside];
+            [bookmarkButton_ setTitle:@"Forget" forState:UIControlStateNormal];
+        }
+    }
+    
+    episodeButton_ = [[UIButton alloc] initWithFrame:epRect];
+    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
+    [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active1"] forState:UIControlStateHighlighted];
+    [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
+    [episodeButton_ setTitle:@"Episode list" forState:UIControlStateNormal];
+ 
 }
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer

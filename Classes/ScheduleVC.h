@@ -9,6 +9,7 @@
 
 @property (unsafe_unretained) id<TabSwitcher> switcher;
 @property (nonatomic, strong) MySeries *myseries;
+@property BOOL isAFavouritesList;
 
 - (id)initWithItems:(NSMutableArray *)items;
 
