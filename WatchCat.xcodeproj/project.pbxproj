@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7A11A0F715A55F8500D3DB30 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A11A0F315A55F8500D3DB30 /* Icon.png */; };
 		7A11A0F815A55F8500D3DB30 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A11A0F415A55F8500D3DB30 /* Icon@2x.png */; };
 		7A11A0FA15A56E2000D3DB30 /* mainClouds@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A11A0F915A56E2000D3DB30 /* mainClouds@2x.png */; };
 		7A11A10415A581CE00D3DB30 /* episodes1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A11A0FC15A581CE00D3DB30 /* episodes1@2x.png */; };
@@ -148,7 +147,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7A11A0F315A55F8500D3DB30 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Resources/Icon.png; sourceTree = "<group>"; };
 		7A11A0F415A55F8500D3DB30 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Resources/Icon@2x.png"; sourceTree = "<group>"; };
 		7A11A0F915A56E2000D3DB30 /* mainClouds@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mainClouds@2x.png"; sourceTree = "<group>"; };
 		7A11A0FC15A581CE00D3DB30 /* episodes1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "episodes1@2x.png"; sourceTree = "<group>"; };
@@ -370,7 +368,6 @@
 		7A11A0E715A55CBD00D3DB30 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7A11A0F315A55F8500D3DB30 /* Icon.png */,
 				7A11A0F415A55F8500D3DB30 /* Icon@2x.png */,
 			);
 			name = Resources;
@@ -860,7 +857,6 @@
 				7A8A0C38159DAD5600CE9B2F /* favorite_selected@2x.png in Resources */,
 				7A8A0C3B159DAD8D00CE9B2F /* surpriseBr@2x.png in Resources */,
 				7A8A0C3D159DB91100CE9B2F /* settings_selected@2x.png in Resources */,
-				7A11A0F715A55F8500D3DB30 /* Icon.png in Resources */,
 				7A11A0F815A55F8500D3DB30 /* Icon@2x.png in Resources */,
 				7A11A0FA15A56E2000D3DB30 /* mainClouds@2x.png in Resources */,
 				7A11A10415A581CE00D3DB30 /* episodes1@2x.png in Resources */,
