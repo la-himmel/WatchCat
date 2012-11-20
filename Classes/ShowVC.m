@@ -80,7 +80,7 @@
     scrollView_ = [[UIScrollView alloc] initWithFrame:CGRectMake(20, 20, 146, 87)];
     scrollView_.delegate = self;
     
-    scrollView_.contentSize = CGSizeMake(300, 167);
+//    scrollView_.contentSize = CGSizeMake(300, 167);
     scrollView_.contentSize = CGSizeMake(photo_.frame.size.width, photo_.frame.size.height);
     scrollView_.contentOffset = CGPointMake(0.0, 0.0);
     scrollView_.minimumZoomScale = 1.0;
@@ -88,14 +88,22 @@
     scrollView_.zoomScale = 1.0;
     [scrollView_ setMultipleTouchEnabled:NO];
     [scrollView_ setExclusiveTouch:YES];
-   
-    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                action:@selector(handleDoubleTap:)];
+    [scrollView_ setScrollEnabled:NO];
     [scrollView_ addSubview:photo_];
     
+    for (UIGestureRecognizer* recognizer in [scrollView_ gestureRecognizers]) {
+        if ([recognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
+            [recognizer setEnabled:NO];
+        }
+    }
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]
+                                         initWithTarget:self
+                                                 action:@selector(handleDoubleTap:)];
+
     [doubleTap setNumberOfTapsRequired:2];
     [self.scrollView addGestureRecognizer:doubleTap];
-    
+   
     
     [self fillWithContent];
     [self fillScrollPanel];
