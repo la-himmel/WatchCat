@@ -111,6 +111,9 @@
                     action:@selector(switchEditMode)];
     
     self.navigationItem.rightBarButtonItem = backBarItem_;
+    
+    DLOG("ScheduleVC, table.view; view: %@ %@", NSStringFromCGRect(tableView_.frame),
+         NSStringFromCGRect(self.view.frame));
    
 }
 

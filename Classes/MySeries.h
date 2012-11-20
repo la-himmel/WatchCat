@@ -17,6 +17,8 @@
 - (void)save;
 - (void)update;
 
+- (void)setNotificationsEnabled:(BOOL)enabled;
+
 - (NSArray *)downloadSeriesWithId:(NSString *)seriesId;
 - (NSArray *)downloadSeriesSyncWithId:(NSString *)seriesId;
 

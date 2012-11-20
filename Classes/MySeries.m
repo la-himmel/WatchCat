@@ -9,6 +9,7 @@
 @property (nonatomic, strong) NSString *lastUpdated;
 @property (nonatomic, strong) NSString *whenToUpdate;
 @property (nonatomic, strong) NSMutableArray *scheduledTimes;
+@property BOOL notificationsEnabled;
 @end
 
 @implementation MySeries
@@ -20,6 +21,7 @@
 @synthesize lastUpdated = lastUpdated_;
 
 @synthesize scheduledTimes = scheduledTimes_;
+@synthesize notificationsEnabled = notificationsEnabled_;
 
 #define PATH_FAVOURITES @"Favourites"
 #define PATH_BOOKMARKED @"Bookmarked"
@@ -108,6 +110,11 @@
     });  
     
     return episodes;
+}
+
+- (void)setNotificationsEnabled:(BOOL)enabled
+{
+    notificationsEnabled_ = enabled;
 }
 
 - (NSString *)getTodayString
@@ -237,6 +244,7 @@
                     DLOG("last scheduled for show: %@ %@", show.name, dateStr);
                     
                     show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
+                    
                     [self setNotificationOnDate:airdate episodeId:ep.num show:show.name];
                 }
             }
@@ -308,12 +316,12 @@
 - (void)update
 {
     [self loadUpdateInfo];
-//    if ([self needsUpdate]) {
+    if ([self needsUpdate]) {
         DLOG("So, we need update!");
         [self refreshShows];
-//    } else {
-//        DLOG("So, we don't have to update.");
-//    }
+    } else {
+        DLOG("So, we don't have to update.");
+    }
 }
 
 - (void)setUpdateNotification

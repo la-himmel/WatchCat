@@ -59,7 +59,8 @@
     [favouritesNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
     
     //settings VC & NC - tab 3
-    SettingsVC *settingsVC = [[SettingsVC alloc] init]; 
+    SettingsVC *settingsVC = [[SettingsVC alloc] init];
+    [settingsVC setMyseries:series_];
     
     UINavigationController *settingsNC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     [settingsNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];

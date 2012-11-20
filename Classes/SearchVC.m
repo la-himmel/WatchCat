@@ -113,6 +113,9 @@
     } else {
         [msg_ removeFromSuperview];
     }
+    
+    DLOG("SearchVC, table.view; view: %@ %@", NSStringFromCGRect(tableView_.frame),
+         NSStringFromCGRect(self.view.frame));
          
 }
 
