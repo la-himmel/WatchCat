@@ -20,8 +20,10 @@
     UIView *calcView_;
     
     BOOL noResize;
+    BOOL loading;
     
     int currentTab_;
+    UIColor *myDarkPurple_; 
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -37,6 +39,9 @@
 
 - (void)viewDidLoad
 {
+    myDarkPurple_ = [UIColor colorWithRed:0x65/255.0 green:0x56/255.0 blue:0x74/255.0 alpha:1.0];
+    loading = NO;
+    
     //setting page background
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
     background.image = [UIImage imageNamed:@"details"];
@@ -141,6 +146,7 @@
     title.lineBreakMode = UILineBreakModeWordWrap;
     [title setNumberOfLines:0];
     [title sizeToFit];
+    title.textColor = myDarkPurple_;
     [self.view addSubview:title];
     
     //nearest episode for series
@@ -151,6 +157,7 @@
         nearestTitle.lineBreakMode = UILineBreakModeWordWrap;
         [nearestTitle setNumberOfLines:0];
         [nearestTitle sizeToFit];
+        nearestTitle.textColor = myDarkPurple_;
         [self.view addSubview:nearestTitle];
         
         UILabel *nearestDate = [[UILabel alloc] initWithFrame:CGRectMake(188, 100, 123, 25)];
@@ -159,6 +166,7 @@
         nearestDate.lineBreakMode = UILineBreakModeWordWrap;
         [nearestDate setNumberOfLines:0];
         [nearestDate sizeToFit];
+        nearestDate.textColor = myDarkPurple_;
         [self.view addSubview:nearestDate];
     }
 
@@ -184,6 +192,9 @@
     [description setNumberOfLines:0];
     [description sizeToFit];
     description.backgroundColor = [UIColor clearColor];
+
+
+    description.textColor = myDarkPurple_;
     
     CGSize textSize = description.frame.size;
     textSize.height += 190;
@@ -247,7 +258,7 @@
         subscribeButton_ = [[UIButton alloc] initWithFrame:favRect];
         [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
         [subscribeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active3.png"] forState:UIControlStateHighlighted];
-        [subscribeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [subscribeButton_ setTitleColor:myDarkPurple_ forState:UIControlStateNormal];
         
         if (!self.isAFavouriteShow) {
             [subscribeButton_ addTarget:self action:@selector(addToFavourites) forControlEvents:UIControlEventTouchUpInside];
@@ -260,7 +271,7 @@
     }
     if (!self.isAFavouriteShow) {
         bookmarkButton_ = [[UIButton alloc] initWithFrame:bookmRect];
-        [bookmarkButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [bookmarkButton_ setTitleColor:myDarkPurple_ forState:UIControlStateNormal];
         [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
         [bookmarkButton_ setBackgroundImage:[UIImage imageNamed:@"button_active2.png"] forState:UIControlStateHighlighted];
         
@@ -275,7 +286,7 @@
     }
     
     episodeButton_ = [[UIButton alloc] initWithFrame:epRect];
-    [episodeButton_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [episodeButton_ setTitleColor:myDarkPurple_ forState:UIControlStateNormal];
     [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [episodeButton_ setBackgroundImage:[UIImage imageNamed:@"button_active1"] forState:UIControlStateHighlighted];
     [episodeButton_ addTarget:self action:@selector(showEpisodeList) forControlEvents:UIControlEventTouchUpInside];
@@ -347,6 +358,11 @@
 
 - (void)showEpisodeList
 {
+    if (!loading) {
+        loading = YES;
+    } else {
+        return;
+    }
     DLOG("Need to show episode list... %d", [[show_ episodes] count]);
     
     //if there is no internet connection, show popup

@@ -10,7 +10,12 @@ const CGFloat kHeight = 60;
 {
     self.textLabel.text = show.name;
     self.textLabel.backgroundColor = [UIColor clearColor];
-    self.textLabel.highlightedTextColor = [UIColor purpleColor];
+    
+    UIColor *myDarkPurple = [UIColor colorWithRed:0x65/255.0 green:0x56/255.0 blue:0x74/255.0 alpha:1.0];
+    self.textLabel.textColor = myDarkPurple;
+    
+    UIColor *myPurple = [UIColor colorWithRed:0x79/255.0 green:0x52/255.0 blue:0x105/255.0 alpha:1.0];
+    self.textLabel.highlightedTextColor = myPurple;
 }
 
 + (CGFloat)height

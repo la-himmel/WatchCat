@@ -9,6 +9,7 @@
 
 - (void)viewDidLoad
 {
+    UIColor *myDarkPurple_ = [UIColor colorWithRed:0x65/255.0 green:0x56/255.0 blue:0x74/255.0 alpha:1.0];
     UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 366)];
     background.image = [UIImage imageNamed:@"details"];
     
@@ -33,7 +34,9 @@
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(188, 13, 123, 100)];
     title.text = [episode_.name copy];
     title.lineBreakMode = UILineBreakModeWordWrap;
+    title.textColor = myDarkPurple_;
     [title setNumberOfLines:0];
+    
     [title sizeToFit];
     
     [self.view addSubview:title];
@@ -63,6 +66,7 @@
     [description setFont:[UIFont fontWithName:@"Arial" size:17]];
     description.lineBreakMode = UILineBreakModeWordWrap;
     [description setNumberOfLines:0];
+    description.textColor = myDarkPurple_;
     [description sizeToFit];
     
     description.backgroundColor = [UIColor clearColor];

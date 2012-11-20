@@ -351,7 +351,7 @@
     localNotification.alertBody = [show stringByAppendingString:@"'s next episode is coming today!"];
     localNotification.timeZone = [[NSCalendar currentCalendar] timeZone];
     localNotification.soundName = UILocalNotificationDefaultSoundName;
-//    localNotification.applicationIconBadgeNumber = 1;    
+//    localNotification.applicationIconBadgeNumber = 1;
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     
 //    DLOG("notifications: %@", [[localNotification fireDate] description]);
