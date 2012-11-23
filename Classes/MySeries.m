@@ -22,6 +22,7 @@
 
 @synthesize scheduledTimes = scheduledTimes_;
 @synthesize notificationsEnabled = notificationsEnabled_;
+@synthesize status = status_;
 
 #define PATH_FAVOURITES @"Favourites"
 #define PATH_BOOKMARKED @"Bookmarked"
@@ -39,6 +40,10 @@
     bookmarked_ = [[NSMutableArray alloc] init];
     
     scheduledTimes_ = [[NSMutableArray alloc] init];
+
+    [self willChangeValueForKey:@"status"];
+    status_ = STATUS_NEEDS_UPDATE;
+    [self didChangeValueForKey:@"status"];
     
     //test. TODO: remove
     whenToUpdate_ = @"2012-11-12";
@@ -112,11 +117,6 @@
     return episodes;
 }
 
-- (void)setNotificationsEnabled:(BOOL)enabled
-{
-    notificationsEnabled_ = enabled;
-}
-
 - (NSString *)getTodayString
 {
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
@@ -126,11 +126,50 @@
     return now;
 }
 
+- (void)mergeFavouritesWith:(NSArray *)newFavs
+{
+    return;
+    DLOG("");
+    int lastFave = 0;
+
+    for (TVShow *show in newFavs) {
+        TVShow *currentShow = [favourites_ objectAtIndex:lastFave];
+
+        DLOG("show id: %@", show.idString);
+        DLOG("and we have %@", currentShow.idString);
+        
+        if ([show.idString isEqualToString:currentShow.idString]) {
+            lastFave++;
+        } else {
+            for (int j = 0; j < [favourites_ count]; j++) {
+
+                TVShow *showToDelete = [favourites_ objectAtIndex:j];
+                
+                if (![showToDelete.idString isEqualToString:show.idString]) {
+                    DLOG("removing stuff... %@", showToDelete.name);
+                    [favourites_ removeObjectAtIndex:j];
+                    j--;
+                } else {
+                    lastFave = j;
+                    break;
+                }
+            }
+        }
+    }
+    
+    for (int i = [favourites_ count]; i < [newFavs count]; i++ ) {
+        TVShow *showToAdd = [[newFavs objectAtIndex:i] mutableCopy];
+        [favourites_ addObject:showToAdd];
+        DLOG("added, count: %d", [favourites_ count]);
+    }
+    [self saveFavourites];
+}
+
 - (void)saveUpdateInfo
 {
-    DLOG("lastUpdated: %@", lastUpdated_);
-    DLOG("whenToUpdate: %@", whenToUpdate_);
-    DLOG("Today: %@", [self getTodayString]);
+//    DLOG("lastUpdated: %@", lastUpdated_);
+//    DLOG("whenToUpdate: %@", whenToUpdate_);
+//    DLOG("Today: %@", [self getTodayString]);
     
     NSMutableDictionary *update = [[NSMutableDictionary alloc] init];
     [update setObject:lastUpdated_ forKey:KEY_LAST_UPDATED];
@@ -167,41 +206,55 @@
 
     lastUpdated_ = [update objectForKey:KEY_LAST_UPDATED];
     whenToUpdate_ = [update objectForKey:KEY_WHEN_TO_UPDATE];
- 
-    DLOG("lastUpdated: %@", lastUpdated_);
-    DLOG("whenToUpdate: %@", whenToUpdate_);
-    DLOG("Today: %@", [self getTodayString]);
 }
 
 - (BOOL)needsUpdate
 {
-    DLOG("lastUpdated: %@", lastUpdated_);
-    DLOG("whenToUpdate: %@", whenToUpdate_);
-    DLOG("Today: %@", [self getTodayString]);
+//    DLOG("lastUpdated: %@", lastUpdated_);
+//    DLOG("whenToUpdate: %@", whenToUpdate_);
+//    DLOG("Today: %@", [self getTodayString]);
     
     if ([lastUpdated_ compare:[self getTodayString]] == NSOrderedSame) {
         return NO;
     }
     if ([lastUpdated_ compare:[self getTodayString]] == NSOrderedAscending) {
         if ([[self getTodayString] compare:whenToUpdate_] == NSOrderedAscending) {
+            
+            [self willChangeValueForKey:@"status"];
+            status_ = STATUS_UPDATED;
+            [self didChangeValueForKey:@"status"];
+
             return NO;
         } else {
+            [self willChangeValueForKey:@"status"];
+            status_ = STATUS_NEEDS_UPDATE;
+            [self didChangeValueForKey:@"status"];
+            
             return YES;
         }
     }
+
+    [self willChangeValueForKey:@"status"];
+    status_ = STATUS_UPDATED;
+    [self didChangeValueForKey:@"status"];
+    
     return NO;
 }
 
 - (void)refreshShows
 {
-    DLOG("refresh shows");
+    [self willChangeValueForKey:@"status"];
+    status_ = STATUS_UPDATING;
+    [self didChangeValueForKey:@"status"];
     
     lastUpdated_ = [self getTodayString];
+    
+    NSMutableArray *favourites = [favourites_ mutableCopy];
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{
         
-        for (TVShow *show in favourites_) {
+        for (TVShow *show in favourites) {
             DLOG("Found: %@", show.name);
             
             //"old" status
@@ -239,9 +292,8 @@
                 if (( result == NSOrderedDescending && !includeToday ) ||
                     ( result != NSOrderedAscending && includeToday ))
                 {
-                    show.lastScheduled = dateStr;
-                    
-                    DLOG("last scheduled for show: %@ %@", show.name, dateStr);
+                    show.lastScheduled = dateStr;                    
+//                    DLOG("last scheduled for show: %@ %@", show.name, dateStr);
                     
                     show.nearestId = [NSString stringWithFormat:@"%d", ep.num];
                     
@@ -251,7 +303,6 @@
             
             //getting "new" status
             show.status = parseStatus(xmlData);
-//            DLOG("STATUS: %@", show.status);
             
             if (show.lastScheduled != nil && ![show.status isEqualToString:@"Ended"]) {
                 [scheduledTimes_ addObject:show.lastScheduled];
@@ -265,12 +316,15 @@
         [self save];
         [self saveUpdateInfo];
 
+        [self willChangeValueForKey:@"status"];
+        status_ = STATUS_UPDATED;
+        [self didChangeValueForKey:@"status"];
+        
     });
 }
 
 - (void)setNextDate
 {
-    DLOG("set next date");
     if (![scheduledTimes_ count]) {
         return;
     }
@@ -280,7 +334,7 @@
     for (NSString *time in scheduledTimes_) {
         if ([closestTime compare:time] == NSOrderedDescending) {
             
-            DLOG("closest time / time: %@ %@", closestTime, time);
+//            DLOG("closest time / time: %@ %@", closestTime, time);
 
             if ([[self getTodayString] compare:time] == NSOrderedDescending) {
                 closestTime = [self getTodayString];
@@ -315,6 +369,11 @@
 
 - (void)update
 {
+    //force update, for testing
+    [self refreshShows];
+    return;
+    //end
+    
     [self loadUpdateInfo];
     if ([self needsUpdate]) {
         DLOG("So, we need update!");

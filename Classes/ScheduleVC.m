@@ -13,7 +13,9 @@
     
     UIImageView *back_;
     UILabel *msg_;
-
+    
+    BOOL editing_;
+    BOOL emptyOrSmall_;
 }
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIBarButtonItem *backBarItemActive;
@@ -31,18 +33,21 @@
 
 - (id)initWithItems:(NSMutableArray *)items
 {
+    DLOG("");
+    editing_ = NO;
     if (!(self = [super init])) {
         return nil;
     }
     
     favourites_ = items;
+    emptyOrSmall_ = YES;
         
     return self;
 }
 
 - (void)setMyseries:(MySeries *)myseries
 {
-    myseries_ = myseries;    
+    myseries_ = myseries;
     
     [tableView_ reloadData];
     [tableView_ setNeedsDisplay];
@@ -79,10 +84,7 @@
     tableView_.backgroundColor = [UIColor redColor];
     [self.view addSubview:tableView_];
     
-    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(28, 
-                                                     107, 
-                                                     320, 
-                                                     25)];
+    msg_ = [[UILabel alloc] initWithFrame:CGRectMake(28, 107, 320, 25)];
     msg_.backgroundColor = [UIColor clearColor];
     msg_.textColor = [UIColor colorWithRed:0x92/255.0 green:0x88/255.0 blue:0x96/255.0 alpha:0.9];
     msg_.textAlignment = UITextAlignmentLeft;
@@ -111,21 +113,41 @@
     
     self.navigationItem.rightBarButtonItem = backBarItem_;
     
-    DLOG("ScheduleVC, table.view; view: %@ %@", NSStringFromCGRect(tableView_.frame),
-         NSStringFromCGRect(self.view.frame));
+//    DLOG("ScheduleVC, table.view; view: %@ %@", NSStringFromCGRect(tableView_.frame),
+//         NSStringFromCGRect(self.view.frame));
    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if ([keyPath isEqualToString:@"status"]) {
+        DLOG("KVO status: %@", myseries_.status);
+        
+        if (myseries_.status == STATUS_UPDATED) {
+            [myseries_ mergeFavouritesWith:favourites_];
+            [myseries_ removeObserver:self forKeyPath:@"status"];
+            favourites_ = myseries_.favourites;
+            //then link favs to myseries items
+            //aaand save
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 - (void)switchEditMode
 {
-    BOOL editing = !tableView_.editing;
-    if (editing) {
+    editing_ = !tableView_.editing;
+    if (editing_) {
         self.navigationItem.rightBarButtonItem = backBarItemActive_;
     } else {
         self.navigationItem.rightBarButtonItem = backBarItem_;
     }
 
-    [tableView_ setEditing:editing animated:YES];
+    [tableView_ setEditing:editing_ animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
@@ -141,6 +163,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (int)tableView:(UITableView *)tableView numberOfRowsInSection:(int)section
 {
+//    if ([favourites_ count] < 7) {
+//        DLOG("empty or small!");
+//        return 7;
+//    }
+//    
+//    DLOG("not small");
     return [favourites_ count];
 }
 
@@ -229,8 +257,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         vc.isAFavouriteShow = self.isAFavouritesList;
         vc.isABookmarkedShow = !self.isAFavouritesList;
         
-        DLOG("favourite: %@", vc.isAFavouriteShow ? @"yes" : @"no");
-        DLOG("bookmarked: %@", vc.isABookmarkedShow ? @"yes" : @"no");
+//        DLOG("favourite: %@", vc.isAFavouriteShow ? @"yes" : @"no");
+//        DLOG("bookmarked: %@", vc.isABookmarkedShow ? @"yes" : @"no");
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationController pushViewController:vc animated:YES];

@@ -393,14 +393,20 @@
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("loader", NULL);
     dispatch_async(downloadQueue, ^{
+
         EpisodeListVC *vc;
         if ([[show_ episodes] count] == 0) {
             vc = [[EpisodeListVC alloc] initWithShow:show_];
 //        } else {
 //            vc = [[EpisodeListVC alloc] initWithItems:[show_ episodes]];
         }
-        
+       
         vc.myseries = myseries_;
+        
+        if (![vc isEqual:nil]) {
+            DLOG("");
+        } 
+    
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationController pushViewController:vc animated:YES];
@@ -413,6 +419,7 @@
 
 - (void)forgetShow
 {
+    DLOG("");
     [myseries_ forgetShow:show_];
 //    [self.navigationController popViewControllerAnimated:YES];    
     [bookmarkButton_ setTitle:@"Remember" forState:UIControlStateNormal];
@@ -423,6 +430,7 @@
 
 - (void)unsubscribe
 {
+    DLOG("");
     [myseries_ removeFromFavorites:show_];
     [subscribeButton_ setTitle:@"Subscribe" forState:UIControlStateNormal];
     [subscribeButton_ addTarget:self action:@selector(addToFavourites) 
@@ -461,6 +469,7 @@
 
 - (void)rememberShow
 {
+    DLOG("");
     if (![myseries_ rememberShow:show_]) {
         [self alertWithMessage:@"This show is already in your bookmarks."];
         return;
@@ -475,6 +484,7 @@
 
 - (void)addToFavourites
 {
+    DLOG("");
     if ([show_.status isEqual:@"Ended"]) {
         NSString *msg = @"This show is ended. Do you want to add it to you bookmarks?";
         [self alertForCancelAndOkWithMessage:msg delegate:self];

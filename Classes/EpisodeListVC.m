@@ -201,19 +201,12 @@
         [tvCell setTitle:season];
         cell = tvCell;
         
-        NSArray *backsSeason = [[NSArray alloc] initWithObjects:@"tail1_b", @"tail2_b",
-                                @"tail3_b", @"tail4_b", @"tail5_b", @"tail6_b", @"tail7_b", @"tail8_b", nil];
-        NSArray *backsTails = [[NSArray alloc] initWithObjects:@"tail1", @"tail2",
-                                @"tail3", @"tail4", @"tail5", @"tail6", @"tail7", @"tail8", nil];
-
-        NSString *name = [backsTails objectAtIndex:(firstEpisode.seasonNum %8)];
+        NSString *name = @"back_flowers";
         
 //        if (currentSeason_ == indexPath.section) {
 //            name = [backsSeason objectAtIndex:(firstEpisode.seasonNum %4)];
 //            [cell.backgroundView setNeedsLayout];
 //        }
-        
-        name = @"back_flowers";
         
         cell.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:name]
                                                                   stretchableImageWithLeftCapWidth:0.0
@@ -223,7 +216,7 @@
                                                       stretchableImageWithLeftCapWidth:0.0
                                                       topCapHeight:5.0]];
         [cell.backgroundView setNeedsLayout];
-//        [cell.backgroundView setNeedsDisplay];
+
     } else {
         Episode *episode = [rows objectAtIndex:((NSUInteger)indexPath.row -1)];
         

@@ -18,7 +18,12 @@
 {
     self.textLabel.text = title;
     self.textLabel.backgroundColor = [UIColor clearColor];
-    self.textLabel.highlightedTextColor = [UIColor purpleColor];
+    
+    UIColor *myDarkPurple = [UIColor colorWithRed:0x65/255.0 green:0x56/255.0 blue:0x74/255.0 alpha:1.0];
+    self.textLabel.textColor = myDarkPurple;
+    
+    UIColor *myPurple = [UIColor colorWithRed:0x60/255.0 green:0x40/255.0 blue:0x79/255.0 alpha:1.0];
+    self.textLabel.highlightedTextColor = myPurple;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

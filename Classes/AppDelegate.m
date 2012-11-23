@@ -40,7 +40,7 @@
     series_ = [[MySeries alloc] init];
     [series_ load];
     
-    [series_ update];
+//update
     
     //search NC & VC - tab 2
     searchVC_ = [[SearchVC alloc] init];
@@ -56,6 +56,11 @@
     [scheduleVC_ setMyseries:series_];
     scheduleVC_.isAFavouritesList = YES;
     
+    [series_ addObserver:scheduleVC_
+                forKeyPath:@"status"
+                   options:NSKeyValueObservingOptionNew
+                   context:NULL];
+    
     UINavigationController *favouritesNC = [[UINavigationController alloc] initWithRootViewController:scheduleVC_];
     [favouritesNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
     
@@ -70,6 +75,10 @@
     ScheduleVC *bvc = [[ScheduleVC alloc] initWithItems:series_.bookmarked];
     [bvc setMyseries:series_];
     bvc.isAFavouritesList = NO;
+    [series_ addObserver:bvc
+                  forKeyPath:@"status"
+                     options:NSKeyValueObservingOptionNew
+                     context:NULL];
     
     UINavigationController *bookmarkedNC = [[UINavigationController alloc] initWithRootViewController:bvc];
     [bookmarkedNC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar"] forBarMetrics:UIBarMetricsDefault];
@@ -86,6 +95,8 @@
     searchVC_.switcher = tabbarVC_;
     self.window.rootViewController = tabbarVC_;
     [self.window makeKeyAndVisible];
+    
+    [series_ update];
     
     return YES;
 }

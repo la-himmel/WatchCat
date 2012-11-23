@@ -28,8 +28,7 @@
     NSString *label = [NSString stringWithFormat:@"%@ %@", episode.readableNumber, episode.name];
     self.textLabel.text = label;
     self.textLabel.backgroundColor = [UIColor clearColor];
-    self.textLabel.highlightedTextColor = [UIColor purpleColor];
-    
+        
     NSDate *date = [NSDate date];
     
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -43,7 +42,13 @@
     NSComparisonResult result = [currentDate compare:episode.airDate];
     if (result >= 0 && ![episode.airDate isEqualToString:@""]) {
         [airdate_ setText:@""];
-        self.textLabel.textColor = [UIColor blackColor];
+    
+        UIColor *myDarkPurple = [UIColor colorWithRed:0x65/255.0 green:0x56/255.0 blue:0x74/255.0 alpha:1.0];
+        self.textLabel.textColor = myDarkPurple;
+        
+        UIColor *myPurple = [UIColor colorWithRed:0x60/255.0 green:0x40/255.0 blue:0x79/255.0 alpha:1.0];
+        self.textLabel.highlightedTextColor = myPurple;
+
     } else {
         [airdate_ setText:episode.airDate];
         self.textLabel.textColor = [UIColor grayColor];
